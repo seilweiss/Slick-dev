@@ -308,7 +308,7 @@ namespace Slick {
             {
                 QMouseEvent* mouseEvent = (QMouseEvent*)event;
 
-                if (mouseEvent->button() == Qt::MidButton)
+                if (mouseEvent->button() == Qt::MiddleButton)
                 {
                     int index = m_tabWidget->tabBar()->tabAt(mouseEvent->pos());
 

@@ -296,12 +296,12 @@ namespace Slick {
 
     void MainWindow::setupActions()
     {
-        m_newProjectAction->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_N);
-        m_newSceneAction->setShortcut(Qt::CTRL + Qt::Key_N);
-        m_openProjectAction->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_O);
-        m_openSceneAction->setShortcut(Qt::CTRL + Qt::Key_O);
-        m_saveAction->setShortcut(Qt::CTRL + Qt::Key_S);
-        m_saveAllAction->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_S);
+        m_newProjectAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_N);
+        m_newSceneAction->setShortcut(Qt::CTRL | Qt::Key_N);
+        m_openProjectAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_O);
+        m_openSceneAction->setShortcut(Qt::CTRL | Qt::Key_O);
+        m_saveAction->setShortcut(Qt::CTRL | Qt::Key_S);
+        m_saveAllAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_S);
         m_quitAction->setShortcuts(QKeySequence::Quit);
         m_undoAction->setShortcuts(QKeySequence::Undo);
         m_redoAction->setShortcuts(QKeySequence::Redo);
