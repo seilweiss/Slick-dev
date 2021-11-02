@@ -18,6 +18,8 @@ namespace Slick {
         setTitle("Untitled.txt");
         setDirty(true);
 
+        panelLayout().sceneVisible = false;
+
         connect(this, &TextEditor::pathChanged, this, [=](const QString& path)
         {
             setTitle(QFileInfo(path).fileName());
@@ -69,12 +71,14 @@ namespace Slick {
     {
         if (m_path.isEmpty())
         {
-            setPath(getOpenFileName());
+            QString path = getOpenFileName();
 
-            if (m_path.isEmpty())
+            if (path.isEmpty())
             {
                 return OpenCancelled;
             }
+
+            m_path = path;
         }
 
         QFile file(m_path);

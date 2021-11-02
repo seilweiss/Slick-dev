@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Editors/IEditor.h"
+#include "Editors/EditorTypes.h"
 
 class QTextEdit;
 
@@ -16,6 +17,7 @@ namespace Slick {
     public:
         TextEditor(QObject* parent = nullptr);
 
+        virtual int type() const override { return EditorType_Text; }
         virtual IEditorWidget* createWidget() override;
         virtual SaveResult save() override;
         virtual SaveResult saveAs() override;

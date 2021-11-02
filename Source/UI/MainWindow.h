@@ -1,8 +1,12 @@
 #pragma once
 
+#include "UI/PanelLayout.h"
+
 #include <QMainWindow>
 
 namespace Slick {
+
+    class IEditor;
 
     class MainWindow : public QMainWindow
     {
@@ -57,8 +61,10 @@ namespace Slick {
     private:
         void setupActions();
         void setupMenus();
+        void setupPanels();
         void setupLayout();
         void updateMenus();
+        void updatePanelLayout();
 
         QDockWidget* m_projectDock;
         QDockWidget* m_sceneDock;
@@ -104,6 +110,8 @@ namespace Slick {
         QMenu* m_scriptsMenu;
         QMenu* m_toolsMenu;
         QMenu* m_helpMenu;
+        IEditor* m_prevEditor;
+        PanelLayout m_defaultPanelLayout;
     };
 
 }

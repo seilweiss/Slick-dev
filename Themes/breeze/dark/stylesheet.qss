@@ -112,7 +112,7 @@ QGroupBox::title
     /* We need to move 0.6em up to be inside the lines, +1em for padding. */
     top: -1.6em;
     subcontrol-origin: content;
-    subcontrol-position: top center;
+    subcontrol-position: top left;
     background: #31363b;
     padding-left: 0.2em;
     padding-right: 0.2em;

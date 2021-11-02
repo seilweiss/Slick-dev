@@ -7,6 +7,7 @@
 #include "UI/InspectorPanel.h"
 
 #include "Editors/TextEditor.h"
+#include "Editors/HipHopEditor.h"
 
 #include "UI/HashGeneratorTool.h"
 
@@ -64,13 +65,21 @@ namespace Slick {
           m_playMenu(menuBar()->addMenu(tr("Play"))),
           m_scriptsMenu(menuBar()->addMenu(tr("Scripts"))),
           m_toolsMenu(menuBar()->addMenu(tr("Tools"))),
-          m_helpMenu(menuBar()->addMenu(tr("Help")))
+          m_helpMenu(menuBar()->addMenu(tr("Help"))),
+          m_prevEditor(nullptr)
     {
+        m_defaultPanelLayout.projectVisible = true;
+        m_defaultPanelLayout.sceneVisible = false;
+        m_defaultPanelLayout.inspectorVisible = true;
+
         resize(screen()->availableSize() * 0.75);
 
         setupLayout();
         setupActions();
         setupMenus();
+        setupPanels();
+
+        updatePanelLayout();
         updateMenus();
     }
 
@@ -90,14 +99,14 @@ namespace Slick {
 
     bool MainWindow::newHipHopFile()
     {
+        EditorPanel::instance()->addEditor(new HipHopEditor);
+
         return true;
     }
 
     bool MainWindow::newTextFile()
     {
         EditorPanel::instance()->addEditor(new TextEditor);
-
-        updateMenus();
 
         return true;
     }
@@ -114,43 +123,22 @@ namespace Slick {
 
     bool MainWindow::openHipHopFile()
     {
-        return true;
+        return EditorPanel::instance()->openEditor(new HipHopEditor);
     }
 
     bool MainWindow::openTextFile()
     {
-        bool success = EditorPanel::instance()->openEditor(new TextEditor);
-
-        if (success)
-        {
-            updateMenus();
-        }
-
-        return success;
+        return EditorPanel::instance()->openEditor(new TextEditor);
     }
 
     bool MainWindow::closeEditor()
     {
-        bool success = EditorPanel::instance()->closeEditor();
-
-        if (success)
-        {
-            updateMenus();
-        }
-
-        return success;
+        return EditorPanel::instance()->closeEditor();
     }
 
     bool MainWindow::closeAll()
     {
-        bool success = EditorPanel::instance()->closeAll();
-
-        if (success)
-        {
-            updateMenus();
-        }
-
-        return success;
+        return EditorPanel::instance()->closeAll();
     }
 
     bool MainWindow::closeProject()
@@ -338,8 +326,6 @@ namespace Slick {
         connect(m_viewWikiAction, &QAction::triggered, this, &MainWindow::viewWiki);
         connect(m_aboutSlickAction, &QAction::triggered, this, &MainWindow::aboutSlick);
         connect(m_aboutQtAction, &QAction::triggered, this, &MainWindow::aboutQt);
-
-        connect(EditorPanel::instance(), &EditorPanel::editorChanged, this, &MainWindow::updateMenus);
     }
 
     void MainWindow::setupMenus()
@@ -359,21 +345,16 @@ namespace Slick {
         fileOpenMenu->addAction(m_openTextFileAction);
 
         m_fileMenu->addSeparator();
-
         m_fileMenu->addAction(m_closeEditorAction);
         m_fileMenu->addAction(m_closeAllAction);
         m_fileMenu->addAction(m_closeProjectAction);
-
         m_fileMenu->addSeparator();
-
         m_fileMenu->addAction(m_saveAction);
         m_fileMenu->addAction(m_saveAsAction);
         m_fileMenu->addAction(m_saveAllAction);
         m_fileMenu->addAction(m_saveProjectAction);
         m_fileMenu->addAction(m_saveProjectAsAction);
-
         m_fileMenu->addSeparator();
-
         m_fileMenu->addAction(m_quitAction);
 
         m_editMenu->addAction(m_undoAction);
@@ -403,6 +384,30 @@ namespace Slick {
         m_helpMenu->addSeparator();
         m_helpMenu->addAction(m_aboutSlickAction);
         m_helpMenu->addAction(m_aboutQtAction);
+    }
+
+    void MainWindow::setupPanels()
+    {
+        connect(EditorPanel::instance(), &EditorPanel::editorChanged, this, [=](IEditor* editor)
+        {
+            if (m_prevEditor)
+            {
+                m_prevEditor->panelLayout().projectVisible = m_projectDock->isVisible();
+                m_prevEditor->panelLayout().sceneVisible = m_sceneDock->isVisible();
+                m_prevEditor->panelLayout().inspectorVisible = m_inspectorDock->isVisible();
+            }
+            else
+            {
+                m_defaultPanelLayout.projectVisible = m_projectDock->isVisible();
+                m_defaultPanelLayout.sceneVisible = m_sceneDock->isVisible();
+                m_defaultPanelLayout.inspectorVisible = m_inspectorDock->isVisible();
+            }
+
+            m_prevEditor = editor;
+
+            updatePanelLayout();
+            updateMenus();
+        });
     }
 
     void MainWindow::setupLayout()
@@ -485,5 +490,23 @@ namespace Slick {
         m_emulatorMenu->addAction(m_manageEmulatorsAction);
 
         m_runScriptAction->setEnabled(false);
+    }
+
+    void MainWindow::updatePanelLayout()
+    {
+        IEditor* editor = EditorPanel::instance()->editor();
+
+        if (editor)
+        {
+            m_projectDock->setVisible(editor->panelLayout().projectVisible);
+            m_sceneDock->setVisible(editor->panelLayout().sceneVisible);
+            m_inspectorDock->setVisible(editor->panelLayout().inspectorVisible);
+        }
+        else
+        {
+            m_projectDock->setVisible(m_defaultPanelLayout.projectVisible);
+            m_sceneDock->setVisible(m_defaultPanelLayout.sceneVisible);
+            m_inspectorDock->setVisible(m_defaultPanelLayout.inspectorVisible);
+        }
     }
 }

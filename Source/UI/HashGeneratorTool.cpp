@@ -7,7 +7,7 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-#include <hiphop.h>
+#include "hiphop.h"
 
 namespace Slick {
 

@@ -9,10 +9,11 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 LIBS += \
-    -L"C:/dev/hiphop/lib/Release" -lhiphop \
-    -L"C:/dev/rws/lib/Release/x64" -lrws
+    -L"C:/dev/hiphop/lib/Debug" -lhiphop \
+    -L"C:/dev/rws/lib/Debug/x64" -lrws
 
 SOURCES += \
+    Source/Editors/HipHopEditor.cpp \
     Source/Editors/IEditor.cpp \
     Source/Editors/TextEditor.cpp \
     Source/UI/EditorMessageBox.cpp \
@@ -26,6 +27,8 @@ SOURCES += \
     Source/UI/MainWindow.cpp
 
 HEADERS += \
+    Source/Editors/EditorTypes.h \
+    Source/Editors/HipHopEditor.h \
     Source/Editors/IEditor.h \
     Source/Editors/TextEditor.h \
     Source/UI/EditorMessageBox.h \
@@ -33,6 +36,7 @@ HEADERS += \
     Source/UI/HashGeneratorTool.h \
     Source/UI/InspectorPanel.h \
     Source/UI/MainWindow.h \
+    Source/UI/PanelLayout.h \
     Source/UI/ProjectPanel.h \
     Source/UI/ScenePanel.h \
     Source/UI/ToolbarPanel.h
