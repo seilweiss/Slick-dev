@@ -180,50 +180,79 @@ namespace Slick {
         QVBoxLayout* mainLayout = new QVBoxLayout;
         QGroupBox* layerGroupBox = new QGroupBox(tr("Layer"));
         QGroupBox* assetGroupBox = new QGroupBox(tr("Assets"));
-        QHBoxLayout* layerGroupBoxLayout = new QHBoxLayout;
-        QVBoxLayout* assetGroupBoxLayout = new QVBoxLayout;
-        QHBoxLayout* assetToolbarLayout = new QHBoxLayout;
-        QHBoxLayout* assetTableLayout = new QHBoxLayout;
-        QPushButton* layerAddButton = new QPushButton(tr("Add"));
-        QPushButton* layerRemoveButton = new QPushButton(tr("Remove"));
-        QPushButton* layerMoveUpButton = new QPushButton(tr("Move Up"));
-        QPushButton* layerMoveDownButton = new QPushButton(tr("Move Down"));
-
-        connect(m_layerComboBox, &QComboBox::currentTextChanged, this, &HipHopEditorWidget::refresh);
-        connect(m_assetTypeComboBox, &QComboBox::currentTextChanged, this, &HipHopEditorWidget::refresh);
-        connect(m_assetSearchLineEdit, &QLineEdit::textEdited, this, &HipHopEditorWidget::refresh);
 
         resetTable();
 
-        m_assetTableWidget->verticalHeader()->hide();
-        m_assetTableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-        m_assetTableWidget->setShowGrid(false);
-        m_assetTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-        m_assetTableWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        m_assetTableWidget->setSortingEnabled(true);
-        m_assetTableWidget->sortByColumn(1, Qt::AscendingOrder);
+        // Layers
+        {
+            connect(m_layerComboBox, &QComboBox::currentTextChanged, this, &HipHopEditorWidget::refresh);
 
-        layerGroupBoxLayout->addWidget(m_layerComboBox, 2);
-        layerGroupBoxLayout->addWidget(new QLabel(tr("Type:")));
-        layerGroupBoxLayout->addWidget(m_layerTypeComboBox, 1);
-        layerGroupBoxLayout->addWidget(layerAddButton);
-        layerGroupBoxLayout->addWidget(layerRemoveButton);
-        layerGroupBoxLayout->addWidget(layerMoveUpButton);
-        layerGroupBoxLayout->addWidget(layerMoveDownButton);
+            QPushButton* addButton = new QPushButton(tr("Add"));
+            QPushButton* removeButton = new QPushButton(tr("Remove"));
+            QPushButton* moveUpButton = new QPushButton(tr("Move Up"));
+            QPushButton* moveDownButton = new QPushButton(tr("Move Down"));
 
-        layerGroupBox->setLayout(layerGroupBoxLayout);
+            QHBoxLayout* groupBoxLayout = new QHBoxLayout;
 
-        assetToolbarLayout->addWidget(new QLabel(tr("Type:")));
-        assetToolbarLayout->addWidget(m_assetTypeComboBox, 1);
-        assetToolbarLayout->addWidget(new QLabel(tr("Find:")));
-        assetToolbarLayout->addWidget(m_assetSearchLineEdit, 3);
+            groupBoxLayout->addWidget(m_layerComboBox, 2);
+            groupBoxLayout->addWidget(new QLabel(tr("Type:")));
+            groupBoxLayout->addWidget(m_layerTypeComboBox, 1);
+            groupBoxLayout->addWidget(addButton);
+            groupBoxLayout->addWidget(removeButton);
+            groupBoxLayout->addWidget(moveUpButton);
+            groupBoxLayout->addWidget(moveDownButton);
 
-        assetTableLayout->addWidget(m_assetTableWidget, 1);
+            layerGroupBox->setLayout(groupBoxLayout);
+        }
 
-        assetGroupBoxLayout->addLayout(assetToolbarLayout, 1);
-        assetGroupBoxLayout->addLayout(assetTableLayout, 1);
+        // Assets
+        {
+            // Options
+            connect(m_assetTypeComboBox, &QComboBox::currentTextChanged, this, &HipHopEditorWidget::refresh);
+            connect(m_assetSearchLineEdit, &QLineEdit::textEdited, this, &HipHopEditorWidget::refresh);
 
-        assetGroupBox->setLayout(assetGroupBoxLayout);
+            QHBoxLayout* optionsLayout = new QHBoxLayout;
+            optionsLayout->addWidget(new QLabel(tr("Type:")));
+            optionsLayout->addWidget(m_assetTypeComboBox, 1);
+            optionsLayout->addWidget(new QLabel(tr("Find:")));
+            optionsLayout->addWidget(m_assetSearchLineEdit, 3);
+
+            // Table
+            m_assetTableWidget->verticalHeader()->hide();
+            m_assetTableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+            m_assetTableWidget->setShowGrid(false);
+            m_assetTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+            m_assetTableWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+            m_assetTableWidget->setSortingEnabled(true);
+            m_assetTableWidget->sortByColumn(1, Qt::AscendingOrder);
+            m_assetTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+            // Editor
+            QGroupBox* editorGroupBox = new QGroupBox;
+
+            {
+                QVBoxLayout* editorLayout = new QVBoxLayout;
+
+                QHBoxLayout* nameLayout = new QHBoxLayout;
+                nameLayout->addWidget(new QLabel(tr("Name:")));
+                nameLayout->addWidget(new QLineEdit, 1);
+
+                editorLayout->addLayout(nameLayout);
+                editorLayout->addStretch(1);
+
+                editorGroupBox->setLayout(editorLayout);
+            }
+
+            QHBoxLayout* tableLayout = new QHBoxLayout;
+            tableLayout->addWidget(m_assetTableWidget, 1);
+            tableLayout->addWidget(editorGroupBox);
+
+            QVBoxLayout* groupBoxLayout = new QVBoxLayout;
+            groupBoxLayout->addLayout(optionsLayout);
+            groupBoxLayout->addLayout(tableLayout, 1);
+
+            assetGroupBox->setLayout(groupBoxLayout);
+        }
 
         mainLayout->addWidget(layerGroupBox);
         mainLayout->addWidget(assetGroupBox, 1);

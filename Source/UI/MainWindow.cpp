@@ -8,6 +8,7 @@
 
 #include "Editors/TextEditor.h"
 #include "Editors/HipHopEditor.h"
+#include "Editors/SceneEditor.h"
 
 #include "UI/HashGeneratorTool.h"
 
@@ -94,6 +95,8 @@ namespace Slick {
 
     bool MainWindow::newScene()
     {
+        EditorPanel::instance()->addEditor(new SceneEditor);
+
         return true;
     }
 
@@ -118,17 +121,41 @@ namespace Slick {
 
     bool MainWindow::openScene()
     {
+        SceneEditor* editor = new SceneEditor;
+
+        if (!EditorPanel::instance()->openEditor(editor))
+        {
+            delete editor;
+            return false;
+        }
+
         return true;
     }
 
     bool MainWindow::openHipHopFile()
     {
-        return EditorPanel::instance()->openEditor(new HipHopEditor);
+        HipHopEditor* editor = new HipHopEditor;
+
+        if (!EditorPanel::instance()->openEditor(editor))
+        {
+            delete editor;
+            return false;
+        }
+
+        return true;
     }
 
     bool MainWindow::openTextFile()
     {
-        return EditorPanel::instance()->openEditor(new TextEditor);
+        TextEditor* editor = new TextEditor;
+
+        if (!EditorPanel::instance()->openEditor(editor))
+        {
+            delete editor;
+            return false;
+        }
+
+        return true;
     }
 
     bool MainWindow::closeEditor()

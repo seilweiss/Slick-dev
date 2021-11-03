@@ -28,9 +28,9 @@ namespace Slick {
         static Result openFailed(QWidget* parent, const QList<IEditor*>& editors);
         static Result saveFailed(QWidget* parent, const QList<IEditor*>& editors);
 
-    private:
         EditorMessageBox(QWidget* parent, const QList<IEditor*>& editors, const QString& title, const QString& text, QStyle::StandardPixmap icon);
 
+    private:
         QListWidget* m_listWidget;
         QDialogButtonBox* m_buttonBox;
         Result m_result;

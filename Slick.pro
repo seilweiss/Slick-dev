@@ -15,11 +15,13 @@ LIBS += \
 SOURCES += \
     Source/Editors/HipHopEditor.cpp \
     Source/Editors/IEditor.cpp \
+    Source/Editors/SceneEditor.cpp \
     Source/Editors/TextEditor.cpp \
     Source/UI/EditorMessageBox.cpp \
     Source/UI/EditorPanel.cpp \
     Source/UI/HashGeneratorTool.cpp \
     Source/UI/InspectorPanel.cpp \
+    Source/UI/OpenSceneDialog.cpp \
     Source/UI/ScenePanel.cpp \
     Source/UI/ToolbarPanel.cpp \
     Source/main.cpp \
@@ -30,12 +32,14 @@ HEADERS += \
     Source/Editors/EditorTypes.h \
     Source/Editors/HipHopEditor.h \
     Source/Editors/IEditor.h \
+    Source/Editors/SceneEditor.h \
     Source/Editors/TextEditor.h \
     Source/UI/EditorMessageBox.h \
     Source/UI/EditorPanel.h \
     Source/UI/HashGeneratorTool.h \
     Source/UI/InspectorPanel.h \
     Source/UI/MainWindow.h \
+    Source/UI/OpenSceneDialog.h \
     Source/UI/PanelLayout.h \
     Source/UI/ProjectPanel.h \
     Source/UI/ScenePanel.h \
