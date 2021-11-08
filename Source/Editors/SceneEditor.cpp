@@ -37,7 +37,31 @@ namespace Slick {
     IEditor::OpenResult SceneEditor::open()
     {
         OpenSceneDialog dialog;
-        dialog.exec();
+
+        if (dialog.exec() != QDialog::Accepted)
+        {
+            return OpenCancelled;
+        }
+
+        setTitle(dialog.sceneName());
+
+        {
+            QStringList paths;
+
+            if (!dialog.hipPath().isEmpty())
+            {
+                paths.append(dialog.hipPath());
+            }
+
+            if (!dialog.hopPath().isEmpty())
+            {
+                paths.append(dialog.hopPath());
+            }
+
+            paths.append(dialog.locHipPaths());
+
+            setTooltip(paths.join("\n"));
+        }
 
         setDirty(false);
 

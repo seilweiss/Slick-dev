@@ -341,46 +341,51 @@ namespace Slick {
     {
         resetTable();
 
-        const HipHop::Layer& layer = m_editor->file().GetLayerAt(m_layerComboBox->currentIndex());
-        int assetCount = layer.GetAssetCount();
-        QVector<HipHop::Asset> filteredAssets;
-        HipHop::AssetType typeFilter = (HipHop::AssetType)m_assetTypeComboBox->currentData().toUInt();
-        QString searchFilter = m_assetSearchLineEdit->text();
+        int layerIndex = m_layerComboBox->currentIndex();
 
-        m_layerTypeComboBox->setCurrentIndex((int)layer.GetType());
-
-        for (int i = 0; i < assetCount; i++)
+        if (layerIndex != -1)
         {
-            HipHop::Asset asset = layer.GetAsset(i);
+            HipHop::Layer layer = m_editor->file().GetLayerAt(layerIndex);
+            int assetCount = layer.GetAssetCount();
+            QVector<HipHop::Asset> filteredAssets;
+            HipHop::AssetType typeFilter = (HipHop::AssetType)m_assetTypeComboBox->currentData().toUInt();
+            QString searchFilter = m_assetSearchLineEdit->text();
 
-            if ((typeFilter == HipHop::AssetType::Default || asset.GetType() == typeFilter) &&
-                (searchFilter.isEmpty() || QString::fromStdString(asset.GetName()).contains(searchFilter, Qt::CaseInsensitive)))
+            m_layerTypeComboBox->setCurrentIndex((int)layer.GetType());
+
+            for (int i = 0; i < assetCount; i++)
             {
-                filteredAssets.append(asset);
+                HipHop::Asset asset = layer.GetAsset(i);
+
+                if ((typeFilter == HipHop::AssetType::Default || asset.GetType() == typeFilter) &&
+                    (searchFilter.isEmpty() || QString::fromStdString(asset.GetName()).contains(searchFilter, Qt::CaseInsensitive)))
+                {
+                    filteredAssets.append(asset);
+                }
             }
+
+            int filteredAssetCount = filteredAssets.size();
+
+            m_assetTableWidget->setRowCount(filteredAssetCount);
+            m_assetTableWidget->setSortingEnabled(false);
+            m_assetTableWidget->setUpdatesEnabled(false);
+
+            for (int i = 0; i < filteredAssetCount; i++)
+            {
+                HipHop::Asset asset = filteredAssets[i];
+
+                QTableWidgetItem* idItem = new QTableWidgetItem(QString::number(asset.GetID(), 16).toUpper());
+                QTableWidgetItem* nameItem = new QTableWidgetItem(QString::fromStdString(asset.GetName()));
+                QTableWidgetItem* typeItem = new QTableWidgetItem(assetTypeToString(asset.GetType()));
+
+                m_assetTableWidget->setItem(i, 0, idItem);
+                m_assetTableWidget->setItem(i, 1, nameItem);
+                m_assetTableWidget->setItem(i, 2, typeItem);
+            }
+
+            m_assetTableWidget->setSortingEnabled(true);
+            m_assetTableWidget->setUpdatesEnabled(true);
         }
-
-        int filteredAssetCount = filteredAssets.size();
-
-        m_assetTableWidget->setRowCount(filteredAssetCount);
-        m_assetTableWidget->setSortingEnabled(false);
-        m_assetTableWidget->setUpdatesEnabled(false);
-
-        for (int i = 0; i < filteredAssetCount; i++)
-        {
-            HipHop::Asset asset = filteredAssets[i];
-
-            QTableWidgetItem* idItem = new QTableWidgetItem(QString::number(asset.GetID(), 16).toUpper());
-            QTableWidgetItem* nameItem = new QTableWidgetItem(QString::fromStdString(asset.GetName()));
-            QTableWidgetItem* typeItem = new QTableWidgetItem(assetTypeToString(asset.GetType()));
-
-            m_assetTableWidget->setItem(i, 0, idItem);
-            m_assetTableWidget->setItem(i, 1, nameItem);
-            m_assetTableWidget->setItem(i, 2, typeItem);
-        }
-
-        m_assetTableWidget->setSortingEnabled(true);
-        m_assetTableWidget->setUpdatesEnabled(true);
     }
 
 }

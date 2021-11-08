@@ -50,6 +50,7 @@ namespace Slick {
         mainLayout->addWidget(m_textLineEdit);
         mainLayout->addWidget(hashLabel);
         mainLayout->addLayout(hashLayout);
+        mainLayout->addSpacing(16);
         mainLayout->addStretch(1);
         mainLayout->addWidget(buttonBox, 0, Qt::AlignBottom);
 

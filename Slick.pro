@@ -8,9 +8,15 @@ CONFIG += c++11
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-LIBS += \
-    -L"C:/dev/hiphop/lib/Debug" -lhiphop \
-    -L"C:/dev/rws/lib/Debug/x64" -lrws
+CONFIG(debug, debug|release) {
+    LIBS += \
+        -L"C:/dev/hiphop/lib/Debug" -lhiphop \
+        -L"C:/dev/rws/lib/Debug/x64" -lrws
+} else {
+    LIBS += \
+        -L"C:/dev/hiphop/lib/Release" -lhiphop \
+        -L"C:/dev/rws/lib/Release/x64" -lrws
+}
 
 SOURCES += \
     Source/Editors/HipHopEditor.cpp \
