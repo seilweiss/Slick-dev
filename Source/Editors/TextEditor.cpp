@@ -1,18 +1,18 @@
 #include "Editors/TextEditor.h"
 
+#include "UI/TextEditorWidget.h"
+
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QTextEdit>
-#include <QHBoxLayout>
-#include <QFontDatabase>
 #include <QTextStream>
+
+#define FILTER "Text files (*.txt *.ini *.lip *.lop);;All files (*.*)"
 
 namespace Slick {
 
     TextEditor::TextEditor(QObject* parent) :
         IEditor(parent),
         m_path(),
-        m_widget(nullptr),
         m_readText()
     {
         setTitle("Untitled.txt");
@@ -29,42 +29,15 @@ namespace Slick {
 
     IEditorWidget* TextEditor::createWidget()
     {
-        m_widget = new TextEditorWidget;
-        m_widget->setText(m_readText);
+        TextEditorWidget* widget = new TextEditorWidget;
+        widget->setText(m_readText);
 
-        connect(m_widget, &TextEditorWidget::textChanged, this, [=]
+        connect(widget, &TextEditorWidget::textChanged, this, [=]
         {
             setDirty(true);
         });
 
-        return m_widget;
-    }
-
-    IEditor::SaveResult TextEditor::save()
-    {
-        if (m_path.isEmpty())
-        {
-            return saveAs();
-        }
-
-        setDirty(false);
-
-        return SaveSuccessful;
-    }
-
-    IEditor::SaveResult TextEditor::saveAs()
-    {
-        QString path = getSaveFileName(this);
-
-        if (path.isEmpty())
-        {
-            return SaveCancelled;
-        }
-
-        setPath(path);
-        setDirty(false);
-
-        return SaveSuccessful;
+        return widget;
     }
 
     IEditor::OpenResult TextEditor::open()
@@ -78,7 +51,7 @@ namespace Slick {
                 return OpenCancelled;
             }
 
-            m_path = path;
+            setPath(path);
         }
 
         QFile file(m_path);
@@ -97,71 +70,61 @@ namespace Slick {
         return OpenSuccessful;
     }
 
-    QString TextEditor::filter()
+    IEditor::SaveResult TextEditor::save(bool saveAs)
     {
-        return "Text files (*.txt *.ini *.lip *.lop);;All files (*.*)";
+        if (saveAs || m_path.isEmpty())
+        {
+            QString path = getSaveFileName();
+
+            if (path.isEmpty())
+            {
+                return SaveCancelled;
+            }
+
+            setPath(path);
+        }
+
+        QFile file(m_path);
+
+        if (!file.open(QFile::WriteOnly | QFile::Text))
+        {
+            return SaveFailed;
+        }
+
+        QTextStream stream(&file);
+        TextEditorWidget* w = (TextEditorWidget*)widget();
+
+        stream << w->text();
+
+        setDirty(false);
+
+        return SaveSuccessful;
     }
 
     QString TextEditor::getOpenFileName()
     {
-        return QFileDialog::getOpenFileName(nullptr, tr("Open Text File"), QString(), filter());
+        return QFileDialog::getOpenFileName(nullptr, tr("Open Text File"), QString(), FILTER);
     }
 
-    QString TextEditor::getSaveFileName(TextEditor* editor)
+    QString TextEditor::getSaveFileName()
     {
         QString path;
 
-        if (editor)
+        if (!m_path.isEmpty())
         {
-            if (!editor->path().isEmpty())
-            {
-                path = editor->path();
-            }
-            else
-            {
-                path = editor->title();
+            path = m_path;
+        }
+        else
+        {
+            path = title();
 
-                if (QFileInfo(path).suffix().isEmpty())
-                {
-                    path += ".txt";
-                }
+            if (QFileInfo(path).suffix().isEmpty())
+            {
+                path += ".txt";
             }
         }
 
-        return QFileDialog::getSaveFileName(nullptr, tr("Save Text File"), path, filter());
-    }
-
-    TextEditorWidget::TextEditorWidget(QWidget* parent) :
-        IEditorWidget(parent),
-        m_textEdit(new QTextEdit)
-    {
-        m_textEdit->setAcceptRichText(false);
-        m_textEdit->setAutoFormatting(QTextEdit::AutoNone);
-        m_textEdit->setTabChangesFocus(false);
-        m_textEdit->setUndoRedoEnabled(true);
-        m_textEdit->setLineWrapMode(QTextEdit::NoWrap);
-        m_textEdit->setCurrentFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
-        m_textEdit->setFontPointSize(12);
-        m_textEdit->clear();
-
-        QHBoxLayout* mainLayout = new QHBoxLayout;
-
-        mainLayout->setContentsMargins(0, 0, 0, 0);
-        mainLayout->addWidget(m_textEdit, 1);
-
-        setLayout(mainLayout);
-    }
-
-    QString TextEditorWidget::text() const
-    {
-        return m_textEdit->toPlainText();
-    }
-
-    void TextEditorWidget::setText(const QString &text)
-    {
-        m_textEdit->setPlainText(text);
-
-        emit textChanged(text);
+        return QFileDialog::getSaveFileName(nullptr, tr("Save Text File"), path, FILTER);
     }
 
 }

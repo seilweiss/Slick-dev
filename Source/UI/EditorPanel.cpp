@@ -13,7 +13,8 @@ namespace Slick {
 
     EditorPanel::EditorPanel(QWidget* parent) :
         QWidget(parent),
-        m_tabWidget(new QTabWidget)
+        m_tabWidget(new QTabWidget),
+        m_prevEditor(nullptr)
     {
         m_tabWidget->setTabsClosable(true);
         m_tabWidget->setMovable(true);
@@ -29,7 +30,21 @@ namespace Slick {
 
         connect(m_tabWidget, &QTabWidget::currentChanged, this, [=](int index)
         {
-            emit editorChanged(editor(index));
+            IEditor* newEditor = editor(index);
+
+            if (m_prevEditor)
+            {
+                m_prevEditor->exit();
+            }
+
+            if (newEditor)
+            {
+                newEditor->enter();
+            }
+
+            m_prevEditor = newEditor;
+
+            emit editorChanged(newEditor);
         });
 
         QVBoxLayout* mainLayout = new QVBoxLayout;
@@ -67,7 +82,15 @@ namespace Slick {
 
     void EditorPanel::removeEditor(IEditor* editor)
     {
-        m_tabWidget->removeTab(m_tabWidget->indexOf(editor->widget()));
+        int index = m_tabWidget->indexOf(editor->widget());
+
+        if (index == m_tabWidget->currentIndex())
+        {
+            editor->exit();
+            m_prevEditor = nullptr;
+        }
+
+        m_tabWidget->removeTab(index);
 
         //editor->setParent(nullptr);
         //editor->disconnect(this);
@@ -261,7 +284,7 @@ namespace Slick {
 
             if (editor->dirty() || saveAs)
             {
-                IEditor::SaveResult saveResult = saveAs ? editor->saveAs() : editor->save();
+                IEditor::SaveResult saveResult = editor->save(saveAs);
 
                 switch (saveResult)
                 {

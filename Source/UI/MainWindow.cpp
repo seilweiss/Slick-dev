@@ -80,7 +80,7 @@ namespace Slick {
         setupMenus();
         setupPanels();
 
-        updatePanelLayout();
+        updatePanels();
         updateMenus();
     }
 
@@ -432,7 +432,7 @@ namespace Slick {
 
             m_prevEditor = editor;
 
-            updatePanelLayout();
+            updatePanels();
             updateMenus();
         });
     }
@@ -519,7 +519,7 @@ namespace Slick {
         m_runScriptAction->setEnabled(false);
     }
 
-    void MainWindow::updatePanelLayout()
+    void MainWindow::updatePanels()
     {
         IEditor* editor = EditorPanel::instance()->editor();
 

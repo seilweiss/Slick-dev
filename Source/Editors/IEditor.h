@@ -1,12 +1,11 @@
 #pragma once
 
+#include "UI/IEditorWidget.h"
 #include "UI/PanelLayout.h"
 
-#include <QWidget>
+#include <QObject>
 
 namespace Slick {
-
-    class IEditorWidget;
 
     class IEditor : public QObject
     {
@@ -17,13 +16,6 @@ namespace Slick {
         Q_PROPERTY(bool dirty READ dirty WRITE setDirty NOTIFY dirtyChanged)
 
     public:
-        enum SaveResult
-        {
-            SaveSuccessful,
-            SaveFailed,
-            SaveCancelled
-        };
-
         enum OpenResult
         {
             OpenSuccessful,
@@ -31,13 +23,20 @@ namespace Slick {
             OpenCancelled
         };
 
+        enum SaveResult
+        {
+            SaveSuccessful,
+            SaveFailed,
+            SaveCancelled
+        };
+
         IEditor(QObject* parent = nullptr);
 
-        virtual int type() const = 0;
         virtual IEditorWidget* createWidget() = 0;
-        virtual SaveResult save() = 0;
-        virtual SaveResult saveAs() = 0;
         virtual OpenResult open() = 0;
+        virtual SaveResult save(bool saveAs) = 0;
+        virtual void enter() {}
+        virtual void exit() {}
 
         IEditorWidget* widget();
 
@@ -63,21 +62,6 @@ namespace Slick {
         QString m_tooltip;
         bool m_dirty;
         PanelLayout m_panelLayout;
-    };
-
-    class IEditorWidget : public QWidget
-    {
-        Q_OBJECT
-        Q_PROPERTY(IEditor* editor READ editor WRITE setEditor)
-
-    public:
-        IEditorWidget(QWidget* parent = nullptr);
-
-        IEditor* editor() const { return m_editor; }
-        void setEditor(IEditor* editor) { m_editor = editor; }
-
-    private:
-        IEditor* m_editor;
     };
 
 }

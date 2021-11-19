@@ -47,6 +47,7 @@ namespace Slick {
         EditorPanel(QWidget* parent = nullptr);
 
         QTabWidget* m_tabWidget;
+        IEditor* m_prevEditor;
 
         bool saveEditors(const QList<IEditor*>& editors, bool saveAs, bool remove);
         QString editorDisplayText(IEditor* editor);

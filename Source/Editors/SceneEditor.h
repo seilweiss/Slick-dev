@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Editors/IEditor.h"
-#include "Editors/EditorTypes.h"
+#include "Core/Scene.h"
 
 #include "hiphop.h"
 
@@ -16,25 +16,16 @@ namespace Slick {
     public:
         SceneEditor(QObject* parent = nullptr);
 
-        virtual int type() const override { return EditorType_Scene; }
         virtual IEditorWidget* createWidget() override;
-        virtual SaveResult save() override;
-        virtual SaveResult saveAs() override;
         virtual OpenResult open() override;
+        virtual SaveResult save(bool saveAs) override;
+        virtual void enter() override;
+        virtual void exit() override;
+
+        Scene* scene() const { return m_scene; }
 
     private:
-        SceneEditorWidget* m_widget;
-    };
-
-    class SceneEditorWidget : public IEditorWidget
-    {
-        Q_OBJECT
-
-    public:
-        SceneEditorWidget(SceneEditor* editor, QWidget* parent = nullptr);
-
-    private:
-        SceneEditor* m_editor;
+        Scene* m_scene;
     };
 
 }

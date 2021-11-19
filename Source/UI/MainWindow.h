@@ -64,7 +64,7 @@ namespace Slick {
         void setupPanels();
         void setupLayout();
         void updateMenus();
-        void updatePanelLayout();
+        void updatePanels();
 
         QDockWidget* m_projectDock;
         QDockWidget* m_sceneDock;
