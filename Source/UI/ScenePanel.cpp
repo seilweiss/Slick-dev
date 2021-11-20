@@ -13,6 +13,7 @@
 #include <QHeaderView>
 #include <QDebug>
 #include <QStackedLayout>
+#include <QLabel>
 
 #include <map>
 
@@ -37,7 +38,7 @@ namespace Slick {
                 { HipHop::AssetType::CAM,  "Camera" },
                 { HipHop::AssetType::CCRV, "Camera Curve" },
                 { HipHop::AssetType::CNTR, "Counter" },
-                { HipHop::AssetType::COLL, "CollTable" },
+                { HipHop::AssetType::COLL, "Collision Table" },
                 { HipHop::AssetType::COND, "Conditional" },
                 { HipHop::AssetType::CRDT, "Credits" },
                 { HipHop::AssetType::CSN,  "Cutscene" },
@@ -350,7 +351,7 @@ namespace Slick {
     {
         //m_createAssetButton->setFlat(true);
 
-        m_filterAssetsLineEdit->setPlaceholderText(tr("Filter assets"));
+        m_filterAssetsLineEdit->setPlaceholderText(tr("Search assets..."));
 
         m_assetsTableWidget->setHorizontalHeaderLabels({ tr("Name"), tr("Type") });
         m_assetsTableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -368,13 +369,17 @@ namespace Slick {
 
         QVBoxLayout* mainLayout = new QVBoxLayout;
 
-        QHBoxLayout* topLayout = new QHBoxLayout;
-        topLayout->addWidget(m_createAssetButton);
-        topLayout->addWidget(m_filterAssetsLineEdit, 1);
+        QHBoxLayout* hbox1 = new QHBoxLayout;
+        hbox1->addWidget(m_createAssetButton);
+        hbox1->addWidget(m_filterAssetsLineEdit, 1);
+
+        QHBoxLayout* hbox2 = new QHBoxLayout;
+        hbox2->addWidget(new QLabel("Filter by type:"));
+        hbox2->addWidget(m_filterTypesComboBox, 1);
 
         mainLayout->setContentsMargins(0, 0, 0, 0);
-        mainLayout->addLayout(topLayout);
-        mainLayout->addWidget(m_filterTypesComboBox);
+        mainLayout->addLayout(hbox1);
+        mainLayout->addLayout(hbox2);
         mainLayout->addWidget(m_assetsTableWidget, 1);
 
         setLayout(mainLayout);
