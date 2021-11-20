@@ -13,6 +13,14 @@ namespace Slick {
         m_panelLayout.inspectorVisible = true;
     }
 
+    IEditor::~IEditor()
+    {
+        if (m_widget)
+        {
+            m_widget->deleteLater();
+        }
+    }
+
     IEditorWidget* IEditor::widget()
     {
         if (!m_widget)
@@ -22,12 +30,6 @@ namespace Slick {
         }
 
         return m_widget;
-    }
-
-    IEditorWidget::IEditorWidget(QWidget* parent) :
-        QWidget(parent),
-        m_editor(nullptr)
-    {
     }
 
 }

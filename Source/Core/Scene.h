@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Core/SceneFile.h"
+#include "Render/Viewport.h"
+
+#include "hiphop/assets/fog_asset.h"
 
 #include <QObject>
 
@@ -35,12 +38,15 @@ namespace Slick {
 
         bool load();
 
+        void render(Render::Viewport* viewport);
+
     private:
         QList<SceneFile*> m_files;
         HipHop::Game m_game;
         HipHop::Platform m_platform;
         HipHop::Language m_language;
         HipHop::Region m_region;
+        HipHop::FogAsset m_fogAsset;
     };
 
 }

@@ -31,6 +31,7 @@ namespace Slick {
         };
 
         IEditor(QObject* parent = nullptr);
+        ~IEditor();
 
         virtual IEditorWidget* createWidget() = 0;
         virtual OpenResult open() = 0;

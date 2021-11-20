@@ -2,6 +2,8 @@
 
 #include <QWidget>
 
+class QPushButton;
+
 namespace Slick {
 
     class ToolbarPanel : public QWidget
@@ -17,6 +19,8 @@ namespace Slick {
 
     private:
         ToolbarPanel(QWidget* parent = nullptr);
+
+        QPushButton* m_playButton;
     };
 
 }

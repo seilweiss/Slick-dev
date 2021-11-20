@@ -1,5 +1,7 @@
 #include "UI/HipHopEditorWidget.h"
 
+#include "Core/Util.h"
+
 #include <QComboBox>
 #include <QLineEdit>
 #include <QTableWidget>
@@ -11,38 +13,6 @@
 #include <QHeaderView>
 
 namespace Slick {
-
-    namespace {
-
-        inline QString layerTypeToString(HipHop::LayerType type)
-        {
-            switch (type)
-            {
-            case HipHop::LayerType::DEFAULT: return "DEFAULT";
-            case HipHop::LayerType::TEXTURE: return "TEXTURE";
-            case HipHop::LayerType::TEXTURE_STRM: return "TEXTURE_STRM";
-            case HipHop::LayerType::BSP: return "BSP";
-            case HipHop::LayerType::MODEL: return "MODEL";
-            case HipHop::LayerType::ANIMATION: return "ANIMATION";
-            case HipHop::LayerType::VRAM: return "VRAM";
-            case HipHop::LayerType::SRAM: return "SRAM";
-            case HipHop::LayerType::SNDTOC: return "SNDTOC";
-            case HipHop::LayerType::CUTSCENE: return "CUTSCENE";
-            case HipHop::LayerType::CUTSCENETOC: return "CUTSCENETOC";
-            case HipHop::LayerType::JSPINFO: return "JSPINFO";
-            default: return "<unknown>";
-            }
-        }
-
-        inline QString assetTypeToString(HipHop::AssetType type)
-        {
-            uint32_t t = (uint32_t)type;
-            HipHop::Util::Swap32(&t, sizeof(uint32_t));
-
-            return QString::fromUtf8((char*)&t, sizeof(uint32_t));
-        }
-
-    }
 
     HipHopEditorWidget::HipHopEditorWidget(QWidget* parent) :
         IEditorWidget(parent),
@@ -147,60 +117,44 @@ namespace Slick {
         {
             HipHop::Layer layer = file->GetLayerAt(i);
 
-            m_layerComboBox->addItem(QString("Layer %1: %2 [%3]").arg(i).arg(layerTypeToString(layer.GetType())).arg(layer.GetAssetCount()));
+            m_layerComboBox->addItem(QString("Layer %1: %2 [%3]").arg(i).arg(Util::layerTypeToString(layer.GetType())).arg(layer.GetAssetCount()));
         }
 
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::DEFAULT));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::TEXTURE));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::TEXTURE_STRM));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::BSP));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::MODEL));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::ANIMATION));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::VRAM));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::SRAM));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::SNDTOC));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::CUTSCENE));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::CUTSCENETOC));
-        m_layerTypeComboBox->addItem(layerTypeToString(HipHop::LayerType::JSPINFO));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::DEFAULT));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::TEXTURE));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::TEXTURE_STRM));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::BSP));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::MODEL));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::ANIMATION));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::VRAM));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::SRAM));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::SNDTOC));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::CUTSCENE));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::CUTSCENETOC));
+        m_layerTypeComboBox->addItem(Util::layerTypeToString(HipHop::LayerType::JSPINFO));
 
         m_layerComboBox->setCurrentIndex(0);
 
-        struct AssetType
-        {
-            HipHop::AssetType type;
-            QString str;
-        };
-
-        QVector<AssetType> assetTypes;
+        QVector<HipHop::AssetType> assetTypes;
 
         for (int i = 0; i < file->GetAssetCount(); i++)
         {
             HipHop::Asset asset = file->GetAssetAt(i);
             HipHop::AssetType type = asset.GetType();
-            bool found = false;
 
-            for (const AssetType& t : assetTypes)
+            if (!assetTypes.contains(type))
             {
-                if (t.type == type)
-                {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found)
-            {
-                assetTypes.append({ type, assetTypeToString(type) });
+                assetTypes.append(type);
             }
         }
 
-        std::sort(assetTypes.begin(), assetTypes.end(), [](const AssetType& a, const AssetType& b) { return a.type < b.type; });
+        std::sort(assetTypes.begin(), assetTypes.end(), [](HipHop::AssetType a, HipHop::AssetType b) { return a < b; });
 
         m_assetTypeComboBox->addItem("All", (uint32_t)HipHop::AssetType::Default);
 
-        for (const AssetType& t : assetTypes)
+        for (HipHop::AssetType type : assetTypes)
         {
-            m_assetTypeComboBox->addItem(t.str, (uint32_t)t.type);
+            m_assetTypeComboBox->addItem(Util::assetTypeToString(type), (uint32_t)type);
         }
 
         m_assetSearchLineEdit->clear();
@@ -242,9 +196,10 @@ namespace Slick {
 
             int filteredAssetCount = filteredAssets.size();
 
-            m_assetTableWidget->setRowCount(filteredAssetCount);
             m_assetTableWidget->setSortingEnabled(false);
             m_assetTableWidget->setUpdatesEnabled(false);
+
+            m_assetTableWidget->setRowCount(filteredAssetCount);
 
             for (int i = 0; i < filteredAssetCount; i++)
             {
@@ -252,7 +207,7 @@ namespace Slick {
 
                 QTableWidgetItem* idItem = new QTableWidgetItem(QString::number(asset.GetID(), 16).toUpper());
                 QTableWidgetItem* nameItem = new QTableWidgetItem(QString::fromStdString(asset.GetName()));
-                QTableWidgetItem* typeItem = new QTableWidgetItem(assetTypeToString(asset.GetType()));
+                QTableWidgetItem* typeItem = new QTableWidgetItem(Util::assetTypeToString(asset.GetType()));
 
                 m_assetTableWidget->setItem(i, 0, idItem);
                 m_assetTableWidget->setItem(i, 1, nameItem);

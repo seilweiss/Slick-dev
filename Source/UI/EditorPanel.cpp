@@ -19,7 +19,7 @@ namespace Slick {
         m_tabWidget->setTabsClosable(true);
         m_tabWidget->setMovable(true);
         m_tabWidget->setUsesScrollButtons(true);
-        m_tabWidget->setDocumentMode(true);
+        //m_tabWidget->setDocumentMode(true);
         m_tabWidget->tabBar()->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
         m_tabWidget->tabBar()->installEventFilter(this);
 

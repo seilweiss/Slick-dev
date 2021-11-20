@@ -267,7 +267,7 @@ namespace Slick {
         connect(m_cancelButton, &QPushButton::clicked, this, &QDialog::reject);
 
         QVBoxLayout* mainLayout = new QVBoxLayout;
-        mainLayout->setContentsMargins(24, 24, 24, 24);
+        mainLayout->setContentsMargins(16, 16, 16, 16);
         //mainLayout->addSpacing(16);
         mainLayout->addLayout(m_hip.layout);
         mainLayout->addLayout(m_hop.layout);

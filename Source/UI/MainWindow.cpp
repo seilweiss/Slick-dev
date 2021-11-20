@@ -70,7 +70,7 @@ namespace Slick {
           m_prevEditor(nullptr)
     {
         m_defaultPanelLayout.projectVisible = true;
-        m_defaultPanelLayout.sceneVisible = false;
+        m_defaultPanelLayout.sceneVisible = true;
         m_defaultPanelLayout.inspectorVisible = true;
 
         resize(screen()->availableSize() * 0.75);
@@ -462,6 +462,10 @@ namespace Slick {
         setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
         setCentralWidget(EditorPanel::instance());
+
+        resizeDocks({ m_projectDock }, { height() / 5 }, Qt::Vertical);
+        resizeDocks({ m_sceneDock }, { width() / 5 }, Qt::Horizontal);
+        resizeDocks({ m_inspectorDock }, { width() / 5 }, Qt::Horizontal);
     }
 
     void MainWindow::updateMenus()
@@ -523,6 +527,7 @@ namespace Slick {
     {
         IEditor* editor = EditorPanel::instance()->editor();
 
+        /*
         if (editor)
         {
             m_projectDock->setVisible(editor->panelLayout().projectVisible);
@@ -535,5 +540,6 @@ namespace Slick {
             m_sceneDock->setVisible(m_defaultPanelLayout.sceneVisible);
             m_inspectorDock->setVisible(m_defaultPanelLayout.inspectorVisible);
         }
+        */
     }
 }

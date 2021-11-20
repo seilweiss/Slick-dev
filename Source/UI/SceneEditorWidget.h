@@ -5,6 +5,12 @@
 
 namespace Slick {
 
+    namespace Render {
+
+        class Viewport;
+
+    }
+
     class SceneEditorWidget : public IEditorWidget
     {
         Q_OBJECT
@@ -16,6 +22,7 @@ namespace Slick {
 
     private:
         Scene* m_scene;
+        Render::Viewport* m_viewport;
     };
 
 }

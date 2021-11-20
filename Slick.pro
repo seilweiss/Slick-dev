@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui opengl openglwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,10 +25,13 @@ SOURCES += \
     Source/Editors/IEditor.cpp \
     Source/Editors/SceneEditor.cpp \
     Source/Editors/TextEditor.cpp \
+    Source/Render/Camera.cpp \
+    Source/Render/Viewport.cpp \
     Source/UI/EditorMessageBox.cpp \
     Source/UI/EditorPanel.cpp \
     Source/UI/HashGeneratorTool.cpp \
     Source/UI/HipHopEditorWidget.cpp \
+    Source/UI/IEditorWidget.cpp \
     Source/UI/InspectorPanel.cpp \
     Source/UI/OpenSceneDialog.cpp \
     Source/UI/SceneEditorWidget.cpp \
@@ -42,10 +45,14 @@ SOURCES += \
 HEADERS += \
     Source/Core/Scene.h \
     Source/Core/SceneFile.h \
+    Source/Core/Util.h \
     Source/Editors/HipHopEditor.h \
     Source/Editors/IEditor.h \
     Source/Editors/SceneEditor.h \
     Source/Editors/TextEditor.h \
+    Source/Render/Camera.h \
+    Source/Render/Common.h \
+    Source/Render/Viewport.h \
     Source/UI/EditorMessageBox.h \
     Source/UI/EditorPanel.h \
     Source/UI/HashGeneratorTool.h \
