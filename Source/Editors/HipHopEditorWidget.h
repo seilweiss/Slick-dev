@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UI/IEditorWidget.h"
+#include "Core/EditorWidget.h"
 
 #include "hiphop.h"
 
@@ -10,7 +10,7 @@ class QTableWidget;
 
 namespace Slick {
 
-    class HipHopEditorWidget : public IEditorWidget
+    class HipHopEditorWidget : public EditorWidget
     {
         Q_OBJECT
 

@@ -1,5 +1,7 @@
 #include "Core/Scene.h"
 
+#include "Render/Camera.h"
+
 namespace Slick {
 
     Scene::Scene(QObject* parent) :
@@ -48,34 +50,67 @@ namespace Slick {
             if (file->hipHopFile().GetAssetCount(HipHop::AssetType::FOG) > 0)
             {
                 m_fogAsset = file->hipHopFile().GetAsset(HipHop::AssetType::FOG);
-                m_fogAsset.Load();
             }
+        }
+
+        if (m_fogAsset)
+        {
+            m_fogAsset.Load();
         }
 
         return success;
     }
 
-    void Scene::render(Render::Viewport* viewport)
+    void Scene::update(float dt)
     {
-        Render::Camera* camera = viewport->camera();
+        for (SceneFile* file : m_files)
+        {
+            for (HipHop::Asset hipAsset : file->hipHopFile().GetAssets())
+            {
+                Asset* asset = file->getAsset(hipAsset);
 
+                if (asset)
+                {
+                    asset->update(dt);
+                }
+            }
+        }
+    }
+
+    void Scene::render(Render::Context& context)
+    {
         if (m_fogAsset)
         {
-            camera->setFogEnabled(true);
-            camera->setFogType(Render::FogLinear);
-            camera->setFogDensity(m_fogAsset.fogDensity);
-            camera->setFogStart(m_fogAsset.fogStart);
-            camera->setFogEnd(m_fogAsset.fogStop);
-            camera->setFogColor(QColor(m_fogAsset.fogColor[0], m_fogAsset.fogColor[1], m_fogAsset.fogColor[2], m_fogAsset.fogColor[3]));
-            camera->setClearColor(QColor(m_fogAsset.bkgndColor[0], m_fogAsset.bkgndColor[1], m_fogAsset.bkgndColor[2], m_fogAsset.bkgndColor[3]));
+            //context.camera->setFogEnabled(true);
+            context.camera->setFogType(Render::FogLinear);
+            context.camera->setFogDensity(m_fogAsset.fogDensity);
+            context.camera->setFogStart(m_fogAsset.fogStart);
+            context.camera->setFogEnd(m_fogAsset.fogStop);
+            context.camera->setFogColor(QColor(m_fogAsset.fogColor[0], m_fogAsset.fogColor[1], m_fogAsset.fogColor[2], m_fogAsset.fogColor[3]));
+            context.camera->setClearColor(QColor(m_fogAsset.bkgndColor[0], m_fogAsset.bkgndColor[1], m_fogAsset.bkgndColor[2], m_fogAsset.bkgndColor[3]));
         }
         else
         {
-            camera->setFogEnabled(false);
-            camera->setClearColor(QColor(0, 0, 0));
+            context.camera->setFogEnabled(false);
+            context.camera->setClearColor(QColor(0, 0, 0));
         }
 
-        camera->clear(Render::AllBuffers);
+        context.camera->clear(Render::AllBuffers);
+
+        for (SceneFile* file : m_files)
+        {
+            auto jsps = file->hipHopFile().GetAssets(HipHop::AssetType::JSP);
+
+            for (auto jsp : jsps)
+            {
+                Asset* jspAsset = file->getAsset(jsp);
+
+                if (jspAsset)
+                {
+                    jspAsset->render(context);
+                }
+            }
+        }
     }
 
 }

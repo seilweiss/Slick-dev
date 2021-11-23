@@ -1,12 +1,12 @@
 #pragma once
 
-#include "UI/IEditorWidget.h"
+#include "Core/EditorWidget.h"
 
 class QPlainTextEdit;
 
 namespace Slick {
 
-    class TextEditorWidget : public IEditorWidget
+    class TextEditorWidget : public EditorWidget
     {
         Q_OBJECT
         Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)

@@ -30,7 +30,7 @@ namespace Slick {
 
         connect(m_tabWidget, &QTabWidget::currentChanged, this, [=](int index)
         {
-            IEditor* newEditor = editor(index);
+            Editor* newEditor = editor(index);
 
             if (m_prevEditor)
             {
@@ -54,7 +54,7 @@ namespace Slick {
         setLayout(mainLayout);
     }
 
-    void EditorPanel::addEditor(IEditor* editor)
+    void EditorPanel::addEditor(Editor* editor)
     {
         editor->setParent(this);
 
@@ -62,17 +62,17 @@ namespace Slick {
 
         m_tabWidget->setTabToolTip(index, editor->tooltip());
 
-        connect(editor, &IEditor::titleChanged, this, [=]
+        connect(editor, &Editor::titleChanged, this, [=]
         {
             m_tabWidget->setTabText(m_tabWidget->indexOf(editor->widget()), editorDisplayText(editor));
         });
 
-        connect(editor, &IEditor::tooltipChanged, this, [=](const QString& tooltip)
+        connect(editor, &Editor::tooltipChanged, this, [=](const QString& tooltip)
         {
             m_tabWidget->setTabToolTip(m_tabWidget->indexOf(editor->widget()), tooltip);
         });
 
-        connect(editor, &IEditor::dirtyChanged, this, [=]
+        connect(editor, &Editor::dirtyChanged, this, [=]
         {
             m_tabWidget->setTabText(m_tabWidget->indexOf(editor->widget()), editorDisplayText(editor));
         });
@@ -80,7 +80,7 @@ namespace Slick {
         m_tabWidget->setCurrentIndex(index);
     }
 
-    void EditorPanel::removeEditor(IEditor* editor)
+    void EditorPanel::removeEditor(Editor* editor)
     {
         int index = m_tabWidget->indexOf(editor->widget());
 
@@ -102,20 +102,20 @@ namespace Slick {
         return m_tabWidget->count();
     }
 
-    IEditor* EditorPanel::editor() const
+    Editor* EditorPanel::editor() const
     {
         int index = m_tabWidget->currentIndex();
         return index != -1 ? editor(index) : nullptr;
     }
 
-    IEditor* EditorPanel::editor(int index) const
+    Editor* EditorPanel::editor(int index) const
     {
-        return index != -1 ? ((IEditorWidget*)m_tabWidget->widget(index))->editor() : nullptr;
+        return index != -1 ? ((EditorWidget*)m_tabWidget->widget(index))->editor() : nullptr;
     }
 
-    QList<IEditor*> EditorPanel::editors() const
+    QList<Editor*> EditorPanel::editors() const
     {
-        QList<IEditor*> editors;
+        QList<Editor*> editors;
         int count = editorCount();
 
         for (int i = 0; i < count; i++)
@@ -126,31 +126,31 @@ namespace Slick {
         return editors;
     }
 
-    bool EditorPanel::openEditor(IEditor *editor)
+    bool EditorPanel::openEditor(Editor *editor)
     {
         return openEditors({ editor });
     }
 
-    bool EditorPanel::openEditors(const QList<IEditor*>& editors)
+    bool EditorPanel::openEditors(const QList<Editor*>& editors)
     {
         bool success = true;
-        QList<IEditor*> failedEditors;
+        QList<Editor*> failedEditors;
 
-        for (IEditor* editor : editors)
+        for (Editor* editor : editors)
         {
             bool cancel = false;
-            IEditor::OpenResult openResult = editor->open();
+            Editor::OpenResult openResult = editor->open();
 
             switch (openResult)
             {
-            case IEditor::OpenSuccessful:
+            case Editor::OpenSuccessful:
                 addEditor(editor);
                 break;
-            case IEditor::OpenFailed:
+            case Editor::OpenFailed:
                 failedEditors.append(editor);
                 success = false;
                 break;
-            case IEditor::OpenCancelled:
+            case Editor::OpenCancelled:
                 success = false;
                 cancel = true;
                 break;
@@ -172,21 +172,21 @@ namespace Slick {
 
     bool EditorPanel::closeEditor()
     {
-        IEditor* e = editor();
+        Editor* e = editor();
         return e ? closeEditor(e) : false;
     }
 
-    bool EditorPanel::closeEditor(IEditor* editor)
+    bool EditorPanel::closeEditor(Editor* editor)
     {
         return closeEditors({ editor });
     }
 
-    bool EditorPanel::closeEditors(const QList<IEditor*>& editors)
+    bool EditorPanel::closeEditors(const QList<Editor*>& editors)
     {
         bool success = true;
-        QList<IEditor*> dirtyEditors;
+        QList<Editor*> dirtyEditors;
 
-        for (IEditor* editor : editors)
+        for (Editor* editor : editors)
         {
             if (editor->dirty())
             {
@@ -196,7 +196,7 @@ namespace Slick {
 
         if (dirtyEditors.empty())
         {
-            for (IEditor* editor : editors)
+            for (Editor* editor : editors)
             {
                 removeEditor(editor);
             }
@@ -218,7 +218,7 @@ namespace Slick {
             }
             case EditorMessageBox::DontSave:
             {
-                for (IEditor* editor : editors)
+                for (Editor* editor : editors)
                 {
                     removeEditor(editor);
                 }
@@ -243,27 +243,27 @@ namespace Slick {
 
     bool EditorPanel::saveEditor()
     {
-        IEditor* e = editor();
+        Editor* e = editor();
         return e ? saveEditor(e) : false;
     }
 
-    bool EditorPanel::saveEditor(IEditor* editor)
+    bool EditorPanel::saveEditor(Editor* editor)
     {
         return saveEditors({ editor }, false, false);
     }
 
     bool EditorPanel::saveEditorAs()
     {
-        IEditor* e = editor();
+        Editor* e = editor();
         return e ? saveEditorAs(e) : false;
     }
 
-    bool EditorPanel::saveEditorAs(IEditor* editor)
+    bool EditorPanel::saveEditorAs(Editor* editor)
     {
         return saveEditors({ editor }, true, false);
     }
 
-    bool EditorPanel::saveEditors(const QList<IEditor*>& editors)
+    bool EditorPanel::saveEditors(const QList<Editor*>& editors)
     {
         return saveEditors(editors, false, false);
     }
@@ -273,32 +273,32 @@ namespace Slick {
         return saveEditors(editors(), false, false);
     }
 
-    bool EditorPanel::saveEditors(const QList<IEditor*>& editors, bool saveAs, bool remove)
+    bool EditorPanel::saveEditors(const QList<Editor*>& editors, bool saveAs, bool remove)
     {
         bool success = true;
-        QList<IEditor*> failedEditors;
+        QList<Editor*> failedEditors;
 
-        for (IEditor* editor : editors)
+        for (Editor* editor : editors)
         {
             bool cancel = false;
 
             if (editor->dirty() || saveAs)
             {
-                IEditor::SaveResult saveResult = editor->save(saveAs);
+                Editor::SaveResult saveResult = editor->save(saveAs);
 
                 switch (saveResult)
                 {
-                case IEditor::SaveSuccessful:
+                case Editor::SaveSuccessful:
                     if (remove)
                     {
                         removeEditor(editor);
                     }
                     break;
-                case IEditor::SaveFailed:
+                case Editor::SaveFailed:
                     failedEditors.append(editor);
                     success = false;
                     break;
-                case IEditor::SaveCancelled:
+                case Editor::SaveCancelled:
                     success = false;
                     cancel = true;
                     break;
@@ -347,7 +347,7 @@ namespace Slick {
         return QWidget::eventFilter(o, event);
     }
 
-    QString EditorPanel::editorDisplayText(IEditor* editor)
+    QString EditorPanel::editorDisplayText(Editor* editor)
     {
         QString text = editor->title();
 

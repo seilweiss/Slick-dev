@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Editors/IEditor.h"
+#include "Core/Editor.h"
 
 class QTextEdit;
 
@@ -8,7 +8,7 @@ namespace Slick {
 
     class TextEditorWidget;
 
-    class TextEditor : public IEditor
+    class TextEditor : public Editor
     {
         Q_OBJECT
         Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged)
@@ -16,7 +16,7 @@ namespace Slick {
     public:
         TextEditor(QObject* parent = nullptr);
 
-        virtual IEditorWidget* createWidget() override;
+        virtual EditorWidget* createWidget() override;
         virtual OpenResult open() override;
         virtual SaveResult save(bool saveAs) override;
 

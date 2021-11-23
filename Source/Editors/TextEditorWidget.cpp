@@ -1,4 +1,4 @@
-#include "UI/TextEditorWidget.h"
+#include "Editors/TextEditorWidget.h"
 
 #include <QPlainTextEdit>
 #include <QHBoxLayout>
@@ -7,7 +7,7 @@
 namespace Slick {
 
     TextEditorWidget::TextEditorWidget(QWidget* parent) :
-        IEditorWidget(parent),
+        EditorWidget(parent),
         m_textEdit(new QPlainTextEdit)
     {
         m_textEdit->setTabChangesFocus(false);

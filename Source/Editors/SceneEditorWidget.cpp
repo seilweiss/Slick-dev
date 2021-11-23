@@ -1,6 +1,6 @@
-#include "UI/SceneEditorWidget.h"
+#include "Editors/SceneEditorWidget.h"
 
-#include "Render/Viewport.h"
+#include "Editors/SceneEditorViewport.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -10,15 +10,10 @@
 namespace Slick {
 
     SceneEditorWidget::SceneEditorWidget(QWidget* parent) :
-        IEditorWidget(parent),
+        EditorWidget(parent),
         m_scene(nullptr),
-        m_viewport(new Render::Viewport)
+        m_viewport(new SceneEditorViewport)
     {
-        connect(m_viewport, &Render::Viewport::initialized, this, [=]
-        {
-            m_scene->render(m_viewport);
-        });
-
         QVBoxLayout* mainLayout = new QVBoxLayout;
 
         QHBoxLayout* toolbar = new QHBoxLayout;
@@ -33,7 +28,7 @@ namespace Slick {
 
         mainLayout->setContentsMargins(0, 0, 0, 0);
         mainLayout->addLayout(toolbar);
-        mainLayout->addWidget(m_viewport, 1);
+        mainLayout->addWidget(QWidget::createWindowContainer(m_viewport), 1);
 
         setLayout(mainLayout);
     }
@@ -41,6 +36,8 @@ namespace Slick {
     bool SceneEditorWidget::loadScene(Scene* scene)
     {
         m_scene = scene;
+
+        m_viewport->setScene(scene);
 
         return true;
     }

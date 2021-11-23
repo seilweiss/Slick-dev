@@ -1,20 +1,20 @@
 #include "Editors/SceneEditor.h"
 
-#include "UI/SceneEditorWidget.h"
+#include "Editors/SceneEditorWidget.h"
 #include "UI/OpenSceneDialog.h"
 #include "UI/ScenePanel.h"
 
 namespace Slick {
 
     SceneEditor::SceneEditor(QObject* parent) :
-        IEditor(parent),
+        Editor(parent),
         m_scene(nullptr)
     {
         setTitle("Untitled");
         setDirty(true);
     }
 
-    IEditorWidget* SceneEditor::createWidget()
+    EditorWidget* SceneEditor::createWidget()
     {
         SceneEditorWidget* widget = new SceneEditorWidget;
         widget->loadScene(m_scene);
@@ -22,7 +22,7 @@ namespace Slick {
         return widget;
     }
 
-    IEditor::OpenResult SceneEditor::open()
+    Editor::OpenResult SceneEditor::open()
     {
         if (!m_scene)
         {
@@ -78,7 +78,7 @@ namespace Slick {
         return OpenSuccessful;
     }
 
-    IEditor::SaveResult SceneEditor::save(bool saveAs)
+    Editor::SaveResult SceneEditor::save(bool saveAs)
     {
         setDirty(false);
 

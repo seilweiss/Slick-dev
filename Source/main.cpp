@@ -1,5 +1,8 @@
 #include "UI/MainWindow.h"
 
+#include "rws_core.h"
+#include "rws_world.h"
+
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
@@ -17,6 +20,9 @@ int main(int argc, char *argv[])
         QTextStream stream(&file);
         app.setStyleSheet(stream.readAll());
     }
+
+    Rws::Core::Register();
+    Rws::WorldPlugin::Register();
 
     Slick::MainWindow* window = Slick::MainWindow::instance();
     window->show();

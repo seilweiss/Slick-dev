@@ -1,6 +1,6 @@
 #include "Editors/TextEditor.h"
 
-#include "UI/TextEditorWidget.h"
+#include "Editors/TextEditorWidget.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
@@ -11,7 +11,7 @@
 namespace Slick {
 
     TextEditor::TextEditor(QObject* parent) :
-        IEditor(parent),
+        Editor(parent),
         m_path(),
         m_readText()
     {
@@ -27,7 +27,7 @@ namespace Slick {
         });
     }
 
-    IEditorWidget* TextEditor::createWidget()
+    EditorWidget* TextEditor::createWidget()
     {
         TextEditorWidget* widget = new TextEditorWidget;
         widget->setText(m_readText);
@@ -40,7 +40,7 @@ namespace Slick {
         return widget;
     }
 
-    IEditor::OpenResult TextEditor::open()
+    Editor::OpenResult TextEditor::open()
     {
         if (m_path.isEmpty())
         {
@@ -70,7 +70,7 @@ namespace Slick {
         return OpenSuccessful;
     }
 
-    IEditor::SaveResult TextEditor::save(bool saveAs)
+    Editor::SaveResult TextEditor::save(bool saveAs)
     {
         if (saveAs || m_path.isEmpty())
         {

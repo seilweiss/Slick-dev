@@ -6,7 +6,7 @@
 
 namespace Slick {
 
-    class IEditor;
+    class Editor;
 
     class MainWindow : public QMainWindow
     {
@@ -110,7 +110,7 @@ namespace Slick {
         QMenu* m_scriptsMenu;
         QMenu* m_toolsMenu;
         QMenu* m_helpMenu;
-        IEditor* m_prevEditor;
+        Editor* m_prevEditor;
         PanelLayout m_defaultPanelLayout;
     };
 

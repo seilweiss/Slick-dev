@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Editors/IEditor.h"
+#include "Core/Editor.h"
 
 #include "hiphop.h"
 
 namespace Slick {
 
-    class HipHopEditor : public IEditor
+    class HipHopEditor : public Editor
     {
         Q_OBJECT
         Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged)
@@ -15,7 +15,7 @@ namespace Slick {
     public:
         HipHopEditor(QObject* parent = nullptr);
 
-        virtual IEditorWidget* createWidget() override;
+        virtual EditorWidget* createWidget() override;
         virtual SaveResult save(bool saveAs) override;
         virtual OpenResult open() override;
 

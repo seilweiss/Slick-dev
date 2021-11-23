@@ -3,7 +3,7 @@
 #include <QDialog>
 #include <QStyle>
 
-#include <Editors/IEditor.h>
+#include <Core/Editor.h>
 
 class QListWidget;
 class QLabel;
@@ -24,11 +24,11 @@ namespace Slick {
             Cancel
         };
 
-        static Result askSave(QWidget* parent, const QList<IEditor*>& editors);
-        static Result openFailed(QWidget* parent, const QList<IEditor*>& editors);
-        static Result saveFailed(QWidget* parent, const QList<IEditor*>& editors);
+        static Result askSave(QWidget* parent, const QList<Editor*>& editors);
+        static Result openFailed(QWidget* parent, const QList<Editor*>& editors);
+        static Result saveFailed(QWidget* parent, const QList<Editor*>& editors);
 
-        EditorMessageBox(QWidget* parent, const QList<IEditor*>& editors, const QString& title, const QString& text, QStyle::StandardPixmap icon);
+        EditorMessageBox(QWidget* parent, const QList<Editor*>& editors, const QString& title, const QString& text, QStyle::StandardPixmap icon);
 
     private:
         QListWidget* m_listWidget;

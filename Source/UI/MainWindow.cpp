@@ -415,7 +415,7 @@ namespace Slick {
 
     void MainWindow::setupPanels()
     {
-        connect(EditorPanel::instance(), &EditorPanel::editorChanged, this, [=](IEditor* editor)
+        connect(EditorPanel::instance(), &EditorPanel::editorChanged, this, [=](Editor* editor)
         {
             if (m_prevEditor)
             {
@@ -470,7 +470,7 @@ namespace Slick {
 
     void MainWindow::updateMenus()
     {
-        IEditor* editor = EditorPanel::instance()->editor();
+        Editor* editor = EditorPanel::instance()->editor();
 
         if (editor)
         {
@@ -525,7 +525,7 @@ namespace Slick {
 
     void MainWindow::updatePanels()
     {
-        IEditor* editor = EditorPanel::instance()->editor();
+        Editor* editor = EditorPanel::instance()->editor();
 
         /*
         if (editor)

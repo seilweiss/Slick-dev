@@ -9,7 +9,7 @@
 
 namespace Slick {
 
-    EditorMessageBox::EditorMessageBox(QWidget* parent, const QList<IEditor*>& editors, const QString& title, const QString& text, QStyle::StandardPixmap icon) :
+    EditorMessageBox::EditorMessageBox(QWidget* parent, const QList<Editor*>& editors, const QString& title, const QString& text, QStyle::StandardPixmap icon) :
         QDialog(parent),
         m_listWidget(new QListWidget),
         m_buttonBox(new QDialogButtonBox(Qt::Horizontal))
@@ -20,7 +20,7 @@ namespace Slick {
         m_listWidget->setFocusPolicy(Qt::NoFocus);
         m_listWidget->setSelectionMode(QListWidget::NoSelection);
 
-        for (IEditor* editor : editors)
+        for (Editor* editor : editors)
         {
             m_listWidget->addItem(editor->title());
         }
@@ -43,7 +43,7 @@ namespace Slick {
         setLayout(mainLayout);
     }
 
-    EditorMessageBox::Result EditorMessageBox::askSave(QWidget* parent, const QList<IEditor*>& editors)
+    EditorMessageBox::Result EditorMessageBox::askSave(QWidget* parent, const QList<Editor*>& editors)
     {
         EditorMessageBox dialog(parent, editors, tr("Save Changes"), tr("Save changes to the following items?"), QStyle::SP_MessageBoxQuestion);
 
@@ -55,7 +55,7 @@ namespace Slick {
         return dialog.m_result;
     }
 
-    EditorMessageBox::Result EditorMessageBox::openFailed(QWidget* parent, const QList<IEditor*>& editors)
+    EditorMessageBox::Result EditorMessageBox::openFailed(QWidget* parent, const QList<Editor*>& editors)
     {
         EditorMessageBox dialog(parent, editors, tr("Open Failed"), tr("The following items could not be opened:"), QStyle::SP_MessageBoxCritical);
 
@@ -65,7 +65,7 @@ namespace Slick {
         return dialog.m_result;
     }
 
-    EditorMessageBox::Result EditorMessageBox::saveFailed(QWidget* parent, const QList<IEditor*>& editors)
+    EditorMessageBox::Result EditorMessageBox::saveFailed(QWidget* parent, const QList<Editor*>& editors)
     {
         EditorMessageBox dialog(parent, editors, tr("Save Failed"), tr("The following items could not be saved:"), QStyle::SP_MessageBoxCritical);
 

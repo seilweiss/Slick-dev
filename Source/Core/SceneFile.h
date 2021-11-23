@@ -1,8 +1,11 @@
 #pragma once
 
+#include "Core/Asset.h"
+
 #include "hiphop.h"
 
 #include <QObject>
+#include <QMap>
 
 namespace Slick {
 
@@ -38,6 +41,9 @@ namespace Slick {
         HipHop::Region region() const { return m_region; }
         void setRegion(HipHop::Region region) { m_region = region; }
 
+        Asset* getAsset(uint32_t id) const { return m_assetMap.contains(id) ? m_assetMap[id] : nullptr; }
+        Asset* getAsset(const QString& name) const { return getAsset(HipHop::Util::Hash(name.toStdString())); }
+
         bool load();
 
     private:
@@ -48,6 +54,7 @@ namespace Slick {
         HipHop::Platform m_platform;
         HipHop::Language m_language;
         HipHop::Region m_region;
+        QMap<uint32_t, Asset*> m_assetMap;
     };
 
 }

@@ -1,16 +1,16 @@
 #pragma once
 
-#include "UI/IEditorWidget.h"
+#include "Core/EditorWidget.h"
 #include "UI/PanelLayout.h"
 
 #include <QObject>
 
 namespace Slick {
 
-    class IEditor : public QObject
+    class Editor : public QObject
     {
         Q_OBJECT
-        Q_PROPERTY(IEditorWidget* widget READ widget)
+        Q_PROPERTY(EditorWidget* widget READ widget)
         Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
         Q_PROPERTY(QString tooltip READ tooltip WRITE setTooltip NOTIFY tooltipChanged)
         Q_PROPERTY(bool dirty READ dirty WRITE setDirty NOTIFY dirtyChanged)
@@ -30,16 +30,16 @@ namespace Slick {
             SaveCancelled
         };
 
-        IEditor(QObject* parent = nullptr);
-        ~IEditor();
+        Editor(QObject* parent = nullptr);
+        ~Editor();
 
-        virtual IEditorWidget* createWidget() = 0;
+        virtual EditorWidget* createWidget() = 0;
         virtual OpenResult open() = 0;
         virtual SaveResult save(bool saveAs) = 0;
         virtual void enter() {}
         virtual void exit() {}
 
-        IEditorWidget* widget();
+        EditorWidget* widget();
 
         QString title() const { return m_title; }
         void setTitle(const QString& title) { m_title = title; emit titleChanged(title); }
@@ -58,7 +58,7 @@ namespace Slick {
         void dirtyChanged(bool dirty);
 
     private:
-        IEditorWidget* m_widget;
+        EditorWidget* m_widget;
         QString m_title;
         QString m_tooltip;
         bool m_dirty;

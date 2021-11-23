@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Editors/IEditor.h"
+#include "Core/Editor.h"
 
 #include <QWidget>
 
@@ -19,38 +19,38 @@ namespace Slick {
             return theInstance;
         }
 
-        void addEditor(IEditor* editor);
-        void removeEditor(IEditor* editor);
+        void addEditor(Editor* editor);
+        void removeEditor(Editor* editor);
         int editorCount() const;
-        IEditor* editor() const;
-        IEditor* editor(int index) const;
-        QList<IEditor*> editors() const;
-        bool openEditor(IEditor* editor);
-        bool openEditors(const QList<IEditor*>& editors);
+        Editor* editor() const;
+        Editor* editor(int index) const;
+        QList<Editor*> editors() const;
+        bool openEditor(Editor* editor);
+        bool openEditors(const QList<Editor*>& editors);
         bool closeEditor();
-        bool closeEditor(IEditor* editor);
-        bool closeEditors(const QList<IEditor*>& editors);
+        bool closeEditor(Editor* editor);
+        bool closeEditors(const QList<Editor*>& editors);
         bool closeAll();
         bool saveEditor();
-        bool saveEditor(IEditor* editor);
+        bool saveEditor(Editor* editor);
         bool saveEditorAs();
-        bool saveEditorAs(IEditor* editor);
-        bool saveEditors(const QList<IEditor*>& editors);
+        bool saveEditorAs(Editor* editor);
+        bool saveEditors(const QList<Editor*>& editors);
         bool saveAll();
 
         virtual bool eventFilter(QObject* o, QEvent* event) override;
 
     signals:
-        void editorChanged(IEditor* editor);
+        void editorChanged(Editor* editor);
 
     private:
         EditorPanel(QWidget* parent = nullptr);
 
         QTabWidget* m_tabWidget;
-        IEditor* m_prevEditor;
+        Editor* m_prevEditor;
 
-        bool saveEditors(const QList<IEditor*>& editors, bool saveAs, bool remove);
-        QString editorDisplayText(IEditor* editor);
+        bool saveEditors(const QList<Editor*>& editors, bool saveAs, bool remove);
+        QString editorDisplayText(Editor* editor);
     };
 
 }

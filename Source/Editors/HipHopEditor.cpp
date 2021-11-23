@@ -1,6 +1,6 @@
 #include "Editors/HipHopEditor.h"
 
-#include "UI/HipHopEditorWidget.h"
+#include "Editors/HipHopEditorWidget.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
@@ -10,7 +10,7 @@
 namespace Slick {
 
     HipHopEditor::HipHopEditor(QObject* parent) :
-        IEditor(parent),
+        Editor(parent),
         m_file(),
         m_stream()
     {
@@ -26,7 +26,7 @@ namespace Slick {
         });
     }
 
-    IEditorWidget* HipHopEditor::createWidget()
+    EditorWidget* HipHopEditor::createWidget()
     {
         HipHopEditorWidget* widget = new HipHopEditorWidget;
         widget->loadFile(&m_file);
@@ -34,7 +34,7 @@ namespace Slick {
         return widget;
     }
 
-    IEditor::OpenResult HipHopEditor::open()
+    Editor::OpenResult HipHopEditor::open()
     {
         if (m_path.isEmpty())
         {
@@ -67,7 +67,7 @@ namespace Slick {
         return OpenSuccessful;
     }
 
-    IEditor::SaveResult HipHopEditor::save(bool saveAs)
+    Editor::SaveResult HipHopEditor::save(bool saveAs)
     {
         if (saveAs || m_path.isEmpty())
         {

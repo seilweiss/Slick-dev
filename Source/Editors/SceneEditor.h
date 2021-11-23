@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Editors/IEditor.h"
+#include "Core/Editor.h"
 #include "Core/Scene.h"
 
 #include "hiphop.h"
@@ -9,14 +9,14 @@ namespace Slick {
 
     class SceneEditorWidget;
 
-    class SceneEditor : public IEditor
+    class SceneEditor : public Editor
     {
         Q_OBJECT
 
     public:
         SceneEditor(QObject* parent = nullptr);
 
-        virtual IEditorWidget* createWidget() override;
+        virtual EditorWidget* createWidget() override;
         virtual OpenResult open() override;
         virtual SaveResult save(bool saveAs) override;
         virtual void enter() override;

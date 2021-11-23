@@ -1,8 +1,8 @@
-#include "Editors/IEditor.h"
+#include "Core/Editor.h"
 
 namespace Slick {
 
-    IEditor::IEditor(QObject* parent) :
+    Editor::Editor(QObject* parent) :
         QObject(parent),
         m_widget(nullptr),
         m_title("Untitled"),
@@ -13,7 +13,7 @@ namespace Slick {
         m_panelLayout.inspectorVisible = true;
     }
 
-    IEditor::~IEditor()
+    Editor::~Editor()
     {
         if (m_widget)
         {
@@ -21,7 +21,7 @@ namespace Slick {
         }
     }
 
-    IEditorWidget* IEditor::widget()
+    EditorWidget* Editor::widget()
     {
         if (!m_widget)
         {

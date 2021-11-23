@@ -1,4 +1,4 @@
-#include "UI/HipHopEditorWidget.h"
+#include "Editors/HipHopEditorWidget.h"
 
 #include "Core/Util.h"
 
@@ -15,7 +15,7 @@
 namespace Slick {
 
     HipHopEditorWidget::HipHopEditorWidget(QWidget* parent) :
-        IEditorWidget(parent),
+        EditorWidget(parent),
         m_file(nullptr),
         m_layerComboBox(new QComboBox),
         m_layerTypeComboBox(new QComboBox),

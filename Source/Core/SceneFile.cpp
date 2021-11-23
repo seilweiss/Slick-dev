@@ -1,5 +1,7 @@
 #include "Core/SceneFile.h"
 
+#include "Assets/JSPAsset.h"
+
 namespace Slick {
 
     SceneFile::SceneFile(QObject* parent) :
@@ -27,6 +29,13 @@ namespace Slick {
 
         m_file.Destroy();
         m_file.SetStream(&m_stream);
+
+        for (Asset* asset : m_assetMap)
+        {
+            asset->deleteLater();
+        }
+
+        m_assetMap.clear();
 
         if (!m_stream.Open(m_path.toStdString()))
         {
@@ -63,6 +72,27 @@ namespace Slick {
         if (!m_file.LoadAssets())
         {
             return false;
+        }
+
+        for (HipHop::Asset hipAsset : m_file.GetAssets())
+        {
+            Asset* asset = nullptr;
+
+            switch (hipAsset.GetType())
+            {
+            case HipHop::AssetType::JSP:
+                asset = new Assets::JSPAsset(hipAsset, this);
+                break;
+            default:
+                break;
+            }
+
+            if (asset)
+            {
+                asset->setSceneFile(this);
+
+                m_assetMap[hipAsset.GetID()] = asset;
+            }
         }
 
         return true;

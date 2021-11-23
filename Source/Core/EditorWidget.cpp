@@ -1,8 +1,8 @@
-#include "UI/IEditorWidget.h"
+#include "Core/EditorWidget.h"
 
 namespace Slick {
 
-    IEditorWidget::IEditorWidget(QWidget* parent) :
+    EditorWidget::EditorWidget(QWidget* parent) :
         QWidget(parent),
         m_editor(nullptr)
     {

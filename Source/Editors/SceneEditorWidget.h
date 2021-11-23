@@ -1,17 +1,13 @@
 #pragma once
 
-#include "UI/IEditorWidget.h"
+#include "Core/EditorWidget.h"
 #include "Core/Scene.h"
 
 namespace Slick {
 
-    namespace Render {
+    class SceneEditorViewport;
 
-        class Viewport;
-
-    }
-
-    class SceneEditorWidget : public IEditorWidget
+    class SceneEditorWidget : public EditorWidget
     {
         Q_OBJECT
 
@@ -22,7 +18,7 @@ namespace Slick {
 
     private:
         Scene* m_scene;
-        Render::Viewport* m_viewport;
+        SceneEditorViewport* m_viewport;
     };
 
 }
