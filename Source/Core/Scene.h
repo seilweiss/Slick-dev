@@ -1,13 +1,18 @@
 #pragma once
 
 #include "Core/SceneFile.h"
-#include "Render/Context.h"
-
-#include "hiphop/assets/fog_asset.h"
+#include "Core/RenderContext.h"
 
 #include <QObject>
 
 namespace Slick {
+
+    namespace Assets {
+
+        class EnvAsset;
+        class FogAsset;
+
+    }
 
     class Scene : public QObject
     {
@@ -36,10 +41,19 @@ namespace Slick {
         SceneFile* file(int index) { return m_files[index]; }
         void addFile(SceneFile* file);
 
-        bool load();
+        Asset* asset(quint32 id) const;
+        Asset* asset(const QString& name) const;
+        Asset* asset(HipHop::AssetType type, int index = 0) const;
+        QVector<Asset*> assets() const;
+        QVector<Asset*> assets(HipHop::AssetType type) const;
+        int assetCount() const;
+        int assetCount(HipHop::AssetType type) const;
 
-        void update(float dt);
-        void render(Render::Context& context);
+        bool load();
+        void setup();
+
+        void update(RenderContext* context);
+        void render(RenderContext* context);
 
     private:
         QList<SceneFile*> m_files;
@@ -48,7 +62,8 @@ namespace Slick {
         HipHop::Language m_language;
         HipHop::Region m_region;
 
-        HipHop::FogAsset m_fogAsset;
+        Assets::EnvAsset* m_envAsset;
+        Assets::FogAsset* m_fogAsset;
     };
 
 }

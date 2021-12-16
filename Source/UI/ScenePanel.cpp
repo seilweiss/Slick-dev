@@ -268,7 +268,12 @@ namespace Slick {
         QStackedLayout* stack = (QStackedLayout*)layout();
         SceneWidget* widget = (SceneWidget*)stack->currentWidget();
 
-        return widget->scene();
+        if (widget)
+        {
+            return widget->scene();
+        }
+
+        return nullptr;
     }
 
     void ScenePanel::setScene(Scene* scene)
@@ -294,11 +299,27 @@ namespace Slick {
 
             widget->setScene(scene);
 
+            connect(widget, &SceneWidget::assetsSelected, this, &ScenePanel::assetsSelected);
+
             stack->addWidget(widget);
             stack->setCurrentWidget(widget);
         }
 
         emit sceneChanged(scene);
+        emit assetsSelected(selectedAssets());
+    }
+
+    QVector<Asset*> ScenePanel::selectedAssets() const
+    {
+        QStackedLayout* stack = (QStackedLayout*)layout();
+        SceneWidget* widget = (SceneWidget*)stack->currentWidget();
+
+        if (widget)
+        {
+            return widget->selectedAssets();
+        }
+
+        return {};
     }
 
     SceneWidget::SceneWidget(QWidget* parent) :
@@ -313,6 +334,8 @@ namespace Slick {
         mainLayout->addWidget(m_fileTabWidget, 1);
 
         setLayout(mainLayout);
+
+        connect(m_fileTabWidget, &QTabWidget::currentChanged, this, [=] { emit assetsSelected(selectedAssets()); });
     }
 
     void SceneWidget::setScene(Scene* scene)
@@ -336,9 +359,23 @@ namespace Slick {
 
                 widget->setFile(file);
 
+                connect(widget, &SceneFileWidget::assetsSelected, this, &SceneWidget::assetsSelected);
+
                 m_fileTabWidget->addTab(widget, title);
             }
         }
+    }
+
+    QVector<Asset*> SceneWidget::selectedAssets() const
+    {
+        SceneFileWidget* widget = (SceneFileWidget*)m_fileTabWidget->currentWidget();
+
+        if (widget)
+        {
+            return widget->selectedAssets();
+        }
+
+        return {};
     }
 
     SceneFileWidget::SceneFileWidget(QWidget* parent) :
@@ -366,6 +403,7 @@ namespace Slick {
 
         connect(m_filterAssetsLineEdit, &QLineEdit::textChanged, this, &SceneFileWidget::updateFilter);
         connect(m_filterTypesComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &SceneFileWidget::updateFilter);
+        connect(m_assetsTableWidget, &QTableWidget::itemSelectionChanged, this, &SceneFileWidget::onItemSelectionChanged);
 
         QVBoxLayout* mainLayout = new QVBoxLayout;
 
@@ -466,6 +504,26 @@ namespace Slick {
 
             m_assetsTableWidget->setRowHidden(i, filtered);
         }
+    }
+
+    void SceneFileWidget::onItemSelectionChanged()
+    {
+        m_selectedAssets.clear();
+
+        auto items = m_assetsTableWidget->selectedItems();
+
+        for (auto item : items)
+        {
+            if (item->column() == 0)
+            {
+                uint32_t assetID = item->data(Qt::UserRole).toUInt();
+                Asset* asset = m_file->asset(assetID);
+
+                m_selectedAssets.append(asset);
+            }
+        }
+
+        emit assetsSelected(m_selectedAssets);
     }
 
 }

@@ -8,16 +8,13 @@ namespace Slick {
         m_title("Untitled"),
         m_dirty(false)
     {
-        m_panelLayout.projectVisible = true;
-        m_panelLayout.sceneVisible = true;
-        m_panelLayout.inspectorVisible = true;
     }
 
     Editor::~Editor()
     {
         if (m_widget)
         {
-            m_widget->deleteLater();
+            delete m_widget;
         }
     }
 

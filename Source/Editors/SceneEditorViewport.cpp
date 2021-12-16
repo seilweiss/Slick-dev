@@ -4,26 +4,32 @@
 
 namespace Slick {
 
-    SceneEditorViewport::SceneEditorViewport(QWindow* parent) :
-        Render::Viewport(parent),
+    SceneEditorViewport::SceneEditorViewport(RenderContext* context, QWindow* parent) :
+        Viewport(context, parent),
         m_scene(nullptr)
     {
     }
 
-    void SceneEditorViewport::update(float dt)
+    void SceneEditorViewport::update()
     {
+        Viewport::update();
+
         if (m_scene)
         {
-            m_scene->update(dt);
+            m_scene->update(context());
         }
     }
 
-    void SceneEditorViewport::render(Render::Context& context)
+    void SceneEditorViewport::render()
     {
+        Viewport::render();
+
         if (m_scene)
         {
-            m_scene->render(context);
+            m_scene->render(context());
         }
+
+        emit doneRendering();
     }
 
     void SceneEditorViewport::setScene(Scene* scene)

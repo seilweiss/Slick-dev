@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Core/Asset.h"
-#include "Render/Clump.h"
+#include "Core/RenderContext.h"
+#include "RW/ClumpRenderer.h"
 
 #include "hiphop/assets/jsp_asset.h"
 
@@ -16,13 +17,18 @@ namespace Slick {
         public:
             JSPAsset(HipHop::Asset asset, SceneFile* sceneFile);
 
-            Render::Clump* clump() const { return m_clump; }
+            void render(RenderContext* context);
 
-            virtual void render(Render::Context& context) override;
+        protected:
+            virtual void doSave() override;
 
         private:
-            Render::Clump* m_clump;
             HipHop::JSPAsset m_jsp;
+            ClumpRenderer* m_clumpRenderer;
+            QVector<JSPAsset*> m_jspAssets;
+            bool m_setup;
+
+            void setup();
         };
 
     }

@@ -17,8 +17,6 @@ namespace Slick {
         setTitle("Untitled.HIP");
         setDirty(true);
 
-        panelLayout().sceneVisible = false;
-
         connect(this, &HipHopEditor::pathChanged, this, [=](const QString& path)
         {
             setTitle(QFileInfo(path).fileName());
@@ -29,7 +27,7 @@ namespace Slick {
     EditorWidget* HipHopEditor::createWidget()
     {
         HipHopEditorWidget* widget = new HipHopEditorWidget;
-        widget->loadFile(&m_file);
+        widget->setFile(&m_file);
 
         return widget;
     }

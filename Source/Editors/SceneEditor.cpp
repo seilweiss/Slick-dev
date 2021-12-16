@@ -17,7 +17,7 @@ namespace Slick {
     EditorWidget* SceneEditor::createWidget()
     {
         SceneEditorWidget* widget = new SceneEditorWidget;
-        widget->loadScene(m_scene);
+        widget->setScene(m_scene);
 
         return widget;
     }
@@ -59,7 +59,7 @@ namespace Slick {
 
             for (const QString& path : paths)
             {
-                SceneFile* file = new SceneFile;
+                SceneFile* file = new SceneFile(m_scene);
                 file->setPath(path);
                 m_scene->addFile(file);
             }
@@ -71,6 +71,8 @@ namespace Slick {
 
                 return OpenFailed;
             }
+
+            m_scene->setup();
         }
 
         setDirty(false);

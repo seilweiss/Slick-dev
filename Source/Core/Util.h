@@ -36,6 +36,12 @@ namespace Slick {
             }
         }
 
+        template <class A, class B> A convertString(const B& s);
+        template <> inline QString convertString(const QString& s) { return s; }
+        template <> inline QString convertString(const std::string& s) { return QString::fromStdString(s); }
+        template <> inline std::string convertString(const std::string& s) { return s; }
+        template <> inline std::string convertString(const QString& s) { return s.toStdString(); }
+
     }
 
 }

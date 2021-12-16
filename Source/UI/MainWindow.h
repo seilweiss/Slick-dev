@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UI/PanelLayout.h"
+#include "Core/Asset.h"
 
 #include <QMainWindow>
 
@@ -41,6 +41,11 @@ namespace Slick {
         bool saveProjectAs();
         void undo();
         void redo();
+        void toggleProjectVisible();
+        void toggleSceneVisible();
+        void toggleInspectorVisible();
+        void toggleToolbarVisible();
+        void toggleExpandEditor();
         bool playScene();
         bool stopScene();
         void manageEmulators();
@@ -66,6 +71,11 @@ namespace Slick {
         void updateMenus();
         void updatePanels();
 
+    private slots:
+        void onPanelDockVisibilityChanged();
+        void onAssetsSelected(const QVector<Asset*>& assets);
+
+    private:
         QDockWidget* m_projectDock;
         QDockWidget* m_sceneDock;
         QDockWidget* m_inspectorDock;
@@ -89,6 +99,11 @@ namespace Slick {
         QAction* m_quitAction;
         QAction* m_undoAction;
         QAction* m_redoAction;
+        QAction* m_toggleProjectVisibleAction;
+        QAction* m_toggleSceneVisibleAction;
+        QAction* m_toggleInspectorVisibleAction;
+        QAction* m_toggleToolbarVisibleAction;
+        QAction* m_toggleExpandEditorAction;
         QAction* m_playSceneAction;
         QAction* m_stopSceneAction;
         QMenu* m_emulatorMenu;
@@ -111,7 +126,12 @@ namespace Slick {
         QMenu* m_toolsMenu;
         QMenu* m_helpMenu;
         Editor* m_prevEditor;
-        PanelLayout m_defaultPanelLayout;
+        bool m_projectVisible;
+        bool m_sceneVisible;
+        bool m_inspectorVisible;
+        bool m_toolbarVisible;
+        bool m_editorExpanded;
+        bool m_updatingPanels;
     };
 
 }

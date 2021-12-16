@@ -1,6 +1,11 @@
 #include "Core/Scene.h"
 
-#include "Render/Camera.h"
+#include "Core/Camera.h"
+
+#include "Assets/EnvAsset.h"
+#include "Assets/FogAsset.h"
+
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Slick {
 
@@ -11,7 +16,8 @@ namespace Slick {
         m_platform(HipHop::Platform::Unknown),
         m_language(HipHop::Language::Unknown),
         m_region(HipHop::Region::Unknown),
-        m_fogAsset(HipHop::Asset())
+        m_envAsset(nullptr),
+        m_fogAsset(nullptr)
     {
     }
 
@@ -20,6 +26,101 @@ namespace Slick {
         file->setParent(this);
 
         m_files.append(file);
+    }
+
+    Asset* Scene::asset(quint32 id) const
+    {
+        for (SceneFile* file : m_files)
+        {
+            Asset* asset = file->asset(id);
+
+            if (asset)
+            {
+                return asset;
+            }
+        }
+
+        return nullptr;
+    }
+
+    Asset* Scene::asset(const QString& name) const
+    {
+        for (SceneFile* file : m_files)
+        {
+            Asset* asset = file->asset(name);
+
+            if (asset)
+            {
+                return asset;
+            }
+        }
+
+        return nullptr;
+    }
+
+    Asset* Scene::asset(HipHop::AssetType type, int index) const
+    {
+        for (SceneFile* file : m_files)
+        {
+            Asset* asset = file->asset(type, index);
+
+            if (asset)
+            {
+                return asset;
+            }
+
+            index -= file->assetCount(type);
+        }
+
+        return nullptr;
+    }
+
+    QVector<Asset*> Scene::assets() const
+    {
+        QVector<Asset*> assets;
+
+        for (SceneFile* file : m_files)
+        {
+            assets.append(file->assets());
+        }
+
+        return assets;
+    }
+
+    QVector<Asset*> Scene::assets(HipHop::AssetType type) const
+    {
+        QVector<Asset*> assets;
+
+        for (SceneFile* file : m_files)
+        {
+            assets.append(file->assets(type));
+        }
+
+        return assets;
+    }
+
+    int Scene::assetCount() const
+    {
+        int count = 0;
+
+        for (SceneFile* file : m_files)
+        {
+            count += file->assetCount();
+        }
+
+        return count;
+    }
+
+    int Scene::assetCount(HipHop::AssetType type) const
+    {
+        int count = 0;
+
+        for (SceneFile* file : m_files)
+        {
+            count += file->assetCount(type);
+        }
+
+        return count;
     }
 
     bool Scene::load()
@@ -46,71 +147,47 @@ namespace Slick {
                 success = false;
                 break;
             }
-
-            if (file->hipHopFile().GetAssetCount(HipHop::AssetType::FOG) > 0)
-            {
-                m_fogAsset = file->hipHopFile().GetAsset(HipHop::AssetType::FOG);
-            }
-        }
-
-        if (m_fogAsset)
-        {
-            m_fogAsset.Load();
         }
 
         return success;
     }
 
-    void Scene::update(float dt)
+    void Scene::setup()
     {
-        for (SceneFile* file : m_files)
-        {
-            for (HipHop::Asset hipAsset : file->hipHopFile().GetAssets())
-            {
-                Asset* asset = file->getAsset(hipAsset);
-
-                if (asset)
-                {
-                    asset->update(dt);
-                }
-            }
-        }
+        m_envAsset = (Assets::EnvAsset*)asset(HipHop::AssetType::ENV);
+        m_fogAsset = (Assets::FogAsset*)asset(HipHop::AssetType::FOG);
     }
 
-    void Scene::render(Render::Context& context)
+    void Scene::update(RenderContext* context)
     {
+    }
+
+    void Scene::render(RenderContext* context)
+    {
+        context->camera()->begin();
+
         if (m_fogAsset)
         {
-            //context.camera->setFogEnabled(true);
-            context.camera->setFogType(Render::FogLinear);
-            context.camera->setFogDensity(m_fogAsset.fogDensity);
-            context.camera->setFogStart(m_fogAsset.fogStart);
-            context.camera->setFogEnd(m_fogAsset.fogStop);
-            context.camera->setFogColor(QColor(m_fogAsset.fogColor[0], m_fogAsset.fogColor[1], m_fogAsset.fogColor[2], m_fogAsset.fogColor[3]));
-            context.camera->setClearColor(QColor(m_fogAsset.bkgndColor[0], m_fogAsset.bkgndColor[1], m_fogAsset.bkgndColor[2], m_fogAsset.bkgndColor[3]));
+            m_fogAsset->apply(context);
         }
         else
         {
-            context.camera->setFogEnabled(false);
-            context.camera->setClearColor(QColor(0, 0, 0));
+            context->glDisable(GL_FOG);
+            context->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+            Projection proj = context->camera()->projection();
+            proj.farClip = 1000.0f;
+            context->camera()->setProjection(proj);
         }
 
-        context.camera->clear(Render::AllBuffers);
+        context->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        for (SceneFile* file : m_files)
+        if (m_envAsset)
         {
-            auto jsps = file->hipHopFile().GetAssets(HipHop::AssetType::JSP);
-
-            for (auto jsp : jsps)
-            {
-                Asset* jspAsset = file->getAsset(jsp);
-
-                if (jspAsset)
-                {
-                    jspAsset->render(context);
-                }
-            }
+            m_envAsset->render(context);
         }
+
+        context->camera()->end();
     }
 
 }

@@ -17,7 +17,7 @@ namespace Slick {
     public:
         HipHopEditorWidget(QWidget* parent = nullptr);
 
-        void loadFile(HipHop::File* file);
+        void setFile(HipHop::File* file);
 
     private:
         HipHop::File* m_file;

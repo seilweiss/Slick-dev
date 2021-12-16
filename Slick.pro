@@ -19,12 +19,24 @@ CONFIG(debug, debug|release) {
 }
 
 SOURCES += \
+    Source/Assets/CounterAsset.cpp \
+    Source/Assets/EnvAsset.cpp \
+    Source/Assets/FogAsset.cpp \
     Source/Assets/JSPAsset.cpp \
+    Source/Assets/TextAsset.cpp \
+    Source/Assets/TimerAsset.cpp \
+    Source/CameraControllers/FirstPersonCameraController.cpp \
     Source/Core/Asset.cpp \
+    Source/Core/Camera.cpp \
+    Source/Core/CameraController.cpp \
     Source/Core/Editor.cpp \
     Source/Core/EditorWidget.cpp \
+    Source/Core/Inspector.cpp \
+    Source/Core/InspectorGroup.cpp \
+    Source/Core/RenderContext.cpp \
     Source/Core/Scene.cpp \
     Source/Core/SceneFile.cpp \
+    Source/Core/Viewport.cpp \
     Source/Editors/HipHopEditor.cpp \
     Source/Editors/HipHopEditorWidget.cpp \
     Source/Editors/SceneEditor.cpp \
@@ -32,12 +44,14 @@ SOURCES += \
     Source/Editors/SceneEditorWidget.cpp \
     Source/Editors/TextEditor.cpp \
     Source/Editors/TextEditorWidget.cpp \
-    Source/Render/Camera.cpp \
-    Source/Render/Clump.cpp \
-    Source/Render/Geometry.cpp \
-    Source/Render/Viewport.cpp \
+    Source/InspectorProperties/InspectorPropertyImpl.cpp \
+    Source/RW/ClumpRenderer.cpp \
+    Source/RW/Frame.cpp \
+    Source/RW/AtomicRenderer.cpp \
+    Source/RW/GeometryRenderer.cpp \
     Source/UI/EditorMessageBox.cpp \
     Source/UI/EditorPanel.cpp \
+    Source/UI/ExpanderWidget.cpp \
     Source/UI/HashGeneratorTool.cpp \
     Source/UI/InspectorPanel.cpp \
     Source/UI/MainWindow.cpp \
@@ -48,13 +62,27 @@ SOURCES += \
     Source/main.cpp
 
 HEADERS += \
+    Source/Assets/CounterAsset.h \
+    Source/Assets/EnvAsset.h \
+    Source/Assets/FogAsset.h \
     Source/Assets/JSPAsset.h \
+    Source/Assets/TextAsset.h \
+    Source/Assets/TimerAsset.h \
+    Source/CameraControllers/FirstPersonCameraController.h \
     Source/Core/Asset.h \
+    Source/Core/Camera.h \
+    Source/Core/CameraController.h \
     Source/Core/Editor.h \
     Source/Core/EditorWidget.h \
+    Source/Core/Inspector.h \
+    Source/Core/InspectorCategory.h \
+    Source/Core/InspectorGroup.h \
+    Source/Core/InspectorProperty.h \
+    Source/Core/RenderContext.h \
     Source/Core/Scene.h \
     Source/Core/SceneFile.h \
     Source/Core/Util.h \
+    Source/Core/Viewport.h \
     Source/Editors/HipHopEditor.h \
     Source/Editors/HipHopEditorWidget.h \
     Source/Editors/SceneEditor.h \
@@ -62,18 +90,30 @@ HEADERS += \
     Source/Editors/SceneEditorWidget.h \
     Source/Editors/TextEditor.h \
     Source/Editors/TextEditorWidget.h \
-    Source/Render/Camera.h \
-    Source/Render/Clump.h \
-    Source/Render/Context.h \
-    Source/Render/Geometry.h \
-    Source/Render/Viewport.h \
+    Source/InspectorProperties/AbstractStringInspectorProperty.h \
+    Source/InspectorProperties/Color8InspectorProperty.h \
+    Source/InspectorProperties/DoubleInspectorProperty.h \
+    Source/InspectorProperties/FloatInspectorProperty.h \
+    Source/InspectorProperties/InspectorPropertyImpl.h \
+    Source/InspectorProperties/Int16InspectorProperty.h \
+    Source/InspectorProperties/Int32InspectorProperty.h \
+    Source/InspectorProperties/Int8InspectorProperty.h \
+    Source/InspectorProperties/QStringInspectorProperty.h \
+    Source/InspectorProperties/StdStringInspectorProperty.h \
+    Source/InspectorProperties/UInt16InspectorProperty.h \
+    Source/InspectorProperties/UInt32InspectorProperty.h \
+    Source/InspectorProperties/UInt8InspectorProperty.h \
+    Source/RW/Frame.h \
+    Source/RW/AtomicRenderer.h \
+    Source/RW/ClumpRenderer.h \
+    Source/RW/GeometryRenderer.h \
     Source/UI/EditorMessageBox.h \
     Source/UI/EditorPanel.h \
+    Source/UI/ExpanderWidget.h \
     Source/UI/HashGeneratorTool.h \
     Source/UI/InspectorPanel.h \
     Source/UI/MainWindow.h \
     Source/UI/OpenSceneDialog.h \
-    Source/UI/PanelLayout.h \
     Source/UI/ProjectPanel.h \
     Source/UI/ScenePanel.h \
     Source/UI/ToolbarPanel.h

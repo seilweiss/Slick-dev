@@ -1,23 +1,26 @@
 #pragma once
 
-#include "Render/Viewport.h"
+#include "Core/Viewport.h"
 #include "Core/Scene.h"
 
 namespace Slick {
 
-    class SceneEditorViewport : public Render::Viewport
+    class SceneEditorViewport : public Viewport
     {
         Q_OBJECT
 
     public:
-        SceneEditorViewport(QWindow* parent = nullptr);
+        SceneEditorViewport(RenderContext* context, QWindow* parent = nullptr);
 
         Scene* scene() const { return m_scene; }
         void setScene(Scene* scene);
 
+    signals:
+        void doneRendering();
+
     protected:
-        virtual void update(float dt) override;
-        virtual void render(Render::Context& context) override;
+        virtual void update() override;
+        virtual void render() override;
 
     private:
         Scene* m_scene;

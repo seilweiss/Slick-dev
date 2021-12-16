@@ -18,8 +18,6 @@ namespace Slick {
         setTitle("Untitled.txt");
         setDirty(true);
 
-        panelLayout().sceneVisible = false;
-
         connect(this, &TextEditor::pathChanged, this, [=](const QString& path)
         {
             setTitle(QFileInfo(path).fileName());

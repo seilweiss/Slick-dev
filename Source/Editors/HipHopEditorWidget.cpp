@@ -106,7 +106,7 @@ namespace Slick {
         setLayout(mainLayout);
     }
 
-    void HipHopEditorWidget::loadFile(HipHop::File* file)
+    void HipHopEditorWidget::setFile(HipHop::File* file)
     {
         m_file = file;
 

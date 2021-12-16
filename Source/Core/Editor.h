@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core/EditorWidget.h"
-#include "UI/PanelLayout.h"
 
 #include <QObject>
 
@@ -50,8 +49,6 @@ namespace Slick {
         bool dirty() const { return m_dirty; }
         void setDirty(bool dirty) { m_dirty = dirty; emit dirtyChanged(dirty); }
 
-        PanelLayout& panelLayout() { return m_panelLayout; }
-
     signals:
         void titleChanged(const QString& title);
         void tooltipChanged(const QString& tooltip);
@@ -62,7 +59,6 @@ namespace Slick {
         QString m_title;
         QString m_tooltip;
         bool m_dirty;
-        PanelLayout m_panelLayout;
     };
 
 }
