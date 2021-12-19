@@ -47,11 +47,11 @@ namespace Slick {
             linkGroup->setDisplayName(QString("%1 => %2 => %3").arg(srcEventName, dstEventName, dstAssetName));
             linkGroup->setExpanded(false);
 
-            auto srcAssetProp = linkGroup->addTextInput("srcAsset", &link.chkAssetID);
+            auto srcAssetProp = linkGroup->addAssetInput("srcAsset", &link.chkAssetID, scene());
             auto srcEventProp = linkGroup->addComboBox("srcEvent", &link.srcEvent, eventNames);
             auto dstEventProp = linkGroup->addComboBox("dstEvent", &link.dstEvent, eventNames);
-            auto dstAssetProp = linkGroup->addTextInput("dstAsset", &link.dstAssetID);
-            auto paramAssetProp = linkGroup->addTextInput("paramAsset", &link.paramWidgetAssetID);
+            auto dstAssetProp = linkGroup->addAssetInput("dstAsset", &link.dstAssetID, scene());
+            auto paramAssetProp = linkGroup->addAssetInput("paramAsset", &link.paramWidgetAssetID, scene());
 
             connect(srcAssetProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);
             connect(srcEventProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);

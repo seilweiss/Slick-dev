@@ -5,6 +5,7 @@
 #include "Assets/CounterAsset.h"
 #include "Assets/EnvAsset.h"
 #include "Assets/FogAsset.h"
+#include "Assets/GroupAsset.h"
 #include "Assets/JSPAsset.h"
 #include "Assets/MarkerAsset.h"
 #include "Assets/TextAsset.h"
@@ -129,6 +130,7 @@ namespace Slick {
             case HipHop::AssetType::CNTR: asset = new Assets::CounterAsset(hipAsset, this); break;
             case HipHop::AssetType::ENV: asset = new Assets::EnvAsset(hipAsset, this); break;
             case HipHop::AssetType::FOG: asset = new Assets::FogAsset(hipAsset, this); break;
+            case HipHop::AssetType::GRUP: asset = new Assets::GroupAsset(hipAsset, this); break;
             case HipHop::AssetType::JSP: asset = new Assets::JSPAsset(hipAsset, this); break;
             case HipHop::AssetType::MRKR: asset = new Assets::MarkerAsset(hipAsset, this); break;
             case HipHop::AssetType::TIMR: asset = new Assets::TimerAsset(hipAsset, this); break;

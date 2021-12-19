@@ -2,6 +2,7 @@
 
 #include "Core/InspectorProperty.h"
 
+#include "InspectorProperties/AssetInputProperty.h"
 #include "InspectorProperties/CheckBoxProperty.h"
 #include "InspectorProperties/ColorInputProperty.h"
 #include "InspectorProperties/ComboBoxProperty.h"
@@ -106,6 +107,11 @@ namespace Slick {
         InspectorProperty* addProperty(InspectorProperty* prop);
         InspectorGroup* addGroup(InspectorGroup* group);
         InspectorGroup* addGroup(const QString& name);
+
+        AssetInputProperty* addAssetInput(const QString& name, const InspectorDataSource& dataSource, Scene* scene)
+        {
+            return (AssetInputProperty*)addProperty(new AssetInputProperty(name, dataSource, scene));
+        }
 
         CheckBoxProperty* addCheckBox(const QString& name, const InspectorDataSource& dataSource, uint32_t mask = 0xFFFFFFFF)
         {

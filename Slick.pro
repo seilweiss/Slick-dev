@@ -22,6 +22,7 @@ SOURCES += \
     Source/Assets/CounterAsset.cpp \
     Source/Assets/EnvAsset.cpp \
     Source/Assets/FogAsset.cpp \
+    Source/Assets/GroupAsset.cpp \
     Source/Assets/JSPAsset.cpp \
     Source/Assets/MarkerAsset.cpp \
     Source/Assets/TextAsset.cpp \
@@ -46,6 +47,7 @@ SOURCES += \
     Source/Editors/SceneEditorWidget.cpp \
     Source/Editors/TextEditor.cpp \
     Source/Editors/TextEditorWidget.cpp \
+    Source/InspectorProperties/AssetInputProperty.cpp \
     Source/InspectorProperties/CheckBoxProperty.cpp \
     Source/InspectorProperties/ColorInputProperty.cpp \
     Source/InspectorProperties/ComboBoxProperty.cpp \
@@ -72,6 +74,7 @@ HEADERS += \
     Source/Assets/CounterAsset.h \
     Source/Assets/EnvAsset.h \
     Source/Assets/FogAsset.h \
+    Source/Assets/GroupAsset.h \
     Source/Assets/JSPAsset.h \
     Source/Assets/MarkerAsset.h \
     Source/Assets/TextAsset.h \
@@ -103,6 +106,7 @@ HEADERS += \
     Source/Editors/SceneEditorWidget.h \
     Source/Editors/TextEditor.h \
     Source/Editors/TextEditorWidget.h \
+    Source/InspectorProperties/AssetInputProperty.h \
     Source/InspectorProperties/CheckBoxProperty.h \
     Source/InspectorProperties/ColorInputProperty.h \
     Source/InspectorProperties/ComboBoxProperty.h \

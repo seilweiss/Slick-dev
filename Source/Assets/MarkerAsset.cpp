@@ -15,8 +15,8 @@ namespace Slick {
         {
             Asset::inspect(inspector);
 
-            auto markerGroup = inspector->addGroup("marker");
-            auto posProp = markerGroup->addVectorInput("position", (Vector3*)&m_marker.pos);
+            auto transformGroup = inspector->addGroup("transform");
+            auto posProp = transformGroup->addVectorInput("position", (Vector3*)&m_marker.pos);
 
             connect(posProp, &InspectorProperty::dataChanged, this, &MarkerAsset::makeDirty);
         }
