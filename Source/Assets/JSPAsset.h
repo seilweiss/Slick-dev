@@ -19,16 +19,13 @@ namespace Slick {
 
             void render(RenderContext* context);
 
-        protected:
-            virtual void doSave() override;
+            virtual void setup() override;
+            virtual void inspect(Inspector* inspector) override;
 
         private:
             HipHop::JSPAsset m_jsp;
             ClumpRenderer* m_clumpRenderer;
-            QVector<JSPAsset*> m_jspAssets;
-            bool m_setup;
-
-            void setup();
+            QList<JSPAsset*> m_jspAssets;
         };
 
     }

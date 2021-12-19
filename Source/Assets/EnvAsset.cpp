@@ -8,36 +8,33 @@ namespace Slick {
     namespace Assets {
 
         EnvAsset::EnvAsset(HipHop::Asset asset, SceneFile* sceneFile) :
-            Asset(asset, sceneFile),
+            BaseAsset(asset, sceneFile),
             m_env(asset),
-            m_setup(false)
+            m_jspInfo(nullptr)
         {
-            m_env.Load();
+            setEditor(&m_env);
         }
 
-        void EnvAsset::doSave()
+        void EnvAsset::inspect(Inspector* inspector)
         {
-            m_env.Save();
-        }
+            BaseAsset::inspect(inspector);
 
-        void EnvAsset::render(RenderContext* context)
-        {
-            if (!m_setup)
-            {
-                setup();
-            }
+            inspector->addGroup("environment");
 
-            if (m_jspInfo)
-            {
-                m_jspInfo->render(context);
-            }
+            inspectLinks(inspector);
         }
 
         void EnvAsset::setup()
         {
             m_jspInfo = qobject_cast<JSPAsset*>(scene()->asset(m_env.bspAssetID));
+        }
 
-            m_setup = true;
+        void EnvAsset::render(RenderContext* context)
+        {
+            if (m_jspInfo)
+            {
+                m_jspInfo->render(context);
+            }
         }
 
     }

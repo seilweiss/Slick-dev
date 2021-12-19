@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Asset.h"
+#include "Core/BaseAsset.h"
 #include "Core/RenderContext.h"
 
 #include "hiphop/assets/env_asset.h"
@@ -11,7 +11,7 @@ namespace Slick {
 
         class JSPAsset;
 
-        class EnvAsset : public Asset
+        class EnvAsset : public BaseAsset
         {
             Q_OBJECT
 
@@ -20,15 +20,12 @@ namespace Slick {
 
             void render(RenderContext* context);
 
-        protected:
-            virtual void doSave() override;
+            virtual void setup() override;
+            virtual void inspect(Inspector* inspector) override;
 
         private:
             HipHop::EnvAsset m_env;
-            bool m_setup;
             JSPAsset* m_jspInfo;
-
-            void setup();
         };
 
     }

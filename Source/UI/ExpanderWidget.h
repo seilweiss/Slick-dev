@@ -3,10 +3,11 @@
 #include <QWidget>
 
 class QVBoxLayout;
-class QToolButton;
 class QFrame;
 
 namespace Slick {
+
+    class ExpanderWidgetButton;
 
     class ExpanderWidget : public QWidget
     {
@@ -31,9 +32,12 @@ namespace Slick {
         void expand() { setExpanded(true); }
         void collapse() { setExpanded(false); }
 
+    signals:
+        void toggled(bool expanded);
+
     private:
         QVBoxLayout* m_layout;
-        QToolButton* m_headerButton;
+        ExpanderWidgetButton* m_headerButton;
         QWidget* m_widget;
         QFrame* m_widgetFrame;
         QVBoxLayout* m_widgetFrameLayout;

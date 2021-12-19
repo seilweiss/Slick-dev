@@ -2,6 +2,7 @@
 
 #include "UI/ExpanderWidget.h"
 
+#include <QScrollArea>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -17,7 +18,7 @@ namespace Slick {
                 return QString();
             }
 
-            QVector<QString> words;
+            QList<QString> words;
             QString word;
 
             for (int i = 0; i < name.size(); i++)
@@ -67,9 +68,17 @@ namespace Slick {
     InspectorPanel::InspectorPanel(QWidget* parent) :
         QWidget(parent),
         m_mainLayout(new QVBoxLayout),
+        m_scrollArea(new QScrollArea),
         m_inspectorWidget(nullptr),
         m_inspectorLayout(nullptr)
     {
+        m_scrollArea->setFrameShape(QFrame::NoFrame);
+        m_scrollArea->setStyleSheet("QScrollArea { border: 0; }");
+        m_scrollArea->setWidgetResizable(true);
+        m_scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+
+        m_mainLayout->addWidget(m_scrollArea, 1);
+
         setLayout(m_mainLayout);
         refresh();
     }
@@ -78,40 +87,75 @@ namespace Slick {
     {
         qDebug("Inspector refresh");
 
-        if (m_inspectorWidget)
-        {
-            delete m_inspectorWidget;
-        }
+        clearWidget();
 
-        m_inspectorWidget = new QWidget;
+        m_groupWidgets.clear();
+        m_currentGroupId = QString();
+
+        m_inspectorWidget = new QScrollArea;
         m_inspectorLayout = new QVBoxLayout;
 
         m_inspectorLayout->setContentsMargins(0, 0, 0, 0);
         m_inspectorLayout->setAlignment(Qt::AlignTop);
+        m_inspectorLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
         m_inspectorWidget->setLayout(m_inspectorLayout);
 
-        m_mainLayout->addWidget(m_inspectorWidget, 1);
-
-        if (!m_inspectors.empty())
+        if (!m_inspectables.empty())
         {
-            QVector<InspectorGroup*> groups;
+            QList<InspectorGroup*> groups;
 
-            for (Inspector* inspector : m_inspectors)
+            for (Inspectable* inspectable : m_inspectables)
             {
+                Inspector* inspector = new Inspector(this);
+
+                inspectable->inspect(inspector);
+
+                m_inspectors.append(inspector);
                 groups.append(inspector);
             }
 
             recurseAddGroups(m_inspectorLayout, groups, true);
+
+            if (m_inspectables.size() == 1)
+            {
+                InspectorState& state = m_inspectables[0]->inspectorState();
+
+                for (const QString& id : m_groupWidgets.keys())
+                {
+                    if (state.groups.contains(id))
+                    {
+                        m_groupWidgets[id]->setExpanded(state.groups[id].expanded);
+                    }
+                    else
+                    {
+                        state.groups[id].expanded = m_groupWidgets[id]->isExpanded();
+                    }
+
+                    connect(m_groupWidgets[id], &ExpanderWidget::toggled, this, [=](bool expanded)
+                    {
+                        m_inspectables[0]->inspectorState().groups[id].expanded = expanded;
+                    });
+                }
+            }
         }
 
         m_inspectorLayout->addStretch(1);
+
+        m_scrollArea->setWidget(m_inspectorWidget);
     }
 
-    void InspectorPanel::recurseAddGroups(QVBoxLayout* parentLayout, const QVector<InspectorGroup*>& groups, bool root)
+    void InspectorPanel::recurseAddGroups(QVBoxLayout* parentLayout, const QList<InspectorGroup*>& groups, bool root)
     {
         InspectorGroup* mainGroup = groups[0];
         QVBoxLayout* groupLayout = parentLayout;
+
+        if (!m_currentGroupId.isEmpty())
+        {
+            m_currentGroupId += ".";
+        }
+
+        m_currentGroupId += mainGroup->name();
 
         if (!root && mainGroup->nameVisible())
         {
@@ -131,17 +175,21 @@ namespace Slick {
             contentWidget->setLayout(groupLayout);
 
             groupWidget->setWidget(contentWidget);
-            groupWidget->expand();
+            groupWidget->setExpanded(mainGroup->expanded());
 
             parentLayout->addWidget(groupWidget);
+
+            m_groupWidgets[m_currentGroupId] = groupWidget;
         }
 
         for (InspectorGroupItem* item : mainGroup->items())
         {
-            if (item->isProperty())
+            switch (item->type())
+            {
+            case InspectorGroupItem::Property:
             {
                 InspectorProperty* firstProp = item->property();
-                QVector<InspectorProperty*> similarProps;
+                QList<InspectorProperty*> similarProps;
                 bool propPresentInAllGroups = true;
 
                 similarProps.append(firstProp);
@@ -187,10 +235,10 @@ namespace Slick {
 
                             if (propLabel)
                             {
-                                propLayout->addWidget(propLabel, 1);
+                                propLayout->addWidget(propLabel, firstProp->nameStretch());
                             }
 
-                            propLayout->addWidget(propWidget, 1);
+                            propLayout->addWidget(propWidget, firstProp->widgetStretch());
                         }
                         else
                         {
@@ -204,25 +252,44 @@ namespace Slick {
                             propLayout->addWidget(propWidget, 1);
                         }
 
+                        if (!groupLayout->isEmpty())
+                        {
+                            QFrame* separator = new QFrame;
+                            separator->setFrameShape(QFrame::HLine);
+                            separator->setFrameShadow(QFrame::Sunken);
+
+                            groupLayout->addWidget(separator);
+                        }
+
                         groupLayout->addLayout(propLayout);
                     }
                 }
+
+                break;
             }
-            else
+            case InspectorGroupItem::Group:
             {
                 InspectorGroup* firstGroup = item->group();
-                QVector<InspectorGroup*> similarGroups;
+                QList<InspectorGroup*> similarGroups;
                 bool groupPresentInAllGroups = true;
 
                 similarGroups.append(firstGroup);
 
                 for (int i = 1; i < groups.size(); i++)
                 {
-                    if (groups[i]->hasGroup(firstGroup->name()))
+                    bool found = false;
+
+                    for (InspectorGroup* group : groups[i]->groups())
                     {
-                        similarGroups.append(groups[i]->group(firstGroup->name()));
+                        if (group->equals(firstGroup))
+                        {
+                            similarGroups.append(group);
+                            found = true;
+                            break;
+                        }
                     }
-                    else
+
+                    if (!found)
                     {
                         groupPresentInAllGroups = false;
                         break;
@@ -233,13 +300,16 @@ namespace Slick {
                 {
                     recurseAddGroups(groupLayout, similarGroups, false);
                 }
+
+                break;
+            }
             }
         }
     }
 
-    void InspectorPanel::addInspector(Inspector* inspector, bool _refresh)
+    void InspectorPanel::addInspectable(Inspectable* inspectable, bool _refresh)
     {
-        m_inspectors.append(inspector);
+        m_inspectables.append(inspectable);
 
         if (_refresh)
         {
@@ -247,9 +317,9 @@ namespace Slick {
         }
     }
 
-    void InspectorPanel::removeInspector(Inspector* inspector, bool _refresh)
+    void InspectorPanel::removeInspectable(Inspectable* inspectable, bool _refresh)
     {
-        m_inspectors.removeOne(inspector);
+        m_inspectables.removeOne(inspectable);
 
         if (_refresh)
         {
@@ -257,13 +327,25 @@ namespace Slick {
         }
     }
 
-    void InspectorPanel::clear(bool _refresh)
+    void InspectorPanel::clear()
     {
+        m_inspectables.clear();
+        clearWidget();
+    }
+
+    void InspectorPanel::clearWidget()
+    {
+        for (Inspector* inspector : m_inspectors)
+        {
+            delete inspector;
+        }
+
         m_inspectors.clear();
 
-        if (_refresh)
+        if (m_inspectorWidget)
         {
-            refresh();
+            delete m_inspectorWidget;
+            m_inspectorWidget = nullptr;
         }
     }
 

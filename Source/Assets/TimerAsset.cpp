@@ -5,22 +5,24 @@ namespace Slick {
     namespace Assets {
 
         TimerAsset::TimerAsset(HipHop::Asset asset, SceneFile* sceneFile) :
-            Asset(asset, sceneFile),
+            BaseAsset(asset, sceneFile),
             m_timer(asset)
         {
-            m_timer.Load();
+            setEditor(&m_timer);
+        }
 
-            auto timerGroup = inspector()->addGroup("timer");
-            auto secondsProp = timerGroup->addNumber("time", &m_timer.seconds);
-            auto randomRangeProp = timerGroup->addNumber("randomRange", &m_timer.randomRange);
+        void TimerAsset::inspect(Inspector* inspector)
+        {
+            BaseAsset::inspect(inspector);
+
+            auto timerGroup = inspector->addGroup("timer");
+            auto secondsProp = timerGroup->addNumberInput("time", &m_timer.seconds);
+            auto randomRangeProp = timerGroup->addNumberInput("randomRange", &m_timer.randomRange);
 
             connect(secondsProp, &InspectorProperty::dataChanged, this, &TimerAsset::makeDirty);
             connect(randomRangeProp, &InspectorProperty::dataChanged, this, &TimerAsset::makeDirty);
-        }
 
-        void TimerAsset::doSave()
-        {
-            m_timer.Save();
+            inspectLinks(inspector);
         }
 
     }

@@ -493,13 +493,13 @@ namespace Slick {
         }
     }
 
-    void MainWindow::onAssetsSelected(const QVector<Asset*>& assets)
+    void MainWindow::onAssetsSelected(const QList<Asset*>& assets)
     {
-        InspectorPanel::instance()->clear(false);
+        InspectorPanel::instance()->clear();
 
         for (Asset* asset : assets)
         {
-            InspectorPanel::instance()->addInspector(asset->inspector(), false);
+            InspectorPanel::instance()->addInspectable(asset, false);
         }
 
         InspectorPanel::instance()->refresh();

@@ -1,5 +1,7 @@
 #include "UI/HashGeneratorTool.h"
 
+#include "Core/Util.h"
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -61,7 +63,7 @@ namespace Slick {
 
     void HashGeneratorTool::textChanged(const QString& text)
     {
-        m_hashLineEdit->setText(QString("0x") + QString("%1").arg(HipHop::Util::Hash(text.toStdString()), 8, 16, QLatin1Char('0')).toUpper());
+        m_hashLineEdit->setText(Util::hexToString(HipHop::Util::Hash(text.toStdString())));
     }
 
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Asset.h"
+#include "Core/BaseAsset.h"
 
 #include "hiphop/assets/counter_asset.h"
 
@@ -8,15 +8,14 @@ namespace Slick {
 
     namespace Assets {
 
-        class CounterAsset : public Asset
+        class CounterAsset : public BaseAsset
         {
             Q_OBJECT
 
         public:
             CounterAsset(HipHop::Asset asset, SceneFile* sceneFile);
 
-        protected:
-            virtual void doSave() override;
+            virtual void inspect(Inspector* inspector) override;
 
         private:
             HipHop::CounterAsset m_counter;

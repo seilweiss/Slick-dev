@@ -2,23 +2,23 @@
 
 #include "Core/Asset.h"
 
-#include "hiphop/assets/text_asset.h"
+#include "hiphop/assets/marker_asset.h"
 
 namespace Slick {
 
     namespace Assets {
 
-        class TextAsset : public Asset
+        class MarkerAsset : public Asset
         {
             Q_OBJECT
 
         public:
-            TextAsset(HipHop::Asset asset, SceneFile* sceneFile);
+            MarkerAsset(HipHop::Asset asset, SceneFile* sceneFile);
 
             virtual void inspect(Inspector* inspector) override;
 
         private:
-            HipHop::TextAsset m_text;
+            HipHop::MarkerAsset m_marker;
         };
 
     }

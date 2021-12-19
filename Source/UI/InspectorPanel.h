@@ -1,16 +1,20 @@
 #pragma once
 
-#include "Core/Inspector.h"
+#include "Core/Inspectable.h"
 
 #include <QWidget>
 
 class QVBoxLayout;
+class QScrollArea;
 
 namespace Slick {
+
+    class ExpanderWidget;
 
     class InspectorPanel : public QWidget
     {
         Q_OBJECT
+        Q_PROPERTY(int count READ count)
 
     public:
         static InspectorPanel* instance()
@@ -21,21 +25,26 @@ namespace Slick {
 
         void refresh();
 
-        void addInspector(Inspector* inspector, bool refresh = true);
-        void removeInspector(Inspector* inspector, bool refresh = true);
-        void clear(bool refresh = true);
-        Inspector* inspector(int index) const { return m_inspectors[index]; }
-        int count() const { return m_inspectors.size(); }
+        void addInspectable(Inspectable* inspectable, bool refresh = true);
+        void removeInspectable(Inspectable* inspectable, bool refresh = true);
+        void clear();
+        Inspectable* inspectable(int index) const { return m_inspectables[index]; }
+        int count() const { return m_inspectables.size(); }
 
     private:
         InspectorPanel(QWidget* parent = nullptr);
 
-        QVector<Inspector*> m_inspectors;
+        QList<Inspectable*> m_inspectables;
+        QList<Inspector*> m_inspectors;
         QVBoxLayout* m_mainLayout;
+        QScrollArea* m_scrollArea;
         QWidget* m_inspectorWidget;
         QVBoxLayout* m_inspectorLayout;
+        QMap<QString, ExpanderWidget*> m_groupWidgets;
+        QString m_currentGroupId;
 
-        void recurseAddGroups(QVBoxLayout* parentLayout, const QVector<InspectorGroup*>& groups, bool root);
+        void clearWidget();
+        void recurseAddGroups(QVBoxLayout* parentLayout, const QList<InspectorGroup*>& groups, bool root);
     };
 
 }

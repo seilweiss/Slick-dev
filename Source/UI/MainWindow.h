@@ -73,7 +73,7 @@ namespace Slick {
 
     private slots:
         void onPanelDockVisibilityChanged();
-        void onAssetsSelected(const QVector<Asset*>& assets);
+        void onAssetsSelected(const QList<Asset*>& assets);
 
     private:
         QDockWidget* m_projectDock;

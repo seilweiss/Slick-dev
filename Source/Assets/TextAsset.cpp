@@ -8,21 +8,21 @@ namespace Slick {
             Asset(asset, sceneFile),
             m_text(asset)
         {
-            m_text.Load();
+            setEditor(&m_text);
+        }
 
-            auto textGroup = inspector()->addGroup("text");
-            auto textProp = textGroup->addString("text", &m_text.text);
+        void TextAsset::inspect(Inspector* inspector)
+        {
+            Asset::inspect(inspector);
+
+            auto textGroup = inspector->addGroup("text");
+            auto textProp = textGroup->addTextInput("text", &m_text.text);
 
             textProp->setNameVisible(false);
             textProp->setMultiline(true);
             textProp->setMonospace(true);
 
             connect(textProp, &InspectorProperty::dataChanged, this, &TextAsset::makeDirty);
-        }
-
-        void TextAsset::doSave()
-        {
-            m_text.Save();
         }
 
     }

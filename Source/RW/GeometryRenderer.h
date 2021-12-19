@@ -28,11 +28,11 @@ namespace Slick {
 
     private:
         Rws::Geometry* m_geometry;
-        QVector<glm::vec3> m_vertices;
-        QVector<glm::vec3> m_normals;
-        QVector<glm::vec4> m_colors;
-        QVector<glm::vec2> m_uvs;
-        QVector<glm::uint16> m_indices;
+        QList<glm::vec3> m_vertices;
+        QList<glm::vec3> m_normals;
+        QList<glm::vec4> m_colors;
+        QList<glm::vec2> m_uvs;
+        QList<glm::uint16> m_indices;
     };
 
 }

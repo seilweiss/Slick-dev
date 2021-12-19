@@ -309,7 +309,7 @@ namespace Slick {
         emit assetsSelected(selectedAssets());
     }
 
-    QVector<Asset*> ScenePanel::selectedAssets() const
+    QList<Asset*> ScenePanel::selectedAssets() const
     {
         QStackedLayout* stack = (QStackedLayout*)layout();
         SceneWidget* widget = (SceneWidget*)stack->currentWidget();
@@ -366,7 +366,7 @@ namespace Slick {
         }
     }
 
-    QVector<Asset*> SceneWidget::selectedAssets() const
+    QList<Asset*> SceneWidget::selectedAssets() const
     {
         SceneFileWidget* widget = (SceneFileWidget*)m_fileTabWidget->currentWidget();
 

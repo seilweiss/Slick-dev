@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Asset.h"
+#include "Core/BaseAsset.h"
 #include "Core/RenderContext.h"
 
 #include "hiphop/assets/fog_asset.h"
@@ -9,7 +9,7 @@ namespace Slick {
 
     namespace Assets {
 
-        class FogAsset : public Asset
+        class FogAsset : public BaseAsset
         {
             Q_OBJECT
 
@@ -18,8 +18,7 @@ namespace Slick {
 
             void apply(RenderContext* context);
 
-        protected:
-            virtual void doSave() override;
+            virtual void inspect(Inspector* inspector) override;
 
         private:
             HipHop::FogAsset m_fog;

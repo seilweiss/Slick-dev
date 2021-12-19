@@ -10,30 +10,56 @@ namespace Slick {
             Asset(asset, sceneFile),
             m_jsp(asset),
             m_clumpRenderer(nullptr),
-            m_jspAssets(),
-            m_setup(false)
+            m_jspAssets()
         {
-            m_jsp.Load();
+            setEditor(&m_jsp);
+        }
 
-            if (m_jsp.type == HipHop::JSPAsset::JSPClump)
+        void JSPAsset::inspect(Inspector* inspector)
+        {
+            Asset::inspect(inspector);
+
+            auto jspGroup = inspector->addGroup("jsp");
+
+            jspGroup->setDisplayName("JSP");
+        }
+
+        void JSPAsset::setup()
+        {
+            switch (m_jsp.type)
+            {
+            case HipHop::JSPAsset::JSPClump:
             {
                 m_clumpRenderer = new ClumpRenderer(this);
                 m_clumpRenderer->setClump(m_jsp.clump);
+                break;
             }
-        }
+            case HipHop::JSPAsset::JSPInfo:
+            {
+                uint32_t id = m_jsp.GetAsset().GetID();
 
-        void JSPAsset::doSave()
-        {
-            m_jsp.Save();
+                for (int i = 0; i < 3; i++)
+                {
+                    uint32_t jspID = HipHop::Util::Hash(std::to_string(i), id);
+                    JSPAsset* jspAsset = qobject_cast<JSPAsset*>(scene()->asset(jspID));
+
+                    if (jspAsset && jspAsset->m_jsp.type == HipHop::JSPAsset::JSPClump)
+                    {
+                        m_jspAssets.append(jspAsset);
+                    }
+                }
+
+                break;
+            }
+            default:
+            {
+                break;
+            }
+            }
         }
 
         void JSPAsset::render(RenderContext* context)
         {
-            if (!m_setup)
-            {
-                setup();
-            }
-
             context->glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);
             context->glEnable(GL_DEPTH_TEST);
 
@@ -76,29 +102,6 @@ namespace Slick {
             }
 
             context->glPopAttrib();
-        }
-
-        void JSPAsset::setup()
-        {
-            m_jspAssets.clear();
-
-            if (m_jsp.type == HipHop::JSPAsset::JSPInfo)
-            {
-                uint32_t id = m_jsp.GetAsset().GetID();
-
-                for (int i = 0; i < 3; i++)
-                {
-                    uint32_t jspID = HipHop::Util::Hash(std::to_string(i), id);
-                    JSPAsset* jspAsset = qobject_cast<JSPAsset*>(scene()->asset(jspID));
-
-                    if (jspAsset && jspAsset->m_jsp.type == HipHop::JSPAsset::JSPClump)
-                    {
-                        m_jspAssets.append(jspAsset);
-                    }
-                }
-            }
-
-            m_setup = true;
         }
 
     }

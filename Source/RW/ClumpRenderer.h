@@ -20,15 +20,15 @@ namespace Slick {
         Rws::Clump* clump() const { return m_clump; }
         void setClump(Rws::Clump* clump);
 
-        const QVector<AtomicRenderer*>& atomicRenderers() const { return m_atomRenderers; }
+        const QList<AtomicRenderer*>& atomicRenderers() const { return m_atomRenderers; }
 
         void render(RenderContext* context);
 
     private:
         Rws::Clump* m_clump;
-        QVector<AtomicRenderer*> m_atomRenderers;
-        QVector<GeometryRenderer*> m_geomRenderers;
-        QVector<Frame> m_frames;
+        QList<AtomicRenderer*> m_atomRenderers;
+        QList<GeometryRenderer*> m_geomRenderers;
+        QList<Frame> m_frames;
     };
 
 }

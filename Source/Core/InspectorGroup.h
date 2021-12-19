@@ -1,18 +1,13 @@
-#pragma once
+﻿#pragma once
 
 #include "Core/InspectorProperty.h"
 
-#include "InspectorProperties/Int8InspectorProperty.h"
-#include "InspectorProperties/Int16InspectorProperty.h"
-#include "InspectorProperties/Int32InspectorProperty.h"
-#include "InspectorProperties/UInt8InspectorProperty.h"
-#include "InspectorProperties/UInt16InspectorProperty.h"
-#include "InspectorProperties/UInt32InspectorProperty.h"
-#include "InspectorProperties/FloatInspectorProperty.h"
-#include "InspectorProperties/DoubleInspectorProperty.h"
-#include "InspectorProperties/QStringInspectorProperty.h"
-#include "InspectorProperties/StdStringInspectorProperty.h"
-#include "InspectorProperties/Color8InspectorProperty.h"
+#include "InspectorProperties/CheckBoxProperty.h"
+#include "InspectorProperties/ColorInputProperty.h"
+#include "InspectorProperties/ComboBoxProperty.h"
+#include "InspectorProperties/NumberInputProperty.h"
+#include "InspectorProperties/TextInputProperty.h"
+#include "InspectorProperties/VectorInputProperty.h"
 
 namespace Slick {
 
@@ -21,6 +16,12 @@ namespace Slick {
     class InspectorGroupItem
     {
     public:
+        enum Type
+        {
+            Property,
+            Group
+        };
+
         InspectorGroupItem(InspectorProperty* property) :
             m_type(Property),
             m_property(property)
@@ -33,6 +34,7 @@ namespace Slick {
         {
         }
 
+        Type type() const { return m_type; }
         bool isProperty() const { return m_type == Property; }
         bool isGroup() const { return m_type == Group; }
         InspectorProperty* property() const { return isProperty() ? m_property : nullptr; }
@@ -41,11 +43,7 @@ namespace Slick {
         QString name() const;
 
     private:
-        enum Type
-        {
-            Property,
-            Group
-        } m_type;
+        Type m_type;
 
         union
         {
@@ -60,12 +58,13 @@ namespace Slick {
         Q_PROPERTY(QString name READ name WRITE setName)
         Q_PROPERTY(QString displayName READ displayName WRITE setDisplayName)
         Q_PROPERTY(bool nameVisible READ nameVisible WRITE setNameVisible)
+        Q_PROPERTY(bool expanded READ expanded WRITE setExpanded)
         Q_PROPERTY(int itemCount READ itemCount)
-        Q_PROPERTY(QVector<InspectorGroupItem*> items READ items)
+        Q_PROPERTY(QList<InspectorGroupItem*> items READ items)
         Q_PROPERTY(int propertyCount READ propertyCount)
-        Q_PROPERTY(QVector<InspectorProperty*> properties READ properties)
+        Q_PROPERTY(QList<InspectorProperty*> properties READ properties)
         Q_PROPERTY(int groupCount READ groupCount)
-        Q_PROPERTY(QVector<InspectorGroup*> groups READ groups)
+        Q_PROPERTY(QList<InspectorGroup*> groups READ groups)
 
     public:
         InspectorGroup(const QString& name, QObject* parent = nullptr);
@@ -80,47 +79,75 @@ namespace Slick {
         bool nameVisible() const { return m_nameVisible; }
         void setNameVisible(bool visible) { m_nameVisible = visible; }
 
+        bool expanded() const { return m_expanded; }
+        void setExpanded(bool expanded) { m_expanded = expanded; }
+
         void clear();
 
         int itemCount() const { return m_items.size(); }
         InspectorGroupItem* item(int index) const { return m_items[index]; }
         InspectorGroupItem* item(const QString& name) const;
-        QVector<InspectorGroupItem*> items() const { return m_items; }
+        QList<InspectorGroupItem*> items() const { return m_items; }
         bool hasItem(const QString& name) const { return item(name) != nullptr; }
 
         int propertyCount() const;
         InspectorProperty* property(int index) const;
         InspectorProperty* property(const QString& name) const;
-        QVector<InspectorProperty*> properties() const;
+        QList<InspectorProperty*> properties() const;
         bool hasProperty(const QString& name) const { return property(name) != nullptr; }
 
         int groupCount() const;
         InspectorGroup* group(int index) const;
         InspectorGroup* group(const QString& name) const;
-        QVector<InspectorGroup*> groups() const;
+        QList<InspectorGroup*> groups() const;
         bool hasGroup(const QString& name) const { return group(name) != nullptr; }
 
+        InspectorGroupItem* addItem(InspectorGroupItem* item);
         InspectorProperty* addProperty(InspectorProperty* prop);
         InspectorGroup* addGroup(InspectorGroup* group);
         InspectorGroup* addGroup(const QString& name);
 
-        Int8InspectorProperty* addNumber(const QString& name, int8_t* dataSource);
-        Int16InspectorProperty* addNumber(const QString& name, int16_t* dataSource);
-        Int32InspectorProperty* addNumber(const QString& name, int32_t* dataSource);
-        UInt8InspectorProperty* addNumber(const QString& name, uint8_t* dataSource);
-        UInt16InspectorProperty* addNumber(const QString& name, uint16_t* dataSource);
-        UInt32InspectorProperty* addNumber(const QString& name, uint32_t* dataSource);
-        FloatInspectorProperty* addNumber(const QString& name, float* dataSource);
-        DoubleInspectorProperty* addNumber(const QString& name, double* dataSource);
-        QStringInspectorProperty* addString(const QString& name, QString* dataSource);
-        StdStringInspectorProperty* addString(const QString& name, std::string* dataSource);
-        Color8InspectorProperty* addColor(const QString& name, uint8_t(*dataSource)[4]);
+        CheckBoxProperty* addCheckBox(const QString& name, const InspectorDataSource& dataSource, uint32_t mask = 0xFFFFFFFF)
+        {
+            return (CheckBoxProperty*)addProperty(new CheckBoxProperty(name, dataSource, mask));
+        }
+
+        ColorInputProperty* addColorInput(const QString& name, const InspectorDataSource& dataSource)
+        {
+            return (ColorInputProperty*)addProperty(new ColorInputProperty(name, dataSource));
+        }
+
+        ComboBoxProperty* addComboBox(const QString& name, const InspectorDataSource& dataSource, const QStringList& items = QStringList())
+        {
+            return (ComboBoxProperty*)addProperty(new ComboBoxProperty(name, dataSource, items));
+        }
+
+        NumberInputProperty* addNumberInput(const QString& name, const InspectorDataSource& dataSource)
+        {
+            return (NumberInputProperty*)addProperty(new NumberInputProperty(name, dataSource));
+        }
+
+        TextInputProperty* addTextInput(const QString& name, const InspectorDataSource& dataSource)
+        {
+            return (TextInputProperty*)addProperty(new TextInputProperty(name, dataSource));
+        }
+
+        VectorInputProperty* addVectorInput(const QString& name, const InspectorDataSource& dataSource)
+        {
+            return (VectorInputProperty*)addProperty(new VectorInputProperty(name, dataSource));
+        }
+
+        virtual bool equals(InspectorGroup* other) const
+        {
+            return m_name == other->m_name;
+        }
 
     private:
         QString m_name;
         QString m_displayName;
         bool m_nameVisible;
-        QVector<InspectorGroupItem*> m_items;
+        bool m_expanded;
+        QList<InspectorGroupItem*> m_items;
     };
 
 }

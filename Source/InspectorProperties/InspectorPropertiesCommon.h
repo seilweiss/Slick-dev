@@ -2,8 +2,11 @@
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include <QResizeEvent>
 
 namespace Slick {
+
+    // BUG: Right border of IntSpinBox and DoubleSpinBox not drawn correctly with NoButtons
 
     class IntSpinBox : public QSpinBox
     {
@@ -16,8 +19,12 @@ namespace Slick {
         bool empty() const { return m_empty; }
         void setEmpty(bool empty) { m_empty = empty; }
 
+        virtual QSize sizeHint() const override { return QSize(32, QSpinBox::sizeHint().height()); }
+        virtual QSize minimumSizeHint() const override { return QSize(32, QSpinBox::minimumSizeHint().height()); }
+
     protected:
         virtual QString textFromValue(int value) const override { return m_empty ? QString() : QString::number(value); }
+        //virtual void resizeEvent(QResizeEvent* event) override { setButtonSymbols(event->size().width() < 64 ? QAbstractSpinBox::NoButtons : QAbstractSpinBox::UpDownArrows); }
 
     private:
         bool m_empty;
@@ -34,8 +41,12 @@ namespace Slick {
         bool empty() const { return m_empty; }
         void setEmpty(bool empty) { m_empty = empty; }
 
+        virtual QSize sizeHint() const override { return QSize(32, QDoubleSpinBox::sizeHint().height()); }
+        virtual QSize minimumSizeHint() const override { return QSize(32, QDoubleSpinBox::minimumSizeHint().height()); }
+
     protected:
         virtual QString textFromValue(double value) const override { return m_empty ? QString() : QString::number(value); }
+        //virtual void resizeEvent(QResizeEvent* event) override { setButtonSymbols(event->size().width() < 64 ? QAbstractSpinBox::NoButtons : QAbstractSpinBox::UpDownArrows); }
 
     private:
         bool m_empty;

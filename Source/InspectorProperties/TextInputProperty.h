@@ -4,15 +4,13 @@
 
 namespace Slick {
 
-    class AbstractStringInspectorProperty : public InspectorProperty
+    class TextInputProperty : public InspectorProperty
     {
         Q_OBJECT
 
     public:
-        AbstractStringInspectorProperty(const QString& name, void* dataSource, QObject* parent = nullptr) :
-            InspectorProperty(name, dataSource, parent),
-            m_multiline(false),
-            m_monospace(false) {}
+        TextInputProperty(const QString& name, const InspectorDataSource& dataSource, QObject* parent = nullptr) :
+            InspectorProperty(name, dataSource, parent), m_multiline(false), m_monospace(false) {}
 
         bool multiline() const { return m_multiline; }
         void setMultiline(bool multiline) { m_multiline = multiline; setOrientation(multiline ? Qt::Vertical : Qt::Horizontal); }
@@ -20,7 +18,7 @@ namespace Slick {
         bool monospace() const { return m_monospace; }
         void setMonospace(bool monospace) { m_monospace = monospace; }
 
-        virtual QWidget* createWidget(const QVector<InspectorProperty*>& props) override = 0;
+        virtual QWidget* createWidget(const QList<InspectorProperty*>& props) override;
 
     private:
         bool m_multiline;

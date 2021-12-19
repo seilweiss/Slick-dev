@@ -10,19 +10,24 @@ namespace Slick {
     namespace Assets {
 
         FogAsset::FogAsset(HipHop::Asset asset, SceneFile* sceneFile) :
-            Asset(asset, sceneFile),
+            BaseAsset(asset, sceneFile),
             m_fog(asset)
         {
-            m_fog.Load();
+            setEditor(&m_fog);
+        }
 
-            auto fogGroup = inspector()->addGroup("fog");
-            auto fogTypeProp = fogGroup->addNumber("type", &m_fog.fogType);
-            auto fogColorProp = fogGroup->addColor("fogColor", &m_fog.fogColor);
-            auto bkgndColorProp = fogGroup->addColor("backgroundColor", &m_fog.bkgndColor);
-            auto fogStartProp = fogGroup->addNumber("startDistance", &m_fog.fogStart);
-            auto fogStopProp = fogGroup->addNumber("endDistance", &m_fog.fogStop);
-            auto fogDensityProp = fogGroup->addNumber("density", &m_fog.fogDensity);
-            auto transitionTimeProp = fogGroup->addNumber("transitionTime", &m_fog.transitionTime);
+        void FogAsset::inspect(Inspector* inspector)
+        {
+            BaseAsset::inspect(inspector);
+
+            auto fogGroup = inspector->addGroup("fog");
+            auto fogTypeProp = fogGroup->addNumberInput("type", &m_fog.fogType);
+            auto fogColorProp = fogGroup->addColorInput("fogColor", (Color*)&m_fog.fogColor);
+            auto bkgndColorProp = fogGroup->addColorInput("backgroundColor", (Color*)&m_fog.bkgndColor);
+            auto fogStartProp = fogGroup->addNumberInput("startDistance", &m_fog.fogStart);
+            auto fogStopProp = fogGroup->addNumberInput("endDistance", &m_fog.fogStop);
+            auto fogDensityProp = fogGroup->addNumberInput("density", &m_fog.fogDensity);
+            auto transitionTimeProp = fogGroup->addNumberInput("transitionTime", &m_fog.transitionTime);
 
             connect(fogTypeProp, &InspectorProperty::dataChanged, this, &FogAsset::makeDirty);
             connect(fogColorProp, &InspectorProperty::dataChanged, this, &FogAsset::makeDirty);
@@ -31,11 +36,8 @@ namespace Slick {
             connect(fogStopProp, &InspectorProperty::dataChanged, this, &FogAsset::makeDirty);
             connect(fogDensityProp, &InspectorProperty::dataChanged, this, &FogAsset::makeDirty);
             connect(transitionTimeProp, &InspectorProperty::dataChanged, this, &FogAsset::makeDirty);
-        }
 
-        void FogAsset::doSave()
-        {
-            m_fog.Save();
+            inspectLinks(inspector);
         }
 
         void FogAsset::apply(RenderContext* context)

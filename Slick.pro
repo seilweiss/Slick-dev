@@ -23,10 +23,12 @@ SOURCES += \
     Source/Assets/EnvAsset.cpp \
     Source/Assets/FogAsset.cpp \
     Source/Assets/JSPAsset.cpp \
+    Source/Assets/MarkerAsset.cpp \
     Source/Assets/TextAsset.cpp \
     Source/Assets/TimerAsset.cpp \
     Source/CameraControllers/FirstPersonCameraController.cpp \
     Source/Core/Asset.cpp \
+    Source/Core/BaseAsset.cpp \
     Source/Core/Camera.cpp \
     Source/Core/CameraController.cpp \
     Source/Core/Editor.cpp \
@@ -44,7 +46,12 @@ SOURCES += \
     Source/Editors/SceneEditorWidget.cpp \
     Source/Editors/TextEditor.cpp \
     Source/Editors/TextEditorWidget.cpp \
-    Source/InspectorProperties/InspectorPropertyImpl.cpp \
+    Source/InspectorProperties/CheckBoxProperty.cpp \
+    Source/InspectorProperties/ColorInputProperty.cpp \
+    Source/InspectorProperties/ComboBoxProperty.cpp \
+    Source/InspectorProperties/NumberInputProperty.cpp \
+    Source/InspectorProperties/TextInputProperty.cpp \
+    Source/InspectorProperties/VectorInputProperty.cpp \
     Source/RW/ClumpRenderer.cpp \
     Source/RW/Frame.cpp \
     Source/RW/AtomicRenderer.cpp \
@@ -66,18 +73,24 @@ HEADERS += \
     Source/Assets/EnvAsset.h \
     Source/Assets/FogAsset.h \
     Source/Assets/JSPAsset.h \
+    Source/Assets/MarkerAsset.h \
     Source/Assets/TextAsset.h \
     Source/Assets/TimerAsset.h \
     Source/CameraControllers/FirstPersonCameraController.h \
     Source/Core/Asset.h \
+    Source/Core/BaseAsset.h \
+    Source/Core/BaseAssetPrivate.h \
     Source/Core/Camera.h \
     Source/Core/CameraController.h \
     Source/Core/Editor.h \
     Source/Core/EditorWidget.h \
+    Source/Core/Inspectable.h \
     Source/Core/Inspector.h \
-    Source/Core/InspectorCategory.h \
+    Source/Core/InspectorDataSource.h \
     Source/Core/InspectorGroup.h \
     Source/Core/InspectorProperty.h \
+    Source/Core/InspectorState.h \
+    Source/Core/InspectorTypes.h \
     Source/Core/RenderContext.h \
     Source/Core/Scene.h \
     Source/Core/SceneFile.h \
@@ -90,19 +103,13 @@ HEADERS += \
     Source/Editors/SceneEditorWidget.h \
     Source/Editors/TextEditor.h \
     Source/Editors/TextEditorWidget.h \
-    Source/InspectorProperties/AbstractStringInspectorProperty.h \
-    Source/InspectorProperties/Color8InspectorProperty.h \
-    Source/InspectorProperties/DoubleInspectorProperty.h \
-    Source/InspectorProperties/FloatInspectorProperty.h \
-    Source/InspectorProperties/InspectorPropertyImpl.h \
-    Source/InspectorProperties/Int16InspectorProperty.h \
-    Source/InspectorProperties/Int32InspectorProperty.h \
-    Source/InspectorProperties/Int8InspectorProperty.h \
-    Source/InspectorProperties/QStringInspectorProperty.h \
-    Source/InspectorProperties/StdStringInspectorProperty.h \
-    Source/InspectorProperties/UInt16InspectorProperty.h \
-    Source/InspectorProperties/UInt32InspectorProperty.h \
-    Source/InspectorProperties/UInt8InspectorProperty.h \
+    Source/InspectorProperties/CheckBoxProperty.h \
+    Source/InspectorProperties/ColorInputProperty.h \
+    Source/InspectorProperties/ComboBoxProperty.h \
+    Source/InspectorProperties/InspectorPropertiesCommon.h \
+    Source/InspectorProperties/NumberInputProperty.h \
+    Source/InspectorProperties/TextInputProperty.h \
+    Source/InspectorProperties/VectorInputProperty.h \
     Source/RW/Frame.h \
     Source/RW/AtomicRenderer.h \
     Source/RW/ClumpRenderer.h \
@@ -110,6 +117,7 @@ HEADERS += \
     Source/UI/EditorMessageBox.h \
     Source/UI/EditorPanel.h \
     Source/UI/ExpanderWidget.h \
+    Source/UI/ExpanderWidgetPrivate.h \
     Source/UI/HashGeneratorTool.h \
     Source/UI/InspectorPanel.h \
     Source/UI/MainWindow.h \

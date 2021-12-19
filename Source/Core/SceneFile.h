@@ -51,12 +51,13 @@ namespace Slick {
         Asset* asset(uint32_t id) const { return m_assetMap.contains(id) ? m_assetMap[id] : nullptr; }
         Asset* asset(const QString& name) const { return asset(HipHop::Util::Hash(name.toStdString())); }
         Asset* asset(HipHop::AssetType type, int index = 0);
-        QVector<Asset*> assets() const { return m_assetMap.values(); }
-        QVector<Asset*> assets(HipHop::AssetType type);
+        QList<Asset*> assets() const { return m_assetMap.values(); }
+        QList<Asset*> assets(HipHop::AssetType type);
         int assetCount() const { return m_assetMap.size(); }
         int assetCount(HipHop::AssetType type) const;
 
         bool load();
+        void setup();
 
     private:
         Scene* m_scene;

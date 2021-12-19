@@ -75,9 +75,9 @@ namespace Slick {
         return nullptr;
     }
 
-    QVector<Asset*> Scene::assets() const
+    QList<Asset*> Scene::assets() const
     {
-        QVector<Asset*> assets;
+        QList<Asset*> assets;
 
         for (SceneFile* file : m_files)
         {
@@ -87,9 +87,9 @@ namespace Slick {
         return assets;
     }
 
-    QVector<Asset*> Scene::assets(HipHop::AssetType type) const
+    QList<Asset*> Scene::assets(HipHop::AssetType type) const
     {
-        QVector<Asset*> assets;
+        QList<Asset*> assets;
 
         for (SceneFile* file : m_files)
         {
@@ -154,6 +154,11 @@ namespace Slick {
 
     void Scene::setup()
     {
+        for (SceneFile* file : m_files)
+        {
+            file->setup();
+        }
+
         m_envAsset = (Assets::EnvAsset*)asset(HipHop::AssetType::ENV);
         m_fogAsset = (Assets::FogAsset*)asset(HipHop::AssetType::FOG);
     }

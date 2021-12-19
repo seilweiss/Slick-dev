@@ -27,11 +27,11 @@ namespace Slick {
         Scene* scene() const;
         void setScene(Scene* scene);
 
-        QVector<Asset*> selectedAssets() const;
+        QList<Asset*> selectedAssets() const;
 
     signals:
         void sceneChanged(Scene* scene);
-        void assetsSelected(const QVector<Asset*>& assets);
+        void assetsSelected(const QList<Asset*>& assets);
 
     private:
         ScenePanel(QWidget* parent = nullptr);
@@ -50,10 +50,10 @@ namespace Slick {
             Scene* scene() const { return m_scene; }
             void setScene(Scene* scene);
 
-            QVector<Asset*> selectedAssets() const;
+            QList<Asset*> selectedAssets() const;
 
         signals:
-            void assetsSelected(const QVector<Asset*>& assets);
+            void assetsSelected(const QList<Asset*>& assets);
 
         private:
             Scene* m_scene;
@@ -71,10 +71,10 @@ namespace Slick {
             SceneFile* file() const { return m_file; }
             void setFile(SceneFile* file);
 
-            QVector<Asset*> selectedAssets() const { return m_selectedAssets; }
+            QList<Asset*> selectedAssets() const { return m_selectedAssets; }
 
         signals:
-            void assetsSelected(const QVector<Asset*>& assets);
+            void assetsSelected(const QList<Asset*>& assets);
 
         private:
             SceneFile* m_file;
@@ -82,7 +82,7 @@ namespace Slick {
             QLineEdit* m_filterAssetsLineEdit;
             QComboBox* m_filterTypesComboBox;
             QTableWidget* m_assetsTableWidget;
-            QVector<Asset*> m_selectedAssets;
+            QList<Asset*> m_selectedAssets;
 
         private slots:
             void updateFilter();

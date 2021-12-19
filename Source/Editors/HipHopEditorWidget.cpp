@@ -135,7 +135,7 @@ namespace Slick {
 
         m_layerComboBox->setCurrentIndex(0);
 
-        QVector<HipHop::AssetType> assetTypes;
+        QList<HipHop::AssetType> assetTypes;
 
         for (int i = 0; i < file->GetAssetCount(); i++)
         {
@@ -177,7 +177,7 @@ namespace Slick {
         {
             HipHop::Layer layer = m_file->GetLayerAt(layerIndex);
             int assetCount = layer.GetAssetCount();
-            QVector<HipHop::Asset> filteredAssets;
+            QList<HipHop::Asset> filteredAssets;
             HipHop::AssetType typeFilter = (HipHop::AssetType)m_assetTypeComboBox->currentData().toUInt();
             QString searchFilter = m_assetSearchLineEdit->text();
 

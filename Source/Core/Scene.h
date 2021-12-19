@@ -44,8 +44,8 @@ namespace Slick {
         Asset* asset(quint32 id) const;
         Asset* asset(const QString& name) const;
         Asset* asset(HipHop::AssetType type, int index = 0) const;
-        QVector<Asset*> assets() const;
-        QVector<Asset*> assets(HipHop::AssetType type) const;
+        QList<Asset*> assets() const;
+        QList<Asset*> assets(HipHop::AssetType type) const;
         int assetCount() const;
         int assetCount(HipHop::AssetType type) const;
 

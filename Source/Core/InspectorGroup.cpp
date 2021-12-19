@@ -12,6 +12,7 @@ namespace Slick {
         m_name(name),
         m_displayName(),
         m_nameVisible(true),
+        m_expanded(true),
         m_items()
     {
     }
@@ -25,13 +26,14 @@ namespace Slick {
     {
         for (InspectorGroupItem* item : m_items)
         {
-            if (item->isProperty())
+            switch (item->type())
             {
+            case InspectorGroupItem::Property:
                 delete item->property();
-            }
-            else
-            {
+                break;
+            case InspectorGroupItem::Group:
                 delete item->group();
+                break;
             }
 
             delete item;
@@ -99,9 +101,9 @@ namespace Slick {
         return nullptr;
     }
 
-    QVector<InspectorProperty*> InspectorGroup::properties() const
+    QList<InspectorProperty*> InspectorGroup::properties() const
     {
-        QVector<InspectorProperty*> props;
+        QList<InspectorProperty*> props;
 
         for (InspectorGroupItem* item : m_items)
         {
@@ -160,9 +162,9 @@ namespace Slick {
         return nullptr;
     }
 
-    QVector<InspectorGroup*> InspectorGroup::groups() const
+    QList<InspectorGroup*> InspectorGroup::groups() const
     {
-        QVector<InspectorGroup*> props;
+        QList<InspectorGroup*> props;
 
         for (InspectorGroupItem* item : m_items)
         {
@@ -175,82 +177,38 @@ namespace Slick {
         return props;
     }
 
+    InspectorGroupItem* InspectorGroup::addItem(InspectorGroupItem* item)
+    {
+        switch (item->type())
+        {
+        case InspectorGroupItem::Property:
+            item->property()->setParent(this);
+            break;
+        case InspectorGroupItem::Group:
+            item->group()->setParent(this);
+            break;
+        }
+
+        m_items.append(item);
+
+        return item;
+    }
+
     InspectorProperty* InspectorGroup::addProperty(InspectorProperty* prop)
     {
-        prop->setParent(this);
-
-        m_items.append(new InspectorGroupItem(prop));
-
+        addItem(new InspectorGroupItem(prop));
         return prop;
     }
 
     InspectorGroup* InspectorGroup::addGroup(InspectorGroup* group)
     {
-        group->setParent(this);
-
-        m_items.append(new InspectorGroupItem(group));
-
+        addItem(new InspectorGroupItem(group));
         return group;
     }
 
     InspectorGroup* InspectorGroup::addGroup(const QString& name)
     {
         return addGroup(new InspectorGroup(name));
-    }
-
-    Int8InspectorProperty* InspectorGroup::addNumber(const QString& name, int8_t* dataSource)
-    {
-        return (Int8InspectorProperty*)addProperty(new Int8InspectorProperty(name, dataSource));
-    }
-
-    Int16InspectorProperty* InspectorGroup::addNumber(const QString& name, int16_t* dataSource)
-    {
-        return (Int16InspectorProperty*)addProperty(new Int16InspectorProperty(name, dataSource));
-    }
-
-    Int32InspectorProperty* InspectorGroup::addNumber(const QString& name, int32_t* dataSource)
-    {
-        return (Int32InspectorProperty*)addProperty(new Int32InspectorProperty(name, dataSource));
-    }
-
-    UInt8InspectorProperty* InspectorGroup::addNumber(const QString& name, uint8_t* dataSource)
-    {
-        return (UInt8InspectorProperty*)addProperty(new UInt8InspectorProperty(name, dataSource));
-    }
-
-    UInt16InspectorProperty* InspectorGroup::addNumber(const QString& name, uint16_t* dataSource)
-    {
-        return (UInt16InspectorProperty*)addProperty(new UInt16InspectorProperty(name, dataSource));
-    }
-
-    UInt32InspectorProperty* InspectorGroup::addNumber(const QString& name, uint32_t* dataSource)
-    {
-        return (UInt32InspectorProperty*)addProperty(new UInt32InspectorProperty(name, dataSource));
-    }
-
-    FloatInspectorProperty* InspectorGroup::addNumber(const QString& name, float* dataSource)
-    {
-        return (FloatInspectorProperty*)addProperty(new FloatInspectorProperty(name, dataSource));
-    }
-
-    DoubleInspectorProperty* InspectorGroup::addNumber(const QString& name, double* dataSource)
-    {
-        return (DoubleInspectorProperty*)addProperty(new DoubleInspectorProperty(name, dataSource));
-    }
-
-    QStringInspectorProperty* InspectorGroup::addString(const QString& name, QString* dataSource)
-    {
-        return (QStringInspectorProperty*)addProperty(new QStringInspectorProperty(name, dataSource));
-    }
-
-    StdStringInspectorProperty* InspectorGroup::addString(const QString& name, std::string* dataSource)
-    {
-        return (StdStringInspectorProperty*)addProperty(new StdStringInspectorProperty(name, dataSource));
-    }
-
-    Color8InspectorProperty* InspectorGroup::addColor(const QString& name, uint8_t(*dataSource)[4])
-    {
-        return (Color8InspectorProperty*)addProperty(new Color8InspectorProperty(name, dataSource));
     }
 
 }

@@ -3,10 +3,16 @@
 #include "hiphop.h"
 
 #include <QString>
+#include <QList>
 
 namespace Slick {
 
     namespace Util {
+
+        inline QString hexToString(uint32_t hex)
+        {
+            return QString("0x") + QString("%1").arg(hex, 8, 16, QLatin1Char('0')).toUpper();
+        }
 
         inline QString assetTypeToString(HipHop::AssetType type)
         {
@@ -34,6 +40,49 @@ namespace Slick {
             case HipHop::LayerType::JSPINFO: return "JSPINFO";
             default: return "<unknown>";
             }
+        }
+
+        inline QStringList eventNames(HipHop::Game game)
+        {
+            if (game < HipHop::Game::ScoobyNightOf100Frights || game > HipHop::Game::RiseOfTheUnderminer)
+            {
+                game = HipHop::Game::RiseOfTheUnderminer;
+            }
+
+            static QStringList names[(int)HipHop::Game::Count];
+            static bool init[(int)HipHop::Game::Count] = { false };
+
+            if (!init[(int)game])
+            {
+                int count;
+
+                switch (game)
+                {
+                case HipHop::Game::ScoobyNightOf100Frights:
+                    count = HipHop::Event::CountScooby;
+                    break;
+                case HipHop::Game::BattleForBikiniBottom:
+                    count = HipHop::Event::CountBFBB;
+                    break;
+                case HipHop::Game::SpongeBobMovie:
+                    count = HipHop::Event::CountTSSM;
+                    break;
+                case HipHop::Game::Incredibles:
+                case HipHop::Game::RiseOfTheUnderminer:
+                default:
+                    count = HipHop::Event::CountIncredibles;
+                    break;
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    names[(int)game].append(QString::fromStdString(HipHop::EventToString(i, game)));
+                }
+
+                init[(int)game] = true;
+            }
+
+            return names[(int)game];
         }
 
         template <class A, class B> A convertString(const B& s);

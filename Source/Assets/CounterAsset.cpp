@@ -5,20 +5,22 @@ namespace Slick {
     namespace Assets {
 
         CounterAsset::CounterAsset(HipHop::Asset asset, SceneFile* sceneFile) :
-            Asset(asset, sceneFile),
+            BaseAsset(asset, sceneFile),
             m_counter(asset)
         {
-            m_counter.Load();
-
-            auto counterGroup = inspector()->addGroup("counter");
-            auto countProp = counterGroup->addNumber("count", &m_counter.count);
-
-            connect(countProp, &InspectorProperty::dataChanged, this, &CounterAsset::makeDirty);
+            setEditor(&m_counter);
         }
 
-        void CounterAsset::doSave()
+        void CounterAsset::inspect(Inspector* inspector)
         {
-            m_counter.Save();
+            BaseAsset::inspect(inspector);
+
+            auto counterGroup = inspector->addGroup("counter");
+            auto countProp = counterGroup->addNumberInput("count", &m_counter.count);
+
+            connect(countProp, &InspectorProperty::dataChanged, this, &CounterAsset::makeDirty);
+
+            inspectLinks(inspector);
         }
 
     }
