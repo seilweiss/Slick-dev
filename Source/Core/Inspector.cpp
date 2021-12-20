@@ -3,8 +3,9 @@
 namespace Slick {
 
     Inspector::Inspector(QObject* parent) :
-        InspectorGroup("root", parent)
+        InspectorGroup("root")
     {
+        setNameVisible(false);
     }
 
 }

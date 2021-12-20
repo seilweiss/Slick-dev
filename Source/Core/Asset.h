@@ -33,7 +33,9 @@ namespace Slick {
         SceneFile* sceneFile() const { return m_file; }
         Scene* scene() const { return m_scene; }
         HipHop::Asset hipHopAsset() const { return m_asset; }
+
         bool isDirty() const { return m_dirty; }
+        void makeDirty();
 
         HipHop::AssetEditor* editor() const { return m_editor; }
         void setEditor(HipHop::AssetEditor* editor) { m_editor = editor; }
@@ -50,8 +52,6 @@ namespace Slick {
         void nameChanged(const QString& name);
 
     protected:
-        void makeDirty();
-
         virtual void preLoad() {}
         virtual void postLoad() {}
         virtual void preSave() {}

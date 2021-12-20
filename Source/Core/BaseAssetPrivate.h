@@ -11,7 +11,7 @@ namespace Slick {
         Q_OBJECT
 
     public:
-        LinkGroup(HipHop::LinkAsset& link, const QString& name, QObject* parent = nullptr) :
+        LinkGroup(HipHop::LinkAsset& link, const QString& name, InspectorGroup* parent = nullptr) :
             InspectorGroup(name, parent), m_link(link) {}
 
         HipHop::LinkAsset& link() const { return m_link; }

@@ -23,6 +23,7 @@ namespace Slick {
         m_headerButton->setText(title);
         m_headerButton->setCheckable(true);
         m_headerButton->setChecked(true);
+        m_headerButton->setToolTip(title);
 
         m_widgetFrame->setStyleSheet("QFrame { margin: 0; }");
         m_widgetFrame->setFrameShape(QFrame::StyledPanel);
@@ -72,6 +73,7 @@ namespace Slick {
     void ExpanderWidget::setTitle(const QString& title)
     {
         m_headerButton->setText(title);
+        m_headerButton->setToolTip(title);
     }
 
     bool ExpanderWidget::isExpanded() const

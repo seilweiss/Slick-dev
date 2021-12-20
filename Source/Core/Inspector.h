@@ -10,6 +10,11 @@ namespace Slick {
 
     public:
         Inspector(QObject* parent = nullptr);
+
+        void requestRefresh() { emit refreshRequested(); }
+
+    signals:
+        void refreshRequested();
     };
 
 }

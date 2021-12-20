@@ -7,10 +7,17 @@ namespace Slick {
         return m_type == Property ? m_property->name() : m_group->name();
     }
 
+    QString InspectorGroupItem::id() const
+    {
+        return m_type == Property ? m_property->id() : m_group->id();
+    }
+
     InspectorGroup::InspectorGroup(const QString& name, QObject* parent) :
         QObject(parent),
+        m_parentGroup(qobject_cast<InspectorGroup*>(parent)),
         m_name(name),
         m_displayName(),
+        m_visible(true),
         m_nameVisible(true),
         m_expanded(true),
         m_items()
@@ -20,6 +27,11 @@ namespace Slick {
     InspectorGroup::~InspectorGroup()
     {
         clear();
+    }
+
+    QString InspectorGroup::id() const
+    {
+        return m_parentGroup ? (m_parentGroup->id() + "." + m_name) : m_name;
     }
 
     void InspectorGroup::clear()
@@ -162,6 +174,13 @@ namespace Slick {
         return nullptr;
     }
 
+    InspectorGroup* InspectorGroup::group(const QString& name)
+    {
+        InspectorGroup* g = ((const InspectorGroup*)this)->group(name);
+
+        return g ? g : addGroup(name);
+    }
+
     QList<InspectorGroup*> InspectorGroup::groups() const
     {
         QList<InspectorGroup*> props;
@@ -183,9 +202,11 @@ namespace Slick {
         {
         case InspectorGroupItem::Property:
             item->property()->setParent(this);
+            item->property()->setParentGroup(this);
             break;
         case InspectorGroupItem::Group:
             item->group()->setParent(this);
+            item->group()->setParentGroup(this);
             break;
         }
 

@@ -16,13 +16,12 @@ namespace Slick {
             BaseAsset::inspect(inspector);
 
             auto groupGroup = inspector->addGroup("group"); // lol
-            auto eventBehaviorProp = groupGroup->addComboBox("eventBehavior", &m_group.groupFlags, { tr("Send to all items"), tr("Send to random item"), tr("Send to consecutive items") });
+            auto eventBehaviorProp = groupGroup->addComboBox("sendEventsTo", &m_group.groupFlags, { "All Items", "Random Item", "Next Item in Group" });
 
             connect(eventBehaviorProp, &InspectorProperty::dataChanged, this, &GroupAsset::makeDirty);
 
             auto itemsGroup = groupGroup->addGroup("items");
             itemsGroup->setDisplayName(QString("Items (%1)").arg(m_group.items.size()));
-            itemsGroup->setExpanded(false);
 
             for (int i = 0; i < m_group.items.size(); i++)
             {

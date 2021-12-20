@@ -42,6 +42,7 @@ namespace Slick {
         InspectorGroup* group() const { return isGroup() ? m_group : nullptr; }
 
         QString name() const;
+        QString id() const;
 
     private:
         Type m_type;
@@ -56,10 +57,13 @@ namespace Slick {
     class InspectorGroup : public QObject
     {
         Q_OBJECT
-        Q_PROPERTY(QString name READ name WRITE setName)
-        Q_PROPERTY(QString displayName READ displayName WRITE setDisplayName)
-        Q_PROPERTY(bool nameVisible READ nameVisible WRITE setNameVisible)
-        Q_PROPERTY(bool expanded READ expanded WRITE setExpanded)
+        Q_PROPERTY(InspectorGroup* parentGroup READ parentGroup WRITE setParentGroup NOTIFY parentGroupChanged)
+        Q_PROPERTY(QString id READ id CONSTANT)
+        Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+        Q_PROPERTY(QString displayName READ displayName WRITE setDisplayName NOTIFY displayNameChanged)
+        Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibilityChanged)
+        Q_PROPERTY(bool nameVisible READ nameVisible WRITE setNameVisible NOTIFY nameVisibilityChanged)
+        Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expansionChanged)
         Q_PROPERTY(int itemCount READ itemCount)
         Q_PROPERTY(QList<InspectorGroupItem*> items READ items)
         Q_PROPERTY(int propertyCount READ propertyCount)
@@ -71,17 +75,25 @@ namespace Slick {
         InspectorGroup(const QString& name, QObject* parent = nullptr);
         virtual ~InspectorGroup();
 
+        InspectorGroup* parentGroup() const { return m_parentGroup; }
+        void setParentGroup(InspectorGroup* group) { m_parentGroup = group; emit parentGroupChanged(group); }
+
+        QString id() const;
+
         QString name() const { return m_name; }
-        void setName(const QString& name) { m_name = name; }
+        void setName(const QString& name) { m_name = name; emit nameChanged(name); }
 
         QString displayName() const { return m_displayName; }
-        void setDisplayName(const QString& displayName) { m_displayName = displayName; }
+        void setDisplayName(const QString& displayName) { m_displayName = displayName; emit displayNameChanged(displayName); }
+
+        bool visible() const { return m_visible; }
+        void setVisible(bool visible) { m_visible = visible; emit visibilityChanged(visible); }
 
         bool nameVisible() const { return m_nameVisible; }
-        void setNameVisible(bool visible) { m_nameVisible = visible; }
+        void setNameVisible(bool visible) { m_nameVisible = visible; emit nameVisibilityChanged(visible); }
 
         bool expanded() const { return m_expanded; }
-        void setExpanded(bool expanded) { m_expanded = expanded; }
+        void setExpanded(bool expanded) { m_expanded = expanded; emit expansionChanged(expanded); }
 
         void clear();
 
@@ -100,6 +112,7 @@ namespace Slick {
         int groupCount() const;
         InspectorGroup* group(int index) const;
         InspectorGroup* group(const QString& name) const;
+        InspectorGroup* group(const QString& name); // creates group if none exists
         QList<InspectorGroup*> groups() const;
         bool hasGroup(const QString& name) const { return group(name) != nullptr; }
 
@@ -148,9 +161,19 @@ namespace Slick {
             return m_name == other->m_name;
         }
 
+    signals:
+        void parentGroupChanged(Slick::InspectorGroup* group);
+        void nameChanged(const QString& name);
+        void displayNameChanged(const QString& displayName);
+        void visibilityChanged(bool visible);
+        void nameVisibilityChanged(bool visible);
+        void expansionChanged(bool expanded);
+
     private:
+        InspectorGroup* m_parentGroup;
         QString m_name;
         QString m_displayName;
+        bool m_visible;
         bool m_nameVisible;
         bool m_expanded;
         QList<InspectorGroupItem*> m_items;

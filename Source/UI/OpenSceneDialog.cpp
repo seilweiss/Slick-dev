@@ -208,7 +208,7 @@ namespace Slick {
         setWindowTitle(tr("Open Scene"));
         setWindowFlag(Qt::WindowContextHelpButtonHint, false);
 
-        resize(700, 0);
+        resize(550, 0);
 
         m_hip.checkBox->setChecked(true);
 

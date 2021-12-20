@@ -9,7 +9,11 @@ class QScrollArea;
 
 namespace Slick {
 
-    class ExpanderWidget;
+    namespace InspectorPanelPrivate {
+
+        class InspectorGroupWidget;
+
+    }
 
     class InspectorPanel : public QWidget
     {
@@ -38,13 +42,9 @@ namespace Slick {
         QList<Inspector*> m_inspectors;
         QVBoxLayout* m_mainLayout;
         QScrollArea* m_scrollArea;
-        QWidget* m_inspectorWidget;
-        QVBoxLayout* m_inspectorLayout;
-        QMap<QString, ExpanderWidget*> m_groupWidgets;
-        QString m_currentGroupId;
+        InspectorPanelPrivate::InspectorGroupWidget* m_rootGroupWidget;
 
-        void clearWidget();
-        void recurseAddGroups(QVBoxLayout* parentLayout, const QList<InspectorGroup*>& groups, bool root);
+        void updateGroupFromState(InspectorGroup* group, InspectorState& state);
     };
 
 }
