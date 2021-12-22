@@ -33,7 +33,7 @@ namespace Slick {
         QString path() const { return m_path; }
         void setPath(const QString& path) { m_path = path; }
 
-        HipHop::File& hipHopFile() { return m_file; };
+        HipHop::File& hipHopFile() { return m_file; }
         HipHop::FileStream& hipHopStream() { return m_stream; }
 
         HipHop::Game game() const { return m_game; }
@@ -53,6 +53,20 @@ namespace Slick {
         Asset* asset(HipHop::AssetType type, int index = 0);
         QList<Asset*> assets() const { return m_assetMap.values(); }
         QList<Asset*> assets(HipHop::AssetType type);
+
+        template <class T> QList<T> assets(HipHop::AssetType type)
+        {
+            QList<T> result;
+            QList<Asset*> a = assets(type);
+
+            for (Asset* asset : a)
+            {
+                result.append(qobject_cast<T>(asset));
+            }
+
+            return result;
+        }
+
         int assetCount() const { return m_assetMap.size(); }
         int assetCount(HipHop::AssetType type) const;
 

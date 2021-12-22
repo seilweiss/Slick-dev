@@ -19,7 +19,6 @@ namespace Slick {
 
         private:
             HipHop::SimpleObjAsset m_simpleObj;
-            int m_collTypeIndex;
         };
 
     }

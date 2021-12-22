@@ -10,11 +10,11 @@ namespace Slick {
         Q_PROPERTY(QStringList items READ items)
 
     public:
-        ComboBoxProperty(const QString& name, const InspectorDataSource& dataSource, QObject* parent = nullptr) :
-            InspectorProperty(name, dataSource, parent), m_items(QStringList()) {}
+        ComboBoxProperty(const QString& name, const QString& displayName, const InspectorDataSource& dataSource, QObject* parent = nullptr) :
+            InspectorProperty(name, displayName, dataSource, parent), m_items(QStringList()) {}
 
-        ComboBoxProperty(const QString& name, const InspectorDataSource& dataSource, const QStringList& items, QObject* parent = nullptr) :
-            InspectorProperty(name, dataSource, parent), m_items(items) {}
+        ComboBoxProperty(const QString& name, const QString& displayName, const InspectorDataSource& dataSource, const QStringList& items, QObject* parent = nullptr) :
+            InspectorProperty(name, displayName, dataSource, parent), m_items(items) {}
 
         QStringList& items() { return m_items; }
         const QStringList& items() const { return m_items; }

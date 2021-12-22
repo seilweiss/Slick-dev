@@ -22,6 +22,9 @@ namespace Slick {
 
         const QList<AtomicRenderer*>& atomicRenderers() const { return m_atomRenderers; }
 
+        Frame* frame() { return !m_frames.empty() ? &m_frames[0] : nullptr; }
+        const Frame* frame() const { return !m_frames.empty() ? &m_frames[0] : nullptr; }
+
         void render(RenderContext* context);
 
     private:

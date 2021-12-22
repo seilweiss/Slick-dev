@@ -1,8 +1,11 @@
 #include "InspectorProperties/AssetInputProperty.h"
 
 #include "Core/Scene.h"
+#include "Core/Util.h"
 
-#include <QLineEdit>
+#include <QHBoxLayout>
+#include <QFrame>
+#include <QToolButton>
 
 namespace Slick {
 
@@ -10,7 +13,26 @@ namespace Slick {
 
         QWidget* createAssetInput(const QList<InspectorProperty*>& props)
         {
-            QLineEdit* lineEdit = new QLineEdit;
+            QFrame* frame = new QFrame;
+            QHBoxLayout* layout = new QHBoxLayout;
+            QToolButton* assetButton = new QToolButton;
+            QToolButton* selectButton = new QToolButton;
+
+            frame->setFrameStyle(QFrame::StyledPanel);
+            frame->setStyleSheet("QFrame { background-color: white; }");
+            frame->setLayout(layout);
+
+            layout->setContentsMargins(0, 0, 0, 0);
+            layout->setSpacing(0);
+
+            layout->addWidget(assetButton, 1);
+            layout->addWidget(selectButton);
+
+            assetButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+            assetButton->setStyleSheet("QToolButton:!hover:!pressed { border: 0; background-color: transparent; }");
+
+            selectButton->setText("...");
+
             uint32_t assetID = props[0]->dataSource().data<uint32_t>();
             bool match = true;
 
@@ -25,19 +47,21 @@ namespace Slick {
                 }
             }
 
-            lineEdit->setReadOnly(true);
-
             if (match)
             {
-                Asset* asset = ((AssetInputProperty*)props[0])->scene()->asset(assetID);
-
-                if (asset)
+                if (assetID == 0)
                 {
-                    lineEdit->setText(asset->name());
+                    assetButton->setText(QObject::tr("<None>"));
+                }
+                else
+                {
+                    Asset* asset = ((AssetInputProperty*)props[0])->scene()->asset(assetID);
+
+                    assetButton->setText(asset ? asset->name() : Util::hexToString(assetID));
                 }
             }
 
-            return lineEdit;
+            return frame;
         }
 
     }

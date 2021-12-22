@@ -50,6 +50,10 @@ namespace Slick {
 
             const QList<InspectorGroup*>& groups() const { return m_groups; }
 
+        signals:
+            void refreshStarted();
+            void refreshFinished();
+
         private:
             QList<InspectorGroup*> m_groups;
             QVBoxLayout* m_layout;
@@ -58,7 +62,8 @@ namespace Slick {
             QVBoxLayout* m_contentLayout;
             bool m_firstRefresh;
 
-            void refresh();
+            void refreshGroup();
+            void refreshWidget();
         };
 
         QString makeDisplayName(const QString& name);

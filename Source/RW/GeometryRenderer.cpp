@@ -133,6 +133,14 @@ namespace Slick {
         context->glEnableClientState(GL_VERTEX_ARRAY);
         context->glVertexPointer(3, GL_FLOAT, 0, glm::value_ptr(m_vertices[0]));
 
+        float matAmbient[4] = { 1, 1, 1, 1 };
+        float matDiffuse[4] = { 1, 1, 1, 1 };
+        float matSpecular[4] = { 0, 0, 0, 0 };
+
+        context->glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
+        context->glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
+        context->glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+
         context->glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_SHORT, &m_indices[0]);
 
         context->glPopClientAttrib();

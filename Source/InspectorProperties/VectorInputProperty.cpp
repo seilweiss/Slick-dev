@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+#include <glm/glm.hpp>
 #include <limits>
 
 namespace Slick {
@@ -45,14 +46,15 @@ namespace Slick {
 
                 spinBox->setEmpty(!match);
                 spinBox->setRange(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
-                spinBox->setValue(((float*)&value)[n]);
+                spinBox->setAlignment(Qt::AlignRight);
+                spinBox->setValue(((VectorInputProperty*)props[0])->convertRadiansToDegrees() ? glm::degrees(((float*)&value)[n]) : ((float*)&value)[n]);
 
                 QObject::connect(spinBox, &DoubleSpinBox::valueChanged, [=](double value)
                 {
                     for (InspectorProperty* prop : props)
                     {
                         T data = prop->dataSource().data<T>();
-                        ((float*)&data)[n] = (float)value;
+                        ((float*)&data)[n] = ((VectorInputProperty*)prop)->convertRadiansToDegrees() ? glm::radians((float)value) : value;
 
                         prop->dataSource().setData(data);
                         prop->notifyDataChanged();

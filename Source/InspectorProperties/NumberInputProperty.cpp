@@ -2,6 +2,7 @@
 
 #include "InspectorProperties/InspectorPropertiesCommon.h"
 
+#include <glm/glm.hpp>
 #include <limits>
 
 namespace Slick {
@@ -27,13 +28,13 @@ namespace Slick {
 
             spinBox->setEmpty(!match);
             spinBox->setRange(std::numeric_limits<T>::lowest(), std::numeric_limits<T>::max());
-            spinBox->setValue(value);
+            spinBox->setValue(((NumberInputProperty*)props[0])->convertRadiansToDegrees() ? glm::degrees((float)value) : value);
 
             QObject::connect(spinBox, &W::valueChanged, [=](T value)
             {
                 for (InspectorProperty* prop : props)
                 {
-                    prop->dataSource().setData(value);
+                    prop->dataSource().setData(((NumberInputProperty*)prop)->convertRadiansToDegrees() ? glm::radians((float)value) : value);
                     prop->notifyDataChanged();
                 }
             });

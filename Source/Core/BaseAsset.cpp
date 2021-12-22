@@ -4,7 +4,70 @@
 #include "Core/Scene.h"
 #include "Core/Util.h"
 
+#include <QCoreApplication>
+
 namespace Slick {
+
+    namespace {
+
+        class LinkListSource : public InspectorListSource<std::vector<HipHop::LinkAsset>>
+        {
+            Q_DECLARE_TR_FUNCTIONS(LinkListSource)
+
+        public:
+            LinkListSource(BaseAsset* asset, std::vector<HipHop::LinkAsset>& list) : InspectorListSource(list), m_asset(asset) {}
+
+            void LinkListSource::createGroupItem(InspectorGroup* group, int index)
+            {
+                HipHop::LinkAsset* link = &list()[index];
+                auto linkGroup = group->addGroup(new LinkGroup(link));
+
+                linkGroup->setExpanded(false);
+
+                QStringList eventNames = Util::eventNames(m_asset->scene()->game());
+
+                auto srcEventProp = linkGroup->addEventInput("srcEvent", tr("Receive Event"), &link->srcEvent, m_asset->scene());
+                auto srcAssetProp = linkGroup->addAssetInput("srcAsset", tr("From Asset"), &link->chkAssetID, m_asset->scene());
+                auto dstEventProp = linkGroup->addEventInput("dstEvent", tr("Send Event"), &link->dstEvent, m_asset->scene());
+                auto dstAssetProp = linkGroup->addAssetInput("dstAsset", tr("To Asset"), &link->dstAssetID, m_asset->scene());
+                auto paramAssetProp = linkGroup->addAssetInput("paramAsset", tr("Param Asset"), &link->paramWidgetAssetID, m_asset->scene());
+
+                srcEventProp->setHelpText(tr("Event to receive."));
+                srcAssetProp->setHelpText(tr("Optional asset to receive the event from.\n"
+                                             "This filters out events received from other assets."));
+                dstEventProp->setHelpText(tr("Event to send."));
+                dstAssetProp->setHelpText(tr("Asset to send the event to."));
+                paramAssetProp->setHelpText(tr("Optional parameter asset to send with the event."));
+
+                QObject::connect(srcEventProp, &InspectorProperty::dataChanged, m_asset, &Asset::makeDirty);
+                QObject::connect(srcAssetProp, &InspectorProperty::dataChanged, m_asset, &Asset::makeDirty);
+                QObject::connect(dstEventProp, &InspectorProperty::dataChanged, m_asset, &Asset::makeDirty);
+                QObject::connect(dstAssetProp, &InspectorProperty::dataChanged, m_asset, &Asset::makeDirty);
+                QObject::connect(paramAssetProp, &InspectorProperty::dataChanged, m_asset, &Asset::makeDirty);
+
+                auto updateDisplayName = [=]
+                {
+                    HipHop::Game game = m_asset->scene()->game();
+                    QString srcEventName = QString::fromStdString(HipHop::EventToString(link->srcEvent, game));
+                    QString dstEventName = QString::fromStdString(HipHop::EventToString(link->dstEvent, game));
+                    Asset* dstAsset = m_asset->scene()->asset(link->dstAssetID);
+                    QString dstAssetName = dstAsset ? dstAsset->name() : Util::hexToString(link->dstAssetID);
+
+                    linkGroup->setDisplayName(QString("%1 => %2 => %3").arg(srcEventName, dstEventName, dstAssetName));
+                };
+
+                QObject::connect(srcEventProp, &InspectorProperty::dataChanged, updateDisplayName);
+                QObject::connect(dstEventProp, &InspectorProperty::dataChanged, updateDisplayName);
+                QObject::connect(dstAssetProp, &InspectorProperty::dataChanged, updateDisplayName);
+
+                updateDisplayName();
+            }
+
+        private:
+            BaseAsset* m_asset;
+        };
+
+    }
 
     BaseAsset::BaseAsset(HipHop::Asset asset, SceneFile* sceneFile) :
         Asset(asset, sceneFile),
@@ -17,62 +80,26 @@ namespace Slick {
     {
         Asset::inspect(inspector);
 
-        auto flagsGroup = inspector->addGroup("flags");
-        auto enabledProp = flagsGroup->addCheckBox("enabled", &m_base->baseFlags, HipHop::BaseAsset::Enabled);
-        auto persistentProp = flagsGroup->addCheckBox("persistent", &m_base->baseFlags, HipHop::BaseAsset::Persistent);
-        //auto validProp = flagsGroup->addCheckBox("valid", &m_base->baseFlags, HipHop::BaseAsset::Valid);
+        auto flagsGroup = inspector->addGroup("flags", tr("Flags"));
+        auto enabledProp = flagsGroup->addCheckBox("enabled", tr("Enabled"), &m_base->baseFlags, HipHop::BaseAsset::Enabled);
+        auto persistentProp = flagsGroup->addCheckBox("persistent", tr("Persistent"), &m_base->baseFlags, HipHop::BaseAsset::Persistent);
+        //auto validProp = flagsGroup->addCheckBox("valid", tr("Valid"), &m_base->baseFlags, HipHop::BaseAsset::Valid);
+
+        enabledProp->setHelpText(tr("Whether the object is enabled or not.\n"
+                                    "Enabled means the object will be active (which can mean different\n"
+                                    "things depending on the asset type) and able to receive events."));
+        persistentProp->setHelpText(tr("Whether the object is persistent or not.\n"
+                                       "Persistent means the object will save its current state upon\n"
+                                       "leaving the level and load it when re-entering the level."));
 
         connect(enabledProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);
         connect(persistentProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);
-        //connect(validProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);
     }
 
     void BaseAsset::inspectLinks(Inspector* inspector)
     {
-        auto linksGroup = inspector->addGroup("links");
-        linksGroup->setDisplayName(QString("Links (%1)").arg(m_base->links.size()));
-
-        HipHop::Game game = hipHopAsset().GetFile()->GetGame();
-        QStringList eventNames = Util::eventNames(game);
-
-        for (int i = 0; i < m_base->links.size(); i++)
-        {
-            HipHop::LinkAsset& link = m_base->links[i];
-            auto linkGroup = linksGroup->addGroup(new LinkGroup(link, QString::number(i)));
-
-            linkGroup->setExpanded(false);
-
-            auto srcAssetProp = linkGroup->addAssetInput("srcAsset", &link.chkAssetID, scene());
-            auto srcEventProp = linkGroup->addComboBox("srcEvent", &link.srcEvent, eventNames);
-            auto dstEventProp = linkGroup->addComboBox("dstEvent", &link.dstEvent, eventNames);
-            auto dstAssetProp = linkGroup->addAssetInput("dstAsset", &link.dstAssetID, scene());
-            auto paramAssetProp = linkGroup->addAssetInput("paramAsset", &link.paramWidgetAssetID, scene());
-
-            auto updateDisplayName = [=]
-            {
-                QString srcEventName = QString::fromStdString(HipHop::EventToString(m_base->links[i].srcEvent, game));
-                QString dstEventName = QString::fromStdString(HipHop::EventToString(m_base->links[i].dstEvent, game));
-                Asset* dstAsset = scene()->asset(m_base->links[i].dstAssetID);
-                QString dstAssetName = dstAsset ? dstAsset->name() : Util::hexToString(m_base->links[i].dstAssetID);
-
-                linkGroup->setDisplayName(QString("%1 => %2 => %3").arg(srcEventName, dstEventName, dstAssetName));
-            };
-
-            connect(srcAssetProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);
-
-            connect(srcEventProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);
-            connect(srcEventProp, &InspectorProperty::dataChanged, updateDisplayName);
-
-            connect(dstEventProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);
-            connect(dstEventProp, &InspectorProperty::dataChanged, updateDisplayName);
-
-            connect(dstAssetProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);
-            connect(dstAssetProp, &InspectorProperty::dataChanged, updateDisplayName);
-
-            connect(paramAssetProp, &InspectorProperty::dataChanged, this, &BaseAsset::makeDirty);
-
-            updateDisplayName();
-        }
+        auto linksGroup = inspector->addGroup("links", tr("Links"));
+        linksGroup->setListSource(new LinkListSource(this, m_base->links));
     }
 
 }

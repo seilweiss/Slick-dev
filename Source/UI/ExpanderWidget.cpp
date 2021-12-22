@@ -73,7 +73,18 @@ namespace Slick {
     void ExpanderWidget::setTitle(const QString& title)
     {
         m_headerButton->setText(title);
-        m_headerButton->setToolTip(title);
+        updateToolTip();
+    }
+
+    QString ExpanderWidget::toolTip() const
+    {
+        return !m_toolTipOverride.isEmpty() ? m_toolTipOverride : title();
+    }
+
+    void ExpanderWidget::setToolTip(const QString& tooltip)
+    {
+        m_toolTipOverride = tooltip;
+        updateToolTip();
     }
 
     bool ExpanderWidget::isExpanded() const
@@ -84,6 +95,11 @@ namespace Slick {
     void ExpanderWidget::setExpanded(bool expanded)
     {
         m_headerButton->setChecked(expanded);
+    }
+
+    void ExpanderWidget::updateToolTip()
+    {
+        m_headerButton->setToolTip(toolTip());
     }
 
 }

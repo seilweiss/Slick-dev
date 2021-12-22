@@ -2,8 +2,12 @@
 
 #include "Core/Camera.h"
 
+#include "Assets/BoulderAsset.h"
+#include "Assets/ButtonAsset.h"
 #include "Assets/EnvAsset.h"
 #include "Assets/FogAsset.h"
+#include "Assets/PlayerAsset.h"
+#include "Assets/SimpleObjectAsset.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -161,10 +165,33 @@ namespace Slick {
 
         m_envAsset = (Assets::EnvAsset*)asset(HipHop::AssetType::ENV);
         m_fogAsset = (Assets::FogAsset*)asset(HipHop::AssetType::FOG);
+        m_boulderAssets = assets<Assets::BoulderAsset*>(HipHop::AssetType::BOUL);
+        m_buttonAssets = assets<Assets::ButtonAsset*>(HipHop::AssetType::BUTN);
+        m_playerAssets = assets<Assets::PlayerAsset*>(HipHop::AssetType::PLYR);
+        m_simpAssets = assets<Assets::SimpleObjectAsset*>(HipHop::AssetType::SIMP);
     }
 
     void Scene::update(RenderContext* context)
     {
+        for (Assets::BoulderAsset* boul : m_boulderAssets)
+        {
+            boul->update(context);
+        }
+
+        for (Assets::ButtonAsset* butn : m_buttonAssets)
+        {
+            butn->update(context);
+        }
+
+        for (Assets::PlayerAsset* plyr : m_playerAssets)
+        {
+            plyr->update(context);
+        }
+
+        for (Assets::SimpleObjectAsset* simp : m_simpAssets)
+        {
+            simp->update(context);
+        }
     }
 
     void Scene::render(RenderContext* context)
@@ -190,6 +217,26 @@ namespace Slick {
         if (m_envAsset)
         {
             m_envAsset->render(context);
+        }
+
+        for (Assets::BoulderAsset* boul : m_boulderAssets)
+        {
+            boul->render(context);
+        }
+
+        for (Assets::ButtonAsset* butn : m_buttonAssets)
+        {
+            butn->render(context);
+        }
+
+        for (Assets::PlayerAsset* plyr : m_playerAssets)
+        {
+            plyr->render(context);
+        }
+
+        for (Assets::SimpleObjectAsset* simp : m_simpAssets)
+        {
+            simp->render(context);
         }
 
         context->camera()->end();

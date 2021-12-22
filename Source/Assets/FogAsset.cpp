@@ -20,14 +20,20 @@ namespace Slick {
         {
             BaseAsset::inspect(inspector);
 
-            auto fogGroup = inspector->addGroup("fog");
-            auto fogTypeProp = fogGroup->addNumberInput("type", &m_fog.fogType);
-            auto fogColorProp = fogGroup->addColorInput("fogColor", (Color*)&m_fog.fogColor);
-            auto bkgndColorProp = fogGroup->addColorInput("backgroundColor", (Color*)&m_fog.bkgndColor);
-            auto fogStartProp = fogGroup->addNumberInput("startDistance", &m_fog.fogStart);
-            auto fogStopProp = fogGroup->addNumberInput("endDistance", &m_fog.fogStop);
-            auto fogDensityProp = fogGroup->addNumberInput("density", &m_fog.fogDensity);
-            auto transitionTimeProp = fogGroup->addNumberInput("transitionTime", &m_fog.transitionTime);
+            auto fogGroup = inspector->addGroup("fog", tr("Fog"));
+            auto fogTypeProp = fogGroup->addNumberInput("type", tr("Type"), &m_fog.fogType);
+            auto fogColorProp = fogGroup->addColorInput("fogColor", tr("Fog Color"), (Color*)&m_fog.fogColor);
+            auto bkgndColorProp = fogGroup->addColorInput("backgroundColor", tr("Background Color"), (Color*)&m_fog.bkgndColor);
+            auto fogStartProp = fogGroup->addNumberInput("startDistance", tr("Start Distance"), &m_fog.fogStart);
+            auto fogStopProp = fogGroup->addNumberInput("endDistance", tr("End Distance"), &m_fog.fogStop);
+            auto fogDensityProp = fogGroup->addNumberInput("density", tr("Density"), &m_fog.fogDensity);
+            auto transitionTimeProp = fogGroup->addNumberInput("transitionTime", tr("Transition Time"), &m_fog.transitionTime);
+
+            fogColorProp->setHelpText(tr("The fog's color."));
+            bkgndColorProp->setHelpText(tr("The fog's background color (camera's clear color)."));
+            fogStartProp->setHelpText(tr("The fog's start distance from the camera."));
+            fogStopProp->setHelpText(tr("The fog's end distance from the camera (camera's near clipping plane)."));
+            fogDensityProp->setHelpText(tr("The fog's density."));
 
             connect(fogTypeProp, &InspectorProperty::dataChanged, this, &FogAsset::makeDirty);
             connect(fogColorProp, &InspectorProperty::dataChanged, this, &FogAsset::makeDirty);

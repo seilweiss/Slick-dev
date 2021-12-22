@@ -9,8 +9,12 @@ namespace Slick {
 
     namespace Assets {
 
+        class BoulderAsset;
+        class ButtonAsset;
         class EnvAsset;
         class FogAsset;
+        class PlayerAsset;
+        class SimpleObjectAsset;
 
     }
 
@@ -46,6 +50,20 @@ namespace Slick {
         Asset* asset(HipHop::AssetType type, int index = 0) const;
         QList<Asset*> assets() const;
         QList<Asset*> assets(HipHop::AssetType type) const;
+
+        template <class T> QList<T> assets(HipHop::AssetType type) const
+        {
+            QList<T> result;
+            QList<Asset*> a = assets(type);
+
+            for (Asset* asset : a)
+            {
+                result.append(qobject_cast<T>(asset));
+            }
+
+            return result;
+        }
+
         int assetCount() const;
         int assetCount(HipHop::AssetType type) const;
 
@@ -64,6 +82,10 @@ namespace Slick {
 
         Assets::EnvAsset* m_envAsset;
         Assets::FogAsset* m_fogAsset;
+        QList<Assets::BoulderAsset*> m_boulderAssets;
+        QList<Assets::ButtonAsset*> m_buttonAssets;
+        QList<Assets::PlayerAsset*> m_playerAssets;
+        QList<Assets::SimpleObjectAsset*> m_simpAssets;
     };
 
 }

@@ -10,6 +10,7 @@ namespace Slick {
     namespace Assets {
 
         class JSPAsset;
+        class LightKitAsset;
 
         class EnvAsset : public BaseAsset
         {
@@ -17,6 +18,8 @@ namespace Slick {
 
         public:
             EnvAsset(HipHop::Asset asset, SceneFile* sceneFile);
+
+            LightKitAsset* objectLightKit() const { return m_objLightKit; }
 
             void render(RenderContext* context);
 
@@ -26,6 +29,7 @@ namespace Slick {
         private:
             HipHop::EnvAsset m_env;
             JSPAsset* m_jspInfo;
+            LightKitAsset* m_objLightKit;
         };
 
     }

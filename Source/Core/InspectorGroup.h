@@ -1,58 +1,19 @@
 ﻿#pragma once
 
 #include "Core/InspectorProperty.h"
+#include "Core/InspectorGroupItem.h"
+#include "Core/InspectorListSource.h"
 
 #include "InspectorProperties/AssetInputProperty.h"
 #include "InspectorProperties/CheckBoxProperty.h"
 #include "InspectorProperties/ColorInputProperty.h"
 #include "InspectorProperties/ComboBoxProperty.h"
+#include "InspectorProperties/EventInputProperty.h"
 #include "InspectorProperties/NumberInputProperty.h"
 #include "InspectorProperties/TextInputProperty.h"
 #include "InspectorProperties/VectorInputProperty.h"
 
 namespace Slick {
-
-    class InspectorGroup;
-
-    class InspectorGroupItem
-    {
-    public:
-        enum Type
-        {
-            Property,
-            Group
-        };
-
-        InspectorGroupItem(InspectorProperty* property) :
-            m_type(Property),
-            m_property(property)
-        {
-        }
-
-        InspectorGroupItem(InspectorGroup* group) :
-            m_type(Group),
-            m_group(group)
-        {
-        }
-
-        Type type() const { return m_type; }
-        bool isProperty() const { return m_type == Property; }
-        bool isGroup() const { return m_type == Group; }
-        InspectorProperty* property() const { return isProperty() ? m_property : nullptr; }
-        InspectorGroup* group() const { return isGroup() ? m_group : nullptr; }
-
-        QString name() const;
-        QString id() const;
-
-    private:
-        Type m_type;
-
-        union
-        {
-            InspectorProperty* m_property;
-            InspectorGroup* m_group;
-        };
-    };
 
     class InspectorGroup : public QObject
     {
@@ -64,6 +25,9 @@ namespace Slick {
         Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibilityChanged)
         Q_PROPERTY(bool nameVisible READ nameVisible WRITE setNameVisible NOTIFY nameVisibilityChanged)
         Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expansionChanged)
+        Q_PROPERTY(QString helpText READ helpText WRITE setHelpText NOTIFY helpTextChanged)
+        Q_PROPERTY(AbstractInspectorListSource* listSource READ listSource WRITE setListSource)
+        Q_PROPERTY(bool isList READ isList)
         Q_PROPERTY(int itemCount READ itemCount)
         Q_PROPERTY(QList<InspectorGroupItem*> items READ items)
         Q_PROPERTY(int propertyCount READ propertyCount)
@@ -72,7 +36,7 @@ namespace Slick {
         Q_PROPERTY(QList<InspectorGroup*> groups READ groups)
 
     public:
-        InspectorGroup(const QString& name, QObject* parent = nullptr);
+        InspectorGroup(const QString& name, const QString& displayName, QObject* parent = nullptr);
         virtual ~InspectorGroup();
 
         InspectorGroup* parentGroup() const { return m_parentGroup; }
@@ -94,6 +58,14 @@ namespace Slick {
 
         bool expanded() const { return m_expanded; }
         void setExpanded(bool expanded) { m_expanded = expanded; emit expansionChanged(expanded); }
+
+        QString helpText() const { return m_helpText; }
+        void setHelpText(const QString& helpText) { m_helpText = helpText; emit helpTextChanged(helpText); }
+
+        AbstractInspectorListSource* listSource() const { return m_listSource; }
+        void setListSource(AbstractInspectorListSource* listSource);
+
+        bool isList() const { return m_listSource != nullptr; }
 
         void clear();
 
@@ -119,42 +91,38 @@ namespace Slick {
         InspectorGroupItem* addItem(InspectorGroupItem* item);
         InspectorProperty* addProperty(InspectorProperty* prop);
         InspectorGroup* addGroup(InspectorGroup* group);
-        InspectorGroup* addGroup(const QString& name);
+        InspectorGroup* addGroup(const QString& name, const QString& displayName);
+        InspectorGroup* addGroup();
 
-        AssetInputProperty* addAssetInput(const QString& name, const InspectorDataSource& dataSource, Scene* scene)
-        {
-            return (AssetInputProperty*)addProperty(new AssetInputProperty(name, dataSource, scene));
-        }
+        void removeItem(InspectorGroupItem* item);
+        void removeItem(int index);
+        void removeItem(const QString& name);
+        void removeProperty(InspectorProperty* prop);
+        void removeProperty(int index);
+        void removeProperty(const QString& name);
+        void removeGroup(InspectorGroup* group);
+        void removeGroup(int index);
+        void removeGroup(const QString& name);
 
-        CheckBoxProperty* addCheckBox(const QString& name, const InspectorDataSource& dataSource, uint32_t mask = 0xFFFFFFFF)
-        {
-            return (CheckBoxProperty*)addProperty(new CheckBoxProperty(name, dataSource, mask));
-        }
+        AssetInputProperty* addAssetInput(const QString& name, const QString& displayName, const InspectorDataSource& dataSource, Scene* scene);
+        AssetInputProperty* addAssetInput(const InspectorDataSource& dataSource, Scene* scene);
+        CheckBoxProperty* addCheckBox(const QString& name, const QString& displayName, const InspectorDataSource& dataSource, uint32_t mask = 0xFFFFFFFF);
+        CheckBoxProperty* addCheckBox(const InspectorDataSource& dataSource, uint32_t mask = 0xFFFFFFFF);
+        ColorInputProperty* addColorInput(const QString& name, const QString& displayName, const InspectorDataSource& dataSource);
+        ColorInputProperty* addColorInput(const InspectorDataSource& dataSource);
+        ComboBoxProperty* addComboBox(const QString& name, const QString& displayName, const InspectorDataSource& dataSource, const QStringList& items = QStringList());
+        ComboBoxProperty* addComboBox(const InspectorDataSource& dataSource, const QStringList& items = QStringList());
+        EventInputProperty* addEventInput(const QString& name, const QString& displayName, const InspectorDataSource& dataSource, Scene* scene);
+        EventInputProperty* addEventInput(const InspectorDataSource& dataSource, Scene* scene);
+        NumberInputProperty* addNumberInput(const QString& name, const QString& displayName, const InspectorDataSource& dataSource);
+        NumberInputProperty* addNumberInput(const InspectorDataSource& dataSource);
+        TextInputProperty* addTextInput(const QString& name, const QString& displayName, const InspectorDataSource& dataSource);
+        TextInputProperty* addTextInput(const InspectorDataSource& dataSource);
+        VectorInputProperty* addVectorInput(const QString& name, const QString& displayName, const InspectorDataSource& dataSource);
+        VectorInputProperty* addVectorInput(const InspectorDataSource& dataSource);
 
-        ColorInputProperty* addColorInput(const QString& name, const InspectorDataSource& dataSource)
-        {
-            return (ColorInputProperty*)addProperty(new ColorInputProperty(name, dataSource));
-        }
-
-        ComboBoxProperty* addComboBox(const QString& name, const InspectorDataSource& dataSource, const QStringList& items = QStringList())
-        {
-            return (ComboBoxProperty*)addProperty(new ComboBoxProperty(name, dataSource, items));
-        }
-
-        NumberInputProperty* addNumberInput(const QString& name, const InspectorDataSource& dataSource)
-        {
-            return (NumberInputProperty*)addProperty(new NumberInputProperty(name, dataSource));
-        }
-
-        TextInputProperty* addTextInput(const QString& name, const InspectorDataSource& dataSource)
-        {
-            return (TextInputProperty*)addProperty(new TextInputProperty(name, dataSource));
-        }
-
-        VectorInputProperty* addVectorInput(const QString& name, const InspectorDataSource& dataSource)
-        {
-            return (VectorInputProperty*)addProperty(new VectorInputProperty(name, dataSource));
-        }
+        void addListItem();
+        void removeListItem(int index);
 
         virtual bool equals(InspectorGroup* other) const
         {
@@ -168,6 +136,10 @@ namespace Slick {
         void visibilityChanged(bool visible);
         void nameVisibilityChanged(bool visible);
         void expansionChanged(bool expanded);
+        void helpTextChanged(const QString& helpText);
+        void listSourceChanged(Slick::AbstractInspectorListSource* listSource);
+        void listItemAdded();
+        void listItemRemoved(int index);
 
     private:
         InspectorGroup* m_parentGroup;
@@ -176,7 +148,11 @@ namespace Slick {
         bool m_visible;
         bool m_nameVisible;
         bool m_expanded;
+        QString m_helpText;
+        AbstractInspectorListSource* m_listSource;
         QList<InspectorGroupItem*> m_items;
+
+        void refreshListItems();
     };
 
 }

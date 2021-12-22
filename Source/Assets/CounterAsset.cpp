@@ -15,8 +15,10 @@ namespace Slick {
         {
             BaseAsset::inspect(inspector);
 
-            auto counterGroup = inspector->addGroup("counter");
-            auto countProp = counterGroup->addNumberInput("count", &m_counter.count);
+            auto counterGroup = inspector->addGroup("counter", tr("Counter"));
+            auto countProp = counterGroup->addNumberInput("count", tr("Count"), &m_counter.count);
+
+            countProp->setHelpText(tr("The counter's starting count."));
 
             connect(countProp, &InspectorProperty::dataChanged, this, &CounterAsset::makeDirty);
 

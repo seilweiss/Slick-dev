@@ -12,6 +12,8 @@
 
 #include "UI/HashGeneratorTool.h"
 
+#include "Core/Slick.h"
+
 #include <QApplication>
 #include <QScreen>
 #include <QDockWidget>
@@ -326,7 +328,20 @@ namespace Slick {
 
     void MainWindow::aboutSlick()
     {
-        QMessageBox::about(this, "About Slick", "© 2021 Seil Weiss");
+        QMessageBox messageBox;
+        messageBox.setWindowTitle(tr("About Slick"));
+        messageBox.setIconPixmap(QPixmap(":/images/slick-compact.svg").scaledToWidth(150, Qt::SmoothTransformation));
+        messageBox.setTextFormat(Qt::RichText);
+        messageBox.setText("<b style=\"font-size: 25px\">Slick</b><br>" SLICK_VERSION);
+        messageBox.setInformativeText(tr("Copyright (C) 2022 Seil Weiss<br><br>"
+                                         "Source code: <a href=https://github.com/seilweiss/Slick-dev>github.com/seilweiss/Slick-dev</a><br><br>"
+                                         "Logo design by Joey Ballentine: <a href=https://github.com/JoeyBallentine>github.com/JoeyBallentine</a><br>"
+                                         "Icons by Font Awesome: <a href=https://fontawesome.com>fontawesome.com</a><br><br>"
+                                         "Heavy Iron Modding Wiki: <a href=https://heavyironmodding.org>heavyironmodding.org</a><br>"
+                                         "Heavy Iron Modding Discord: <a href=https://discord.gg/9eAE6UB>discord.gg/9eAE6UB</a>"));
+        messageBox.setStandardButtons(QMessageBox::Ok);
+        messageBox.setDefaultButton(QMessageBox::Ok);
+        messageBox.exec();
     }
 
     void MainWindow::aboutQt()

@@ -2,11 +2,9 @@
 
 #include "UI/InspectorPanelPrivate.h"
 
+#include <QVBoxLayout>
 #include <QScrollArea>
 #include <QScrollBar>
-#include <QVBoxLayout>
-//#include <QHBoxLayout>
-//#include <QLabel>
 
 namespace Slick {
 
@@ -68,6 +66,9 @@ namespace Slick {
             }
 
             m_rootGroupWidget = new InspectorGroupWidget(groups);
+
+            //connect(m_rootGroupWidget, &InspectorGroupWidget::refreshStarted, this, &InspectorPanel::beginRefreshWidget);
+            //connect(m_rootGroupWidget, &InspectorGroupWidget::refreshFinished, this, &InspectorPanel::endRefreshWidget);
 
             if (m_inspectables.size() == 1)
             {

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>list-add.svg</file>
+        <file>list-remove.svg</file>
+    </qresource>
+</RCC>

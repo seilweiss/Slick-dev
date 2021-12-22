@@ -1,4 +1,7 @@
-#include "UI/InspectorPanelPrivate.h"
+﻿#include "UI/InspectorPanelPrivate.h"
+
+#include <QToolButton>
+#include <QPushButton>
 
 namespace Slick {
 
@@ -34,6 +37,7 @@ namespace Slick {
                 connect(prop, &InspectorProperty::orientationChanged, this, &InspectorPropertyWidget::refresh);
                 connect(prop, &InspectorProperty::nameStretchChanged, this, &InspectorPropertyWidget::refresh);
                 connect(prop, &InspectorProperty::widgetStretchChanged, this, &InspectorPropertyWidget::refresh);
+                connect(prop, &InspectorProperty::helpTextChanged, this, &InspectorPropertyWidget::refresh);
             }
         }
 
@@ -72,10 +76,23 @@ namespace Slick {
 
                 if (displayName.isEmpty())
                 {
-                    displayName = makeDisplayName(mainProp->name());
+                    if (mainProp->parentGroup() && mainProp->parentGroup()->isList())
+                    {
+                        displayName = mainProp->name();
+                    }
+                    else
+                    {
+                        qDebug().noquote() << QString("Warning: no display name set for property (id: %1)").arg(mainProp->id());
+                        displayName = makeDisplayName(mainProp->name());
+                    }
                 }
 
                 m_label->setText(displayName);
+
+                if (!mainProp->helpText().isEmpty())
+                {
+                    m_label->setToolTip(mainProp->helpText());
+                }
             }
             else
             {
@@ -113,8 +130,8 @@ namespace Slick {
             m_groups(groups),
             m_layout(new QVBoxLayout),
             m_expander(new ExpanderWidget),
-            m_content(new QWidget),
-            m_contentLayout(new QVBoxLayout),
+            m_content(nullptr),
+            m_contentLayout(nullptr),
             m_firstRefresh(true)
         {
             InspectorGroup* mainGroup = groups[0];
@@ -127,11 +144,34 @@ namespace Slick {
 
             setLayout(m_layout);
 
+            refreshGroup();
+        }
+
+        void InspectorGroupWidget::refreshGroup()
+        {
+            if (m_content)
+            {
+                delete m_content;
+            }
+
+            for (InspectorGroup* group : m_groups)
+            {
+                group->disconnect(this);
+                m_expander->disconnect(group);
+            }
+
+            InspectorGroup* mainGroup = m_groups[0];
+
+            m_content = new QWidget;
+            m_contentLayout = new QVBoxLayout;
+
             m_contentLayout->setAlignment(Qt::AlignTop);
             m_content->setLayout(m_contentLayout);
 
-            for (InspectorGroupItem* item : mainGroup->items())
+            for (int i = 0; i < mainGroup->itemCount(); i++)
             {
+                InspectorGroupItem* item = mainGroup->item(i);
+
                 switch (item->type())
                 {
                 case InspectorGroupItem::Property:
@@ -142,11 +182,11 @@ namespace Slick {
 
                     similarProps.append(firstProp);
 
-                    for (int i = 1; i < groups.size(); i++)
+                    for (int i = 1; i < m_groups.size(); i++)
                     {
-                        if (groups[i]->hasProperty(firstProp->name()))
+                        if (m_groups[i]->hasProperty(firstProp->name()))
                         {
-                            similarProps.append(groups[i]->property(firstProp->name()));
+                            similarProps.append(m_groups[i]->property(firstProp->name()));
                         }
                         else
                         {
@@ -157,6 +197,10 @@ namespace Slick {
 
                     if (propPresentInAllGroups)
                     {
+                        QHBoxLayout* propLayout = new QHBoxLayout;
+
+                        propLayout->setContentsMargins(0, 0, 0, 0);
+
                         InspectorPropertyWidget* propWidget = new InspectorPropertyWidget(similarProps);
 
                         if (!m_contentLayout->isEmpty())
@@ -171,7 +215,28 @@ namespace Slick {
                             connect(propWidget, &InspectorPropertyWidget::visibilityChanged, separator, &QFrame::setVisible);
                         }
 
-                        m_contentLayout->addWidget(propWidget);
+                        propLayout->addWidget(propWidget, 1);
+
+                        if (mainGroup->isList())
+                        {
+                            QToolButton* removeButton = new QToolButton;
+                            removeButton->setIcon(QIcon(":/icons/list-remove.svg"));
+                            removeButton->setAutoRaise(true);
+
+                            connect(removeButton, &QToolButton::clicked, this, [=]
+                            {
+                                for (InspectorGroup* group : m_groups)
+                                {
+                                    group->removeListItem(i);
+                                }
+
+                                refreshGroup();
+                            }, Qt::QueuedConnection);
+
+                            propLayout->addWidget(removeButton, 0, Qt::AlignTop);
+                        }
+
+                        m_contentLayout->addLayout(propLayout);
                     }
 
                     break;
@@ -184,11 +249,11 @@ namespace Slick {
 
                     similarGroups.append(firstGroup);
 
-                    for (int i = 1; i < groups.size(); i++)
+                    for (int i = 1; i < m_groups.size(); i++)
                     {
                         bool found = false;
 
-                        for (InspectorGroup* group : groups[i]->groups())
+                        for (InspectorGroup* group : m_groups[i]->groups())
                         {
                             if (group->equals(firstGroup))
                             {
@@ -207,9 +272,34 @@ namespace Slick {
 
                     if (groupPresentInAllGroups)
                     {
+                        QHBoxLayout* groupLayout = new QHBoxLayout;
+
+                        groupLayout->setContentsMargins(0, 0, 0, 0);
+
                         InspectorGroupWidget* groupWidget = new InspectorGroupWidget(similarGroups);
 
-                        m_contentLayout->addWidget(groupWidget);
+                        groupLayout->addWidget(groupWidget, 1);
+
+                        if (mainGroup->isList())
+                        {
+                            QToolButton* removeButton = new QToolButton;
+                            removeButton->setIcon(QIcon(":/icons/list-remove.svg"));
+                            removeButton->setAutoRaise(true);
+
+                            connect(removeButton, &QToolButton::clicked, this, [=]
+                            {
+                                for (InspectorGroup* group : m_groups)
+                                {
+                                    group->removeListItem(i);
+                                }
+
+                                refreshGroup();
+                            }, Qt::QueuedConnection);
+
+                            groupLayout->addWidget(removeButton, 0, Qt::AlignTop);
+                        }
+
+                        m_contentLayout->addLayout(groupLayout);
                     }
 
                     break;
@@ -217,22 +307,45 @@ namespace Slick {
                 }
             }
 
-            refresh();
+            if (mainGroup->isList())
+            {
+                QPushButton* addButton = new QPushButton;
+                addButton->setIcon(QIcon(":/icons/list-add.svg"));
+
+                connect(addButton, &QToolButton::clicked, this, [=]
+                {
+                    for (InspectorGroup* group : m_groups)
+                    {
+                        group->addListItem();
+                    }
+
+                    refreshGroup();
+                }, Qt::QueuedConnection);
+
+                m_contentLayout->addWidget(addButton);
+            }
+
+            m_contentLayout->addStretch(1);
 
             for (InspectorGroup* group : m_groups)
             {
-                connect(group, &InspectorGroup::nameChanged, this, &InspectorGroupWidget::refresh);
-                connect(group, &InspectorGroup::displayNameChanged, this, &InspectorGroupWidget::refresh);
-                connect(group, &InspectorGroup::visibilityChanged, this, &InspectorGroupWidget::refresh);
-                connect(group, &InspectorGroup::nameVisibilityChanged, this, &InspectorGroupWidget::refresh);
-                connect(group, &InspectorGroup::expansionChanged, this, &InspectorGroupWidget::refresh);
+                connect(group, &InspectorGroup::nameChanged, this, &InspectorGroupWidget::refreshWidget);
+                connect(group, &InspectorGroup::displayNameChanged, this, &InspectorGroupWidget::refreshWidget);
+                connect(group, &InspectorGroup::visibilityChanged, this, &InspectorGroupWidget::refreshWidget);
+                connect(group, &InspectorGroup::nameVisibilityChanged, this, &InspectorGroupWidget::refreshWidget);
+                connect(group, &InspectorGroup::expansionChanged, this, &InspectorGroupWidget::refreshWidget);
+                connect(group, &InspectorGroup::helpTextChanged, this, &InspectorGroupWidget::refreshWidget);
 
                 connect(m_expander, &ExpanderWidget::toggled, group, &InspectorGroup::setExpanded);
             }
+
+            refreshWidget();
         }
 
-        void InspectorGroupWidget::refresh()
+        void InspectorGroupWidget::refreshWidget()
         {
+            emit refreshStarted();
+
             InspectorGroup* mainGroup = m_groups[0];
 
             if (!m_firstRefresh)
@@ -269,14 +382,30 @@ namespace Slick {
 
                 if (displayName.isEmpty())
                 {
-                    displayName = makeDisplayName(mainGroup->name());
+                    if (mainGroup->parentGroup() && mainGroup->parentGroup()->isList())
+                    {
+                        displayName = mainGroup->name();
+                    }
+                    else
+                    {
+                        qDebug().noquote() << QString("Warning: no display name set for group (id: %1)").arg(mainGroup->id());
+                        displayName = makeDisplayName(mainGroup->name());
+                    }
                 }
 
-                qDebug() << displayName;
+                if (mainGroup->isList())
+                {
+                    displayName += QString(" (%1)").arg(mainGroup->itemCount());
+                }
 
                 m_expander->setTitle(displayName);
                 m_expander->setWidget(m_content);
                 m_expander->setExpanded(mainGroup->expanded());
+
+                if (!mainGroup->helpText().isEmpty())
+                {
+                    m_expander->setToolTip(mainGroup->helpText());
+                }
 
                 m_layout->addWidget(m_expander);
             }
@@ -286,6 +415,10 @@ namespace Slick {
 
                 m_layout->addWidget(m_content);
             }
+
+            adjustSize();
+
+            emit refreshFinished();
         }
 
         QString makeDisplayName(const QString& name)

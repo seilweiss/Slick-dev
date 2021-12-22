@@ -23,9 +23,11 @@ namespace Slick {
         Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
         Q_PROPERTY(int nameStretch READ nameStretch WRITE setNameStretch NOTIFY nameStretchChanged)
         Q_PROPERTY(int widgetStretch READ widgetStretch WRITE setWidgetStretch NOTIFY widgetStretchChanged)
+        Q_PROPERTY(QString helpText READ helpText WRITE setHelpText NOTIFY helpTextChanged)
 
     public:
-        InspectorProperty(const QString& name, const InspectorDataSource& dataSource, QObject* parent = nullptr);
+        InspectorProperty(const QString& name, const QString& displayName, const InspectorDataSource& dataSource, QObject* parent = nullptr);
+        virtual ~InspectorProperty();
 
         InspectorGroup* parentGroup() const { return m_parentGroup; }
         void setParentGroup(InspectorGroup* group) { m_parentGroup = group; emit parentGroupChanged(group); }
@@ -56,6 +58,9 @@ namespace Slick {
         int widgetStretch() const { return m_widgetStretch; }
         void setWidgetStretch(int widgetStretch) { m_widgetStretch = widgetStretch; emit widgetStretchChanged(widgetStretch); }
 
+        QString helpText() const { return m_helpText; }
+        void setHelpText(const QString& helpText) { m_helpText = helpText; emit helpTextChanged(helpText); }
+
         void notifyDataChanged() { emit dataChanged(); }
 
         virtual QWidget* createWidget(const QList<InspectorProperty*>& props) = 0;
@@ -71,6 +76,7 @@ namespace Slick {
         void orientationChanged(Qt::Orientation orientation);
         void nameStretchChanged(int nameStretch);
         void widgetStretchChanged(int widgetStretch);
+        void helpTextChanged(const QString& helpText);
 
     private:
         InspectorGroup* m_parentGroup;
@@ -82,6 +88,7 @@ namespace Slick {
         Qt::Orientation m_orientation;
         int m_nameStretch;
         int m_widgetStretch;
+        QString m_helpText;
     };
 
 }

@@ -11,10 +11,10 @@ namespace Slick {
         Q_OBJECT
 
     public:
-        LinkGroup(HipHop::LinkAsset& link, const QString& name, InspectorGroup* parent = nullptr) :
-            InspectorGroup(name, parent), m_link(link) {}
+        LinkGroup(HipHop::LinkAsset* link, InspectorGroup* parent = nullptr) :
+            InspectorGroup(QString(), QString(), parent), m_link(link) {}
 
-        HipHop::LinkAsset& link() const { return m_link; }
+        HipHop::LinkAsset* link() const { return m_link; }
 
         virtual bool equals(InspectorGroup* o) const override
         {
@@ -25,11 +25,11 @@ namespace Slick {
                 return false;
             }
 
-            return (m_link.srcEvent == other->m_link.srcEvent && m_link.dstEvent == other->m_link.dstEvent);
+            return (m_link->srcEvent == other->m_link->srcEvent && m_link->dstEvent == other->m_link->dstEvent);
         }
 
     private:
-        HipHop::LinkAsset& m_link;
+        HipHop::LinkAsset* m_link;
     };
 
 }

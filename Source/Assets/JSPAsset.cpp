@@ -19,9 +19,9 @@ namespace Slick {
         {
             Asset::inspect(inspector);
 
-            auto jspGroup = inspector->addGroup("jsp");
+            auto jspGroup = inspector->addGroup("jsp", tr("JSP"));
 
-            jspGroup->setDisplayName("JSP");
+            Q_UNUSED(jspGroup);
         }
 
         void JSPAsset::setup()

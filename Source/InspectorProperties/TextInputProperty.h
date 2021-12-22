@@ -9,8 +9,8 @@ namespace Slick {
         Q_OBJECT
 
     public:
-        TextInputProperty(const QString& name, const InspectorDataSource& dataSource, QObject* parent = nullptr) :
-            InspectorProperty(name, dataSource, parent), m_multiline(false), m_monospace(false) {}
+        TextInputProperty(const QString& name, const QString& displayName, const InspectorDataSource& dataSource, QObject* parent = nullptr) :
+            InspectorProperty(name, displayName, dataSource, parent), m_multiline(false), m_monospace(false) {}
 
         bool multiline() const { return m_multiline; }
         void setMultiline(bool multiline) { m_multiline = multiline; setOrientation(multiline ? Qt::Vertical : Qt::Horizontal); }

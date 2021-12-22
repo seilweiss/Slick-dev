@@ -63,7 +63,6 @@ namespace Slick {
         HipHop::Asset m_asset;
         HipHop::AssetEditor* m_editor;
         bool m_dirty;
-        std::string m_name;
     };
 
 }

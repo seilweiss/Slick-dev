@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>slick-compact.svg</file>
+        <file>slick-square.svg</file>
+    </qresource>
+</RCC>

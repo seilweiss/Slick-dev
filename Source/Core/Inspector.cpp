@@ -3,7 +3,7 @@
 namespace Slick {
 
     Inspector::Inspector(QObject* parent) :
-        InspectorGroup("root")
+        InspectorGroup("root", QString(), parent)
     {
         setNameVisible(false);
     }

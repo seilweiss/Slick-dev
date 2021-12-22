@@ -239,7 +239,7 @@ namespace Slick {
                     }
                     else
                     {
-                        qDebug() << QString(QObject::tr("Asset %1 has unknown DYNA type 0x%2")).arg(QString::fromStdString(asset.GetName())).arg(dyna.type, 0, 16);
+                        qDebug() << QString("Asset %1 has unknown DYNA type 0x%2").arg(QString::fromStdString(asset.GetName())).arg(dyna.type, 0, 16);
                     }
                 }
 
@@ -247,7 +247,7 @@ namespace Slick {
             }
             else
             {
-                qDebug() << QString(QObject::tr("Asset %1 has unknown type %2")).arg(QString::fromStdString(asset.GetName())).arg(Util::assetTypeToString(type));
+                qDebug() << QString("Asset %1 has unknown type %2").arg(QString::fromStdString(asset.GetName())).arg(Util::assetTypeToString(type));
             }
 
             return QObject::tr("Unknown");
@@ -381,7 +381,7 @@ namespace Slick {
     SceneFileWidget::SceneFileWidget(QWidget* parent) :
         QWidget(parent),
         m_file(nullptr),
-        m_createAssetButton(new QPushButton("＋")),
+        m_createAssetButton(new QPushButton(QIcon(":/icons/list-add.svg"), QString())),
         m_filterAssetsLineEdit(new QLineEdit),
         m_filterTypesComboBox(new QComboBox),
         m_assetsTableWidget(new QTableWidget(0, 2))
@@ -396,7 +396,8 @@ namespace Slick {
         m_assetsTableWidget->horizontalHeader()->setDefaultSectionSize(80);
         m_assetsTableWidget->verticalHeader()->hide();
         m_assetsTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-        m_assetsTableWidget->verticalHeader()->setDefaultSectionSize(0);
+        m_assetsTableWidget->verticalHeader()->setMinimumSectionSize(20);
+        m_assetsTableWidget->verticalHeader()->setDefaultSectionSize(20);
         m_assetsTableWidget->setShowGrid(false);
         m_assetsTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
         m_assetsTableWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -415,7 +416,7 @@ namespace Slick {
         hbox2->addWidget(new QLabel("Filter by type:"));
         hbox2->addWidget(m_filterTypesComboBox, 1);
 
-        mainLayout->setContentsMargins(0, 0, 0, 0);
+        //mainLayout->setContentsMargins(0, 0, 0, 0);
         mainLayout->addLayout(hbox1);
         mainLayout->addLayout(hbox2);
         mainLayout->addWidget(m_assetsTableWidget, 1);

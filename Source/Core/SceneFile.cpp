@@ -2,13 +2,18 @@
 
 #include "Core/Scene.h"
 
+#include "Assets/AnimListAsset.h"
+#include "Assets/BoulderAsset.h"
 #include "Assets/ButtonAsset.h"
 #include "Assets/CounterAsset.h"
 #include "Assets/EnvAsset.h"
 #include "Assets/FogAsset.h"
 #include "Assets/GroupAsset.h"
 #include "Assets/JSPAsset.h"
+#include "Assets/LightKitAsset.h"
 #include "Assets/MarkerAsset.h"
+#include "Assets/ModelAsset.h"
+#include "Assets/PlayerAsset.h"
 #include "Assets/SimpleObjectAsset.h"
 #include "Assets/TextAsset.h"
 #include "Assets/TimerAsset.h"
@@ -129,13 +134,18 @@ namespace Slick {
 
             switch (hipAsset.GetType())
             {
+            case HipHop::AssetType::ALST: asset = new Assets::AnimListAsset(hipAsset, this); break;
+            case HipHop::AssetType::BOUL: asset = new Assets::BoulderAsset(hipAsset, this); break;
             case HipHop::AssetType::BUTN: asset = new Assets::ButtonAsset(hipAsset, this); break;
             case HipHop::AssetType::CNTR: asset = new Assets::CounterAsset(hipAsset, this); break;
             case HipHop::AssetType::ENV: asset = new Assets::EnvAsset(hipAsset, this); break;
             case HipHop::AssetType::FOG: asset = new Assets::FogAsset(hipAsset, this); break;
             case HipHop::AssetType::GRUP: asset = new Assets::GroupAsset(hipAsset, this); break;
             case HipHop::AssetType::JSP: asset = new Assets::JSPAsset(hipAsset, this); break;
+            case HipHop::AssetType::LKIT: asset = new Assets::LightKitAsset(hipAsset, this); break;
+            case HipHop::AssetType::MODL: asset = new Assets::ModelAsset(hipAsset, this); break;
             case HipHop::AssetType::MRKR: asset = new Assets::MarkerAsset(hipAsset, this); break;
+            case HipHop::AssetType::PLYR: asset = new Assets::PlayerAsset(hipAsset, this); break;
             case HipHop::AssetType::SIMP: asset = new Assets::SimpleObjectAsset(hipAsset, this); break;
             case HipHop::AssetType::TIMR: asset = new Assets::TimerAsset(hipAsset, this); break;
             case HipHop::AssetType::TEXT: asset = new Assets::TextAsset(hipAsset, this); break;

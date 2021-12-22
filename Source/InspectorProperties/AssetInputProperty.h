@@ -14,8 +14,8 @@ namespace Slick {
         Q_PROPERTY(Scene* scene READ scene WRITE setScene)
 
     public:
-        AssetInputProperty(const QString& name, const InspectorDataSource& dataSource, Scene* scene, QObject* parent = nullptr) :
-            InspectorProperty(name, dataSource, parent), m_scene(scene) { Q_ASSERT(scene); }
+        AssetInputProperty(const QString& name, const QString& displayName, const InspectorDataSource& dataSource, Scene* scene, QObject* parent = nullptr) :
+            InspectorProperty(name, displayName, dataSource, parent), m_scene(scene) { Q_ASSERT(scene); }
 
         Scene* scene() const { return m_scene; }
         void setScene(Scene* scene) { Q_ASSERT(scene); m_scene = scene; }

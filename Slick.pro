@@ -19,13 +19,18 @@ CONFIG(debug, debug|release) {
 }
 
 SOURCES += \
+    Source/Assets/AnimListAsset.cpp \
+    Source/Assets/BoulderAsset.cpp \
     Source/Assets/ButtonAsset.cpp \
     Source/Assets/CounterAsset.cpp \
     Source/Assets/EnvAsset.cpp \
     Source/Assets/FogAsset.cpp \
     Source/Assets/GroupAsset.cpp \
     Source/Assets/JSPAsset.cpp \
+    Source/Assets/LightKitAsset.cpp \
     Source/Assets/MarkerAsset.cpp \
+    Source/Assets/ModelAsset.cpp \
+    Source/Assets/PlayerAsset.cpp \
     Source/Assets/SimpleObjectAsset.cpp \
     Source/Assets/TextAsset.cpp \
     Source/Assets/TimerAsset.cpp \
@@ -39,6 +44,7 @@ SOURCES += \
     Source/Core/EntAsset.cpp \
     Source/Core/Inspector.cpp \
     Source/Core/InspectorGroup.cpp \
+    Source/Core/InspectorGroupItem.cpp \
     Source/Core/InspectorProperty.cpp \
     Source/Core/MotionAsset.cpp \
     Source/Core/RenderContext.cpp \
@@ -56,6 +62,7 @@ SOURCES += \
     Source/InspectorProperties/CheckBoxProperty.cpp \
     Source/InspectorProperties/ColorInputProperty.cpp \
     Source/InspectorProperties/ComboBoxProperty.cpp \
+    Source/InspectorProperties/EventInputProperty.cpp \
     Source/InspectorProperties/NumberInputProperty.cpp \
     Source/InspectorProperties/TextInputProperty.cpp \
     Source/InspectorProperties/VectorInputProperty.cpp \
@@ -77,13 +84,18 @@ SOURCES += \
     Source/main.cpp
 
 HEADERS += \
+    Source/Assets/AnimListAsset.h \
+    Source/Assets/BoulderAsset.h \
     Source/Assets/ButtonAsset.h \
     Source/Assets/CounterAsset.h \
     Source/Assets/EnvAsset.h \
     Source/Assets/FogAsset.h \
     Source/Assets/GroupAsset.h \
     Source/Assets/JSPAsset.h \
+    Source/Assets/LightKitAsset.h \
     Source/Assets/MarkerAsset.h \
+    Source/Assets/ModelAsset.h \
+    Source/Assets/PlayerAsset.h \
     Source/Assets/SimpleObjectAsset.h \
     Source/Assets/TextAsset.h \
     Source/Assets/TimerAsset.h \
@@ -100,13 +112,17 @@ HEADERS += \
     Source/Core/Inspector.h \
     Source/Core/InspectorDataSource.h \
     Source/Core/InspectorGroup.h \
+    Source/Core/InspectorGroupItem.h \
+    Source/Core/InspectorListSource.h \
     Source/Core/InspectorProperty.h \
+    Source/Core/InspectorProxy.h \
     Source/Core/InspectorState.h \
     Source/Core/InspectorTypes.h \
     Source/Core/MotionAsset.h \
     Source/Core/RenderContext.h \
     Source/Core/Scene.h \
     Source/Core/SceneFile.h \
+    Source/Core/Slick.h \
     Source/Core/Util.h \
     Source/Core/Viewport.h \
     Source/Editors/HipHopEditor.h \
@@ -120,6 +136,7 @@ HEADERS += \
     Source/InspectorProperties/CheckBoxProperty.h \
     Source/InspectorProperties/ColorInputProperty.h \
     Source/InspectorProperties/ComboBoxProperty.h \
+    Source/InspectorProperties/EventInputProperty.h \
     Source/InspectorProperties/InspectorPropertiesCommon.h \
     Source/InspectorProperties/NumberInputProperty.h \
     Source/InspectorProperties/TextInputProperty.h \
@@ -151,6 +168,8 @@ DEFINES += \
     HIPHOP_USE_RWS
 
 RESOURCES += \
+    Icons/icons.qrc \
+    Images/images.qrc \
     Themes/breeze/breeze.qrc
 
 # Default rules for deployment.
