@@ -1,0 +1,121 @@
+#include "assets/jspasset.h"
+
+#include "core/scene.h"
+
+namespace Slick {
+
+    namespace Assets {
+
+        JSPAsset::JSPAsset(HipHop::Asset asset, Core::SceneFile* sceneFile) :
+            Asset(asset, sceneFile),
+            m_jsp(asset),
+            m_clump(scene()->renderContext()),
+            m_jspAssets()
+        {
+            setEditor(&m_jsp);
+        }
+
+        void JSPAsset::setup()
+        {
+            switch (m_jsp.type)
+            {
+            case HipHop::JSPAsset::JSPClump:
+            {
+                m_clump.setData(m_jsp.clump);
+
+                scene()->setupClump(&m_clump);
+
+                break;
+            }
+            case HipHop::JSPAsset::JSPInfo:
+            {
+                uint32_t id = m_jsp.GetAsset().GetID();
+
+                for (int i = 0; i < 3; i++)
+                {
+                    uint32_t jspID = HipHop::Util::Hash(std::to_string(i), id);
+                    JSPAsset* jspAsset = qobject_cast<JSPAsset*>(scene()->asset(jspID));
+
+                    if (jspAsset && jspAsset->m_jsp.type == HipHop::JSPAsset::JSPClump)
+                    {
+                        m_jspAssets.append(jspAsset);
+                    }
+                }
+
+                break;
+            }
+            default:
+            {
+                break;
+            }
+            }
+        }
+
+        void JSPAsset::render()
+        {
+            Render::Context* context = scene()->renderContext();
+
+            context->glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);
+            context->glEnable(GL_DEPTH_TEST);
+
+            if (m_jsp.type == HipHop::JSPAsset::JSPClump)
+            {
+                m_clump.render();
+            }
+            else if (m_jsp.type == HipHop::JSPAsset::JSPInfo)
+            {
+                int nodeIndex = 0;
+                bool zwrite = true;
+                bool cullback = true;
+
+                for (JSPAsset* jspAsset : m_jspAssets)
+                {
+                    for (Render::Atomic& atomic : jspAsset->m_clump.atomics())
+                    {
+                        Q_ASSERT(nodeIndex < m_jsp.jspNodeList.size());
+
+                        const auto& node = m_jsp.jspNodeList[nodeIndex];
+
+                        if (node.nodeFlags & HipHop::JSPAsset::NodeInfo::ToggleZWrite)
+                        {
+                            zwrite = !zwrite;
+                        }
+
+                        if (node.nodeFlags & HipHop::JSPAsset::NodeInfo::ToggleCullMode)
+                        {
+                            cullback = !cullback;
+                        }
+
+                        context->glDepthMask(zwrite ? GL_TRUE : GL_FALSE);
+                        context->glCullFace(cullback ? GL_BACK : GL_FRONT);
+
+                        atomic.render();
+
+                        nodeIndex++;
+                    }
+                }
+            }
+
+            context->glPopAttrib();
+        }
+
+        void JSPAsset::inspect(Inspector::Root* root)
+        {
+            Core::Asset::inspect(root);
+
+            auto jspGroup = root->addGroup("jsp", tr("JSP"));
+
+            Q_UNUSED(jspGroup);
+        }
+
+        void JSPManager::setup()
+        {
+            for (auto asset : assets())
+            {
+                ((JSPAsset*)asset)->setup();
+            }
+        }
+
+    }
+
+}
