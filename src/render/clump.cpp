@@ -14,6 +14,35 @@ namespace Slick {
             setData(data);
         }
 
+        void Clump::clone(Clump& outClump) const
+        {
+            outClump.m_atomics = m_atomics;
+            outClump.m_frames = m_frames;
+            outClump.m_geoms = m_geoms;
+
+            const auto& rwframes = m_data->GetFrameList()->GetStruct()->frames;
+
+            for (int i = 0; i < rwframes.size(); i++)
+            {
+                if (rwframes[i].parentIndex >= 0)
+                {
+                    outClump.m_frames[i].setParent(&outClump.m_frames[rwframes[i].parentIndex]);
+                }
+                else
+                {
+                    outClump.m_frames[i].setParent(nullptr);
+                }
+            }
+
+            for (Atomic& atomic : outClump.m_atomics)
+            {
+                Rws::AtomicStruct* atomStruct = atomic.data()->GetStruct();
+
+                atomic.setFrame(&outClump.m_frames[atomStruct->frameIndex]);
+                atomic.setGeometry(&outClump.m_geoms[atomStruct->geomIndex]);
+            }
+        }
+
         void Clump::setData(Rws::Clump* data)
         {
             m_data = data;

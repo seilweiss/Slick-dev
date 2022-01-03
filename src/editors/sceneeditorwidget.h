@@ -4,6 +4,7 @@
 #include "core/scene.h"
 
 class QLabel;
+class QCheckBox;
 class QComboBox;
 
 namespace Slick {
@@ -29,6 +30,8 @@ namespace Slick {
             Core::Scene* m_scene;
             SceneEditorViewport* m_viewport;
             QLabel* m_statsLabel;
+            QCheckBox* m_letterBoxCheckBox;
+            QComboBox* m_aspectRatioComboBox;
             QComboBox* m_previewCamComboBox;
             bool m_previewCamChangedByMe;
 

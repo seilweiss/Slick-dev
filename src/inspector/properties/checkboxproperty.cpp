@@ -41,9 +41,8 @@ namespace Slick {
                 }
             }
 
-            template <class T> QWidget* createCheckBox(const QList<Property*>& props)
+            template <class T> void updateCheckBox(QWidget* widget, const QList<Property*>& props)
             {
-                QCheckBox* checkBox = new QCheckBox;
                 bool value = getCheckBoxData<T>((CheckBoxProperty*)props[0]);
                 bool match = true;
 
@@ -58,7 +57,14 @@ namespace Slick {
                     }
                 }
 
-                checkBox->setChecked(match && value);
+                widget->blockSignals(true);
+                ((QCheckBox*)widget)->setChecked(match && value);
+                widget->blockSignals(false);
+            }
+
+            template <class T> QWidget* createCheckBox(const QList<Property*>& props)
+            {
+                QCheckBox* checkBox = new QCheckBox;
 
                 QObject::connect(checkBox, &QCheckBox::stateChanged, [=](int state)
                 {
@@ -80,6 +86,15 @@ namespace Slick {
             {
             case DataSource::Bool: return createCheckBox<bool>(props);
             default: return createCheckBox<uint32_t>(props);
+            }
+        }
+
+        void CheckBoxProperty::updateWidget(QWidget* widget, const QList<Property*>& props)
+        {
+            switch (props[0]->dataSource().type())
+            {
+            case DataSource::Bool: updateCheckBox<bool>(widget, props);
+            default: updateCheckBox<uint32_t>(widget, props);
             }
         }
 

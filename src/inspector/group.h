@@ -5,6 +5,7 @@
 #include "inspector/listsource.h"
 
 #include "inspector/properties/assetinputproperty.h"
+#include "inspector/properties/buttonproperty.h"
 #include "inspector/properties/checkboxproperty.h"
 #include "inspector/properties/colorinputproperty.h"
 #include "inspector/properties/comboboxproperty.h"
@@ -110,6 +111,8 @@ namespace Slick {
 
             AssetInputProperty* addAssetInput(const QString& name, const QString& displayName, const DataSource& dataSource, Core::Scene* scene);
             AssetInputProperty* addAssetInput(const DataSource& dataSource, Core::Scene* scene);
+            ButtonProperty* addButton(const QString& name, const QString& displayName, const DataSource& dataSource);
+            ButtonProperty* addButton(const DataSource& dataSource);
             CheckBoxProperty* addCheckBox(const QString& name, const QString& displayName, const DataSource& dataSource, uint32_t mask = 0xFFFFFFFF);
             CheckBoxProperty* addCheckBox(const DataSource& dataSource, uint32_t mask = 0xFFFFFFFF);
             ColorInputProperty* addColorInput(const QString& name, const QString& displayName, const DataSource& dataSource);
@@ -133,7 +136,10 @@ namespace Slick {
                 return m_name == other->m_name;
             }
 
+            void requestRefresh() { emit refreshRequested(); }
+
         signals:
+            void refreshRequested();
             void parentGroupChanged(Slick::Inspector::Group* group);
             void nameChanged(const QString& name);
             void displayNameChanged(const QString& displayName);

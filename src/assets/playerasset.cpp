@@ -18,7 +18,7 @@ namespace Slick {
         {
             EntAsset::setup();
 
-            setLightKit(qobject_cast<Assets::LightKitAsset*>(scene()->asset(m_player.lightKitID)));
+            setLightKit(qobject_cast<Assets::LightKitAsset*>(scene()->assetById(m_player.lightKitID)));
         }
 
         void PlayerAsset::update()

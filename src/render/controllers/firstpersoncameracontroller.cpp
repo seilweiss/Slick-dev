@@ -1,10 +1,13 @@
 #include "render/controllers/firstpersoncameracontroller.h"
 
+#include "render/context.h"
 #include "render/viewport.h"
+#include "util/mathutils.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -19,8 +22,8 @@ namespace Slick {
             m_moveSpeed(50.0f),
             m_rotateSpeed(glm::radians(20.0f)),
             m_pos(0.0f),
-            m_yaw(0.0f),
-            m_pitch(0.0f),
+            m_rot(0.0f),
+            m_scale(1.0f),
             m_oldVel(0.0f),
             m_oldDYaw(0.0f),
             m_oldDPitch(0.0f),
@@ -82,16 +85,19 @@ namespace Slick {
             if (vel.y == 0.0f) vel.y = m_oldVel.y * 0.75f;
             if (vel.z == 0.0f) vel.z = m_oldVel.z * 0.75f;
 
-            m_yaw += dyaw;
-            m_pitch += dpitch;
+            m_rot[0] += dpitch;
+            m_rot[1] += dyaw;
 
             glm::mat4 mat(1.0f);
             mat = glm::translate(mat, m_pos);
-            mat = glm::rotate(mat, m_yaw, glm::vec3(0, 1, 0));
-            mat = glm::rotate(mat, m_pitch, glm::vec3(1, 0, 0));
+            mat = glm::rotate(mat, m_rot[2], glm::vec3(0, 0, 1));
+            mat = glm::rotate(mat, m_rot[1], glm::vec3(0, 1, 0));
+            mat = glm::rotate(mat, m_rot[0], glm::vec3(1, 0, 0));
             mat = glm::translate(mat, vel);
 
             m_pos = mat[3];
+
+            mat = glm::scale(mat, m_scale);
 
             context()->camera()->setViewMatrix(mat);
 
@@ -99,6 +105,19 @@ namespace Slick {
             m_oldDYaw = dyaw;
             m_oldDPitch = dpitch;
             m_lookDelta = QPoint();
+        }
+
+        void FirstPersonCameraController::setViewMatrix(const glm::mat4& mat)
+        {
+            CameraController::setViewMatrix(mat);
+
+            m_pos = mat[3];
+            m_oldVel = glm::vec3(0.0f);
+
+            Util::decomposeMatrix(mat, m_pos, m_rot, m_scale);
+
+            m_oldDYaw = 0.0f;
+            m_oldDPitch = 0.0f;
         }
 
         void FirstPersonCameraController::mousePressEvent(QMouseEvent* event)

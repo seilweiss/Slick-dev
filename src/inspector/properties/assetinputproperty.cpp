@@ -57,7 +57,7 @@ namespace Slick {
                     }
                     else
                     {
-                        Core::Asset* asset = ((AssetInputProperty*)props[0])->scene()->asset(assetID);
+                        Core::Asset* asset = ((AssetInputProperty*)props[0])->scene()->assetById(assetID);
 
                         assetButton->setText(asset ? asset->name() : Util::hexToString(assetID));
                     }

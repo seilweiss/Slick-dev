@@ -34,7 +34,7 @@ namespace Slick {
                 for (int i = 0; i < 3; i++)
                 {
                     uint32_t jspID = HipHop::Util::Hash(std::to_string(i), id);
-                    JSPAsset* jspAsset = qobject_cast<JSPAsset*>(scene()->asset(jspID));
+                    JSPAsset* jspAsset = qobject_cast<JSPAsset*>(scene()->assetById(jspID));
 
                     if (jspAsset && jspAsset->m_jsp.type == HipHop::JSPAsset::JSPClump)
                     {
@@ -55,7 +55,11 @@ namespace Slick {
         {
             Render::Context* context = scene()->renderContext();
 
-            context->glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);
+            context->glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT | GL_POLYGON_BIT);
+
+            context->glEnable(GL_CULL_FACE);
+            context->glCullFace(GL_BACK);
+            context->glDepthMask(GL_TRUE);
             context->glEnable(GL_DEPTH_TEST);
 
             if (m_jsp.type == HipHop::JSPAsset::JSPClump)
@@ -65,29 +69,56 @@ namespace Slick {
             else if (m_jsp.type == HipHop::JSPAsset::JSPInfo)
             {
                 int nodeIndex = 0;
+                bool cull = true;
                 bool zwrite = true;
-                bool cullback = true;
 
-                for (JSPAsset* jspAsset : m_jspAssets)
+                for (auto jspIt = m_jspAssets.rbegin(); jspIt != m_jspAssets.rend(); jspIt++)
                 {
-                    for (Render::Atomic& atomic : jspAsset->m_clump.atomics())
+                    JSPAsset* jspAsset = *jspIt;
+                    auto& atomics = jspAsset->m_clump.atomics();
+
+                    for (auto atomicIt = atomics.rbegin(); atomicIt != atomics.rend(); atomicIt++)
                     {
+                        Render::Atomic& atomic = *atomicIt;
+
                         Q_ASSERT(nodeIndex < m_jsp.jspNodeList.size());
 
                         const auto& node = m_jsp.jspNodeList[nodeIndex];
 
-                        if (node.nodeFlags & HipHop::JSPAsset::NodeInfo::ToggleZWrite)
+                        if (cull)
                         {
-                            zwrite = !zwrite;
+                            if (node.nodeFlags & HipHop::JSPAsset::NodeInfo::ToggleCullMode)
+                            {
+                                cull = false;
+                                context->glDisable(GL_CULL_FACE);
+                            }
+                        }
+                        else
+                        {
+                            if (!(node.nodeFlags & HipHop::JSPAsset::NodeInfo::ToggleCullMode))
+                            {
+                                cull = true;
+                                context->glEnable(GL_CULL_FACE);
+                                context->glCullFace(GL_BACK);
+                            }
                         }
 
-                        if (node.nodeFlags & HipHop::JSPAsset::NodeInfo::ToggleCullMode)
+                        if (zwrite)
                         {
-                            cullback = !cullback;
+                            if (node.nodeFlags & HipHop::JSPAsset::NodeInfo::ToggleZWrite)
+                            {
+                                zwrite = false;
+                                context->glDepthMask(GL_FALSE);
+                            }
                         }
-
-                        context->glDepthMask(zwrite ? GL_TRUE : GL_FALSE);
-                        context->glCullFace(cullback ? GL_BACK : GL_FRONT);
+                        else
+                        {
+                            if (!(node.nodeFlags & HipHop::JSPAsset::NodeInfo::ToggleZWrite))
+                            {
+                                zwrite = true;
+                                context->glDepthMask(GL_TRUE);
+                            }
+                        }
 
                         atomic.render();
 

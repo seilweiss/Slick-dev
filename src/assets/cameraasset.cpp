@@ -3,6 +3,7 @@
 #include "core/scene.h"
 #include "util/mathutils.h"
 #include "render/camera.h"
+#include "render/viewport.h"
 
 namespace Slick {
 
@@ -67,6 +68,32 @@ namespace Slick {
                 CameraAsset* m_asset;
             };
 
+            class CamPreviewProxy : public Inspector::Proxy<bool>
+            {
+            public:
+                CamPreviewProxy(CameraAsset* asset) : Inspector::Proxy<bool>(), m_asset(asset) {}
+
+                virtual bool data() const override
+                {
+                    return m_asset->scene()->cameraManager()->previewCamera() == m_asset;
+                }
+
+                virtual void setData(const bool& data) const override
+                {
+                    if (data)
+                    {
+                        m_asset->scene()->cameraManager()->setPreviewCamera(m_asset);
+                    }
+                    else
+                    {
+                        m_asset->scene()->cameraManager()->setPreviewCamera(nullptr);
+                    }
+                }
+
+            private:
+                CameraAsset* m_asset;
+            };
+
         }
 
         CameraAsset::CameraAsset(HipHop::Asset asset, Core::SceneFile* sceneFile) :
@@ -104,18 +131,7 @@ namespace Slick {
             m_rot = Core::Vector3(rot.x, rot.y, rot.z);
             m_scale = Core::Vector3(scale.x, scale.y, scale.z);
 
-            m_viewMatrix = mat;
-        }
-
-        void CameraAsset::apply()
-        {
-            Render::Context* context = scene()->renderContext();
-
-            context->camera()->setViewMatrix(m_viewMatrix);
-
-            Render::Projection proj = context->camera()->projection();
-            proj.fov = glm::radians(m_cam.fov);
-            context->camera()->setProjection(proj);
+            updateMatrix();
         }
 
         void CameraAsset::inspect(Inspector::Root* root)
@@ -128,20 +144,25 @@ namespace Slick {
             auto scaleProp = transformGroup->addVectorInput("scale", tr("Scale"), new CamScaleProxy(this));
 
             auto cameraGroup = root->addGroup("camera", tr("Camera"));
-            //auto previewProp = cameraGroup->addCheckBox("preview", tr("Preview"), &m_preview);
             auto fovProp = cameraGroup->addNumberInput("fov", tr("FOV"), &m_cam.fov);
+            auto previewProp = cameraGroup->addCheckBox("preview", tr("Preview"), new CamPreviewProxy(this));
 
             rotationProp->setConvertRadiansToDegrees(true);
 
             positionProp->setHelpText(tr("The camera's position."));
             rotationProp->setHelpText(tr("The camera's rotation."));
             scaleProp->setHelpText(tr("The camera's scale."));
-            //previewProp->setHelpText(tr("Preview the camera in the editor viewport."));
             fovProp->setHelpText(tr("The camera's field-of-view."));
+            previewProp->setHelpText(tr("Preview the camera in the editor viewport."));
+
+            connect(fovProp, &Inspector::Property::dataChanged, this, [=] { emit fovChanged(m_cam.fov); });
+
+            connect(scene()->cameraManager(), &CameraManager::previewCameraChanged, previewProp, &Inspector::Property::requestRefresh);
 
             connect(positionProp, &Inspector::Property::dataChanged, this, &CameraAsset::makeDirty);
             connect(rotationProp, &Inspector::Property::dataChanged, this, &CameraAsset::makeDirty);
             connect(scaleProp, &Inspector::Property::dataChanged, this, &CameraAsset::makeDirty);
+            connect(fovProp, &Inspector::Property::dataChanged, this, &CameraAsset::makeDirty);
 
             inspectLinks(root);
         }
@@ -169,7 +190,7 @@ namespace Slick {
             glm::mat4 mat(1.0f);
             mat = glm::translate(mat, glm::vec3(m_pos.x, m_pos.y, m_pos.z));
             mat *= glm::mat4_cast(glm::quat(glm::vec3(m_rot.x, m_rot.y, m_rot.z)));
-            mat = glm::scale(mat, glm::vec3(m_scale.x, m_scale.y, m_scale.z));
+            mat = glm::scale(mat, glm::vec3(m_scale.x, m_scale.y, m_scale.z / 0.75f)); // Z scale hack, makes preview more accurate to the original game
 
             m_cam.right = HipHop::Vec3(-mat[0][0], -mat[0][1], -mat[0][2]);
             m_cam.up = HipHop::Vec3(mat[1][0], mat[1][1], mat[1][2]);
@@ -177,6 +198,8 @@ namespace Slick {
             m_cam.pos = HipHop::Vec3(mat[3][0], mat[3][1], mat[3][2]);
 
             m_viewMatrix = mat;
+
+            emit viewMatrixChanged(m_viewMatrix);
         }
 
         void CameraManager::setup()
@@ -187,22 +210,29 @@ namespace Slick {
             }
         }
 
-        void CameraManager::update()
+        void CameraManager::setPreviewCamera(Assets::CameraAsset* camera)
         {
             Render::Context* context = scene()->renderContext();
 
-            m_isPreviewing = (m_previewCam != nullptr);
-
-            if (m_isPreviewing != m_wasPreviewing)
+            if (camera)
             {
-                if (m_isPreviewing && !m_wasPreviewing)
+                if (!m_previewCam)
                 {
                     m_saveEditorCamMatrix = context->camera()->viewMatrix();
                     m_saveEditorCamFov = context->camera()->projection().fov;
                 }
-                else if (!m_isPreviewing)
+
+                context->viewport()->cameraController()->setViewMatrix(camera->viewMatrix());
+
+                Render::Projection proj = context->camera()->projection();
+                proj.fov = camera->fov();
+                context->camera()->setProjection(proj);
+            }
+            else
+            {
+                if (m_previewCam)
                 {
-                    context->camera()->setViewMatrix(m_saveEditorCamMatrix);
+                    context->viewport()->cameraController()->setViewMatrix(m_saveEditorCamMatrix);
 
                     Render::Projection proj = context->camera()->projection();
                     proj.fov = m_saveEditorCamFov;
@@ -210,16 +240,6 @@ namespace Slick {
                 }
             }
 
-            if (m_previewCam)
-            {
-                m_previewCam->apply();
-            }
-
-            m_wasPreviewing = m_isPreviewing;
-        }
-
-        void CameraManager::setPreviewCamera(Assets::CameraAsset* camera)
-        {
             if (m_previewCam)
             {
                 m_previewCam->disconnect(this);
@@ -233,6 +253,18 @@ namespace Slick {
                 {
                     m_previewCam = nullptr;
                     emit previewCameraChanged(nullptr);
+                });
+
+                connect(m_previewCam, &CameraAsset::viewMatrixChanged, this, [=]
+                {
+                    context->viewport()->cameraController()->setViewMatrix(m_previewCam->viewMatrix());
+                });
+
+                connect(m_previewCam, &CameraAsset::fovChanged, this, [=]
+                {
+                    Render::Projection proj = context->camera()->projection();
+                    proj.fov = camera->fov();
+                    context->camera()->setProjection(proj);
                 });
             }
 

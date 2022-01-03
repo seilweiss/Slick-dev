@@ -19,8 +19,8 @@ namespace Slick {
 
         void EnvAsset::setup()
         {
-            m_jspInfo = qobject_cast<JSPAsset*>(scene()->asset(m_env.bspAssetID));
-            m_objLightKit = qobject_cast<LightKitAsset*>(scene()->asset(m_env.objectLightKit));
+            m_jspInfo = qobject_cast<JSPAsset*>(scene()->assetById(m_env.bspAssetID));
+            m_objLightKit = qobject_cast<LightKitAsset*>(scene()->assetById(m_env.objectLightKit));
         }
 
         void EnvAsset::render()
@@ -79,6 +79,8 @@ namespace Slick {
 
         void EnvManager::render()
         {
+            scene()->renderContext()->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
             for (auto asset : assets())
             {
                 ((EnvAsset*)asset)->render();

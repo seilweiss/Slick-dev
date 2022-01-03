@@ -51,7 +51,7 @@ namespace Slick {
                         HipHop::Game game = m_asset->scene()->game();
                         QString srcEventName = QString::fromStdString(HipHop::EventToString(link->srcEvent, game));
                         QString dstEventName = QString::fromStdString(HipHop::EventToString(link->dstEvent, game));
-                        Core::Asset* dstAsset = m_asset->scene()->asset(link->dstAssetID);
+                        Core::Asset* dstAsset = m_asset->scene()->assetById(link->dstAssetID);
                         QString dstAssetName = dstAsset ? dstAsset->name() : Util::hexToString(link->dstAssetID);
 
                         linkGroup->setDisplayName(QString("%1 => %2 => %3").arg(srcEventName, dstEventName, dstAssetName));

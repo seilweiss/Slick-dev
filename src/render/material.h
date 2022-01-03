@@ -1,6 +1,5 @@
 #pragma once
 
-#include "render/context.h"
 #include "render/texture.h"
 
 #include <glm/glm.hpp>
@@ -10,6 +9,8 @@ namespace Rws { class Material; }
 namespace Slick {
 
     namespace Render {
+
+        class Context;
 
         class Material
         {

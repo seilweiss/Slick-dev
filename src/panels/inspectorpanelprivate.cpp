@@ -31,6 +31,7 @@ namespace Slick {
 
                 for (Inspector::Property* prop : m_props)
                 {
+                    connect(prop, &Inspector::Property::refreshRequested, this, &PropertyWidget::refresh);
                     connect(prop, &Inspector::Property::nameChanged, this, &PropertyWidget::refresh);
                     connect(prop, &Inspector::Property::displayNameChanged, this, &PropertyWidget::refresh);
                     connect(prop, &Inspector::Property::dataSourceChanged, this, &PropertyWidget::refresh);
@@ -40,6 +41,7 @@ namespace Slick {
                     connect(prop, &Inspector::Property::nameStretchChanged, this, &PropertyWidget::refresh);
                     connect(prop, &Inspector::Property::widgetStretchChanged, this, &PropertyWidget::refresh);
                     connect(prop, &Inspector::Property::helpTextChanged, this, &PropertyWidget::refresh);
+                    connect(prop, &Inspector::Property::enabledChanged, this, &PropertyWidget::refresh);
                 }
             }
 
@@ -113,6 +115,22 @@ namespace Slick {
                     m_layout->setStretchFactor(m_label, 0);
                     m_layout->setStretchFactor(m_widget, 1);
                 }
+
+                bool enabled = true;
+
+                for (Inspector::Property* prop : m_props)
+                {
+                    if (!prop->enabled())
+                    {
+                        enabled = false;
+                        break;
+                    }
+                }
+
+                m_label->setEnabled(enabled);
+                m_widget->setEnabled(enabled);
+
+                m_props[0]->updateWidget(m_widget, m_props);
             }
 
             void PropertyWidget::showEvent(QShowEvent* event)
@@ -347,6 +365,7 @@ namespace Slick {
 
                 for (Inspector::Group* group : m_groups)
                 {
+                    connect(group, &Inspector::Group::refreshRequested, this, &GroupWidget::refreshWidget);
                     connect(group, &Inspector::Group::nameChanged, this, &GroupWidget::refreshWidget);
                     connect(group, &Inspector::Group::displayNameChanged, this, &GroupWidget::refreshWidget);
                     connect(group, &Inspector::Group::visibilityChanged, this, &GroupWidget::refreshWidget);

@@ -22,6 +22,7 @@ namespace Slick {
             void setMask(uint32_t mask) { m_mask = mask; }
 
             virtual QWidget* createWidget(const QList<Property*>& props) override;
+            virtual void updateWidget(QWidget* widget, const QList<Property*>& props) override;
 
         private:
             uint32_t m_mask;

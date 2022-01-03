@@ -26,6 +26,7 @@ namespace Slick {
             Q_PROPERTY(int nameStretch READ nameStretch WRITE setNameStretch NOTIFY nameStretchChanged)
             Q_PROPERTY(int widgetStretch READ widgetStretch WRITE setWidgetStretch NOTIFY widgetStretchChanged)
             Q_PROPERTY(QString helpText READ helpText WRITE setHelpText NOTIFY helpTextChanged)
+            Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
 
         public:
             Property(const QString& name, const QString& displayName, const DataSource& dataSource, QObject* parent = nullptr);
@@ -63,12 +64,19 @@ namespace Slick {
             QString helpText() const { return m_helpText; }
             void setHelpText(const QString& helpText) { m_helpText = helpText; emit helpTextChanged(helpText); }
 
+            bool enabled() const { return m_enabled; }
+            void setEnabled(bool enabled) { m_enabled = enabled; emit enabledChanged(enabled); }
+
             void notifyDataChanged() { emit dataChanged(); }
 
+            void requestRefresh() { emit refreshRequested(); }
+
             virtual QWidget* createWidget(const QList<Property*>& props) = 0;
+            virtual void updateWidget(QWidget* widget, const QList<Property*>& props) { Q_UNUSED(widget); Q_UNUSED(props); }
 
         signals:
             void dataChanged();
+            void refreshRequested();
             void parentGroupChanged(Slick::Inspector::Group* group);
             void nameChanged(const QString& name);
             void displayNameChanged(const QString& name);
@@ -79,6 +87,7 @@ namespace Slick {
             void nameStretchChanged(int nameStretch);
             void widgetStretchChanged(int widgetStretch);
             void helpTextChanged(const QString& helpText);
+            void enabledChanged(bool enabled);
 
         private:
             Group* m_parentGroup;
@@ -91,6 +100,7 @@ namespace Slick {
             int m_nameStretch;
             int m_widgetStretch;
             QString m_helpText;
+            bool m_enabled;
         };
 
     }

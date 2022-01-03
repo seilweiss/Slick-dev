@@ -382,6 +382,16 @@ namespace Slick {
             return (AssetInputProperty*)addProperty(new AssetInputProperty(QString(), QString(), dataSource, scene));
         }
 
+        ButtonProperty* Group::addButton(const QString& name, const QString& displayName, const DataSource& dataSource)
+        {
+            return (ButtonProperty*)addProperty(new ButtonProperty(name, displayName, dataSource));
+        }
+
+        ButtonProperty* Group::addButton(const DataSource& dataSource)
+        {
+            return (ButtonProperty*)addProperty(new ButtonProperty(QString(), QString(), dataSource));
+        }
+
         CheckBoxProperty* Group::addCheckBox(const QString& name, const QString& displayName, const DataSource& dataSource, uint32_t mask)
         {
             return (CheckBoxProperty*)addProperty(new CheckBoxProperty(name, displayName, dataSource, mask));

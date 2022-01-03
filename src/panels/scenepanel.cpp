@@ -520,7 +520,7 @@ namespace Slick {
                 if (item->column() == 0)
                 {
                     uint32_t assetID = item->data(Qt::UserRole).toUInt();
-                    Core::Asset* asset = m_file->asset(assetID);
+                    Core::Asset* asset = m_file->assetById(assetID);
 
                     m_selectedAssets.append(asset);
                 }

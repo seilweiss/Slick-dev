@@ -13,6 +13,8 @@ namespace Slick {
         public:
             Clump(Context* context, Rws::Clump* data = nullptr);
 
+            void clone(Clump& outClump) const;
+
             Rws::Clump* data() const { return m_data; }
             void setData(Rws::Clump* data);
 

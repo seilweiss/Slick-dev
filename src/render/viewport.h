@@ -1,13 +1,16 @@
 #pragma once
 
-#include "render/context.h"
 #include "render/cameracontroller.h"
 
 #include <QOpenGLWindow>
 
+Q_MOC_INCLUDE("render/context.h")
+
 namespace Slick {
 
     namespace Render {
+
+        class Context;
 
         class Viewport : public QOpenGLWindow
         {
@@ -24,17 +27,22 @@ namespace Slick {
             CameraController* cameraController() const { return m_camController; }
             void setCameraController(CameraController* camController);
 
+            float aspectOverride() const { return m_aspectOverride; }
+            void setAspectOverride(float aspect) { m_aspectOverride = aspect; }
+
             void captureMouse();
             void freeMouse();
 
         protected:
             virtual void update();
+
+            virtual void preRender();
             virtual void render();
+            virtual void postRender();
 
             virtual void initializeGL() override;
             virtual void paintGL() override;
             virtual void resizeGL(int w, int h) override;
-            virtual bool event(QEvent* event) override;
             virtual void mousePressEvent(QMouseEvent* event) override;
             virtual void mouseReleaseEvent(QMouseEvent* event) override;
             virtual void mouseMoveEvent(QMouseEvent* event) override;
@@ -50,6 +58,7 @@ namespace Slick {
             bool m_mouseCaptured;
             QPoint m_captureSaveMousePos;
             QPoint m_lastMousePos;
+            float m_aspectOverride;
 
             QPoint center() const { return QPoint(width() / 2, height() / 2); }
         };

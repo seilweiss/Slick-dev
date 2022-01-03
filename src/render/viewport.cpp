@@ -1,7 +1,12 @@
 #include "render/viewport.h"
 
+#include "render/context.h"
 #include "render/camera.h"
 #include "render/controllers/firstpersoncameracontroller.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <QDateTime>
 #include <QMouseEvent>
@@ -18,7 +23,8 @@ namespace Slick {
             m_camController(nullptr),
             m_mouseCaptured(false),
             m_captureSaveMousePos(),
-            m_lastMousePos()
+            m_lastMousePos(),
+            m_aspectOverride(0.0f)
         {
         }
 
@@ -62,18 +68,25 @@ namespace Slick {
 
         void Viewport::paintGL()
         {
+            m_context->beginFrame();
+
+            update();
+
+            preRender();
             render();
+            postRender();
+
             requestUpdate();
         }
 
         void Viewport::resizeGL(int w, int h)
         {
-            m_context->glViewport(0, 0, w, h);
+            // Don't call glViewport (or any GL commands) here.
+            // Qt resets the viewport size right before paintGL,
+            // so we need to override it there, not here.
 
-            Projection proj = m_context->camera()->projection();
-            proj.aspect = (float)w / h;
-
-            m_context->camera()->setProjection(proj);
+            Q_UNUSED(w);
+            Q_UNUSED(h);
         }
 
         void Viewport::update()
@@ -84,20 +97,52 @@ namespace Slick {
             }
         }
 
+        void Viewport::preRender()
+        {
+            float w = width() * devicePixelRatio();
+            float h = height() * devicePixelRatio();
+            float aspect = w / h;
+            float vx = 0.0f;
+            float vy = 0.0f;
+            float vw = w;
+            float vh = h;
+
+            if (m_aspectOverride > 0.0f)
+            {
+                if (aspect > m_aspectOverride)
+                {
+                    vw = h * m_aspectOverride;
+                    vx = (w - vw) / 2.0f;
+                }
+                else if (aspect < m_aspectOverride)
+                {
+                    vh = w / m_aspectOverride;
+                    vy = (h - vh) / 2.0f;
+                }
+            }
+
+            m_context->glViewport(vx, vy, vw, vh);
+
+            Projection proj = m_context->camera()->projection();
+            proj.aspect = vw / vh;
+
+            m_context->camera()->setProjection(proj);
+
+            m_context->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            m_context->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+            m_context->glPushAttrib(GL_SCISSOR_BIT);
+            m_context->glEnable(GL_SCISSOR_TEST);
+            m_context->glScissor(vx, vy, vw, vh);
+        }
+
         void Viewport::render()
         {
         }
 
-        bool Viewport::event(QEvent* event)
+        void Viewport::postRender()
         {
-            if (event->type() == QEvent::UpdateRequest)
-            {
-                m_context->beginFrame();
-
-                update();
-            }
-
-            return QOpenGLWindow::event(event);
+            m_context->glPopAttrib();
         }
 
         void Viewport::mousePressEvent(QMouseEvent* event)

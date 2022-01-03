@@ -25,13 +25,13 @@ namespace Slick {
             m_assetMap[asset->id()] = asset;
         }
 
-        Asset* SceneFile::asset(HipHop::AssetType type, int index)
+        Asset* SceneFile::assetByType(HipHop::AssetType type, int index)
         {
             int assetIndex = m_file.GetAssetIndex(type, index);
 
             if (assetIndex != -1)
             {
-                return asset(m_file.GetAssetAt(assetIndex).GetID());
+                return assetById(m_file.GetAssetAt(assetIndex).GetID());
             }
 
             return nullptr;
@@ -44,7 +44,7 @@ namespace Slick {
 
             for (HipHop::Asset a : hipAssets)
             {
-                assets.append(asset(a.GetID()));
+                assets.append(assetById(a.GetID()));
             }
 
             return assets;

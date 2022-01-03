@@ -12,11 +12,6 @@ namespace Slick {
 
         public:
             Root(QObject* parent = nullptr);
-
-            void requestRefresh() { emit refreshRequested(); }
-
-        signals:
-            void refreshRequested();
         };
 
     }

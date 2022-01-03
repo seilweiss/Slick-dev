@@ -23,6 +23,7 @@ namespace Slick {
 
         protected:
             virtual void update() override;
+            virtual void setViewMatrix(const glm::mat4& mat) override;
             virtual void mousePressEvent(QMouseEvent* event) override;
             virtual void mouseReleaseEvent(QMouseEvent* event) override;
             virtual void mouseMoveEvent(QMouseEvent* event, const QPoint& delta) override;
@@ -36,8 +37,8 @@ namespace Slick {
             float m_moveSpeed;
             float m_rotateSpeed;
             glm::vec3 m_pos;
-            float m_yaw;
-            float m_pitch;
+            glm::vec3 m_rot;
+            glm::vec3 m_scale;
             glm::vec3 m_oldVel;
             float m_oldDYaw;
             float m_oldDPitch;

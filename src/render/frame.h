@@ -1,12 +1,12 @@
 #pragma once
 
-#include "render/context.h"
-
 #include <glm/glm.hpp>
 
 namespace Slick {
 
     namespace Render {
+
+        class Context;
 
         class Frame
         {

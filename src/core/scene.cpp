@@ -1,5 +1,8 @@
 #include "core/scene.h"
 
+#include "core/skydomemanager.h"
+#include "core/scrfxmanager.h"
+
 #include "assets/animlistasset.h"
 #include "assets/boulderasset.h"
 #include "assets/buttonasset.h"
@@ -41,6 +44,8 @@ namespace Slick {
             m_platform(HipHop::Platform::Unknown),
             m_language(HipHop::Language::Unknown),
             m_region(HipHop::Region::Unknown),
+            m_skyDomeManager(new SkyDomeManager(this)),
+            m_scrFxManager(new ScrFxManager(this)),
             m_animListManager(new Assets::AnimListManager(this)),
             m_boulderManager(new Assets::BoulderManager(this)),
             m_buttonManager(new Assets::ButtonManager(this)),
@@ -89,11 +94,16 @@ namespace Slick {
             m_files.append(file);
         }
 
-        Asset* Scene::asset(quint32 id) const
+        Asset* Scene::assetById(quint32 id) const
         {
+            if (id == 0)
+            {
+                return nullptr;
+            }
+
             for (SceneFile* file : m_files)
             {
-                Asset* asset = file->asset(id);
+                Asset* asset = file->assetById(id);
 
                 if (asset)
                 {
@@ -104,11 +114,11 @@ namespace Slick {
             return nullptr;
         }
 
-        Asset* Scene::asset(const QString& name) const
+        Asset* Scene::assetByName(const QString& name) const
         {
             for (SceneFile* file : m_files)
             {
-                Asset* asset = file->asset(name);
+                Asset* asset = file->assetByName(name);
 
                 if (asset)
                 {
@@ -119,11 +129,11 @@ namespace Slick {
             return nullptr;
         }
 
-        Asset* Scene::asset(HipHop::AssetType type, int index) const
+        Asset* Scene::assetByType(HipHop::AssetType type, int index) const
         {
             for (SceneFile* file : m_files)
             {
-                Asset* asset = file->asset(type, index);
+                Asset* asset = file->assetByType(type, index);
 
                 if (asset)
                 {
@@ -257,12 +267,12 @@ namespace Slick {
             m_simpManager->setup();
 
             m_playerManager->setup();
+
+            m_skyDomeManager->setup();
         }
 
         void Scene::update()
         {
-            m_cameraManager->update();
-
             m_boulderManager->update();
             m_buttonManager->update();
             m_simpManager->update();
@@ -278,13 +288,25 @@ namespace Slick {
 
             m_context->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+            setRenderState(RenderState_SkyBack);
+            m_skyDomeManager->render();
+
+            setRenderState(RenderState_Environment);
             m_envManager->render();
 
+            setRenderState(RenderState_OpaqueModels);
+
+            m_simpManager->render();
+
+            /*
             m_boulderManager->render();
             m_buttonManager->render();
             m_simpManager->render();
 
             m_playerManager->render();
+            */
+
+            m_scrFxManager->render();
 
             m_context->camera()->end();
         }
@@ -300,7 +322,7 @@ namespace Slick {
 
                     if (rwtex)
                     {
-                        Assets::TextureAsset* textureAsset = qobject_cast<Assets::TextureAsset*>(asset(QString("%1.RW3").arg(rwtex->GetTextureName()->string)));
+                        Assets::TextureAsset* textureAsset = qobject_cast<Assets::TextureAsset*>(assetByName(QString("%1.RW3").arg(rwtex->GetTextureName()->string)));
 
                         if (textureAsset)
                         {
@@ -308,6 +330,124 @@ namespace Slick {
                         }
                     }
                 }
+            }
+        }
+
+        // zRenderState
+        void Scene::setRenderState(RenderState state)
+        {
+            m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            m_fogManager->apply();
+
+            m_context->glDisable(GL_CULL_FACE);
+            m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            m_context->glEnable(GL_BLEND);
+            m_context->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            m_context->glShadeModel(GL_SMOOTH);
+            m_context->glDepthMask(GL_TRUE);
+            m_context->glEnable(GL_DEPTH_TEST);
+
+            switch (state)
+            {
+            case RenderState_Particles:
+                m_context->glDepthMask(GL_FALSE);
+                m_context->glDisable(GL_FOG);
+                m_context->glShadeModel(GL_FLAT);
+                break;
+            case RenderState_OpaqueModels:
+                //m_context->glDisable(GL_BLEND);
+                break;
+            case RenderState_Environment:
+                //m_context->glDisable(GL_BLEND);
+                m_context->glBlendFunc(GL_ONE, GL_ZERO);
+                m_context->glCullFace(GL_BACK);
+                break;
+            case RenderState_Lightning:
+                m_context->glDepthMask(GL_FALSE);
+                m_context->glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                break;
+            case RenderState_Streak:
+                m_context->glDepthMask(GL_FALSE);
+                break;
+            case RenderState_NPCVisual:
+                m_context->glDepthMask(GL_FALSE);
+                break;
+            case RenderState_Glare:
+                m_context->glDepthMask(GL_FALSE);
+                m_context->glDisable(GL_DEPTH_TEST);
+                m_context->glDisable(GL_FOG);
+                m_context->glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                break;
+            case RenderState_Font:
+                m_context->glDepthMask(GL_FALSE);
+                m_context->glDisable(GL_DEPTH_TEST);
+                m_context->glDisable(GL_FOG);
+                //m_context->glDisable(GL_BLEND);
+                m_context->glBlendFunc(GL_ONE, GL_ZERO);
+                break;
+            case RenderState_HUD:
+                m_context->glDisable(GL_FOG);
+                break;
+            case RenderState_Bubble:
+                m_context->glDisable(GL_FOG);
+                //m_context->glDisable(GL_BLEND);
+                m_context->glCullFace(GL_BACK);
+                break;
+            case RenderState_SkyBack:
+                m_context->glDepthMask(GL_FALSE);
+                m_context->glDisable(GL_DEPTH_TEST);
+                m_context->glDisable(GL_FOG);
+                break;
+            case RenderState_Fill:
+                m_context->glDepthMask(GL_FALSE);
+                m_context->glDisable(GL_DEPTH_TEST);
+                m_context->glDisable(GL_FOG);
+                //m_context->glDisable(GL_BLEND);
+                m_context->glBlendFunc(GL_ONE, GL_ZERO);
+                m_context->glShadeModel(GL_FLAT);
+                break;
+            case RenderState_OOBFade:
+                m_context->glDisable(GL_DEPTH_TEST);
+                m_context->glDisable(GL_FOG);
+                m_context->glShadeModel(GL_FLAT);
+                break;
+            case RenderState_OOBPlayerZ:
+                //m_context->glDisable(GL_BLEND);
+                m_context->glShadeModel(GL_FLAT);
+                m_context->glBlendFunc(GL_ONE, GL_ZERO);
+                break;
+            case RenderState_OOBPlayerAlpha:
+                //m_context->glDisable(GL_BLEND);
+                m_context->glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                break;
+            case RenderState_OOBHand:
+                m_context->glDepthMask(GL_FALSE);
+                m_context->glDisable(GL_DEPTH_TEST);
+                m_context->glDisable(GL_FOG);
+                //m_context->glDisable(GL_BLEND);
+                m_context->glBlendFunc(GL_ONE, GL_ZERO);
+                break;
+            case RenderState_Newsfish:
+                m_context->glDisable(GL_DEPTH_TEST);
+                m_context->glDisable(GL_FOG);
+                //m_context->glDisable(GL_BLEND);
+                m_context->glBlendFunc(GL_ONE, GL_ZERO);
+                break;
+            case RenderState_CruiseHUD:
+                m_context->glDepthMask(GL_FALSE);
+                m_context->glDisable(GL_DEPTH_TEST);
+                m_context->glDisable(GL_FOG);
+                break;
+            case RenderState_DiscoFloorGlow:
+                m_context->glDepthMask(GL_FALSE);
+                m_context->glDisable(GL_FOG);
+                m_context->glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                break;
+            default:
+                break;
             }
         }
 

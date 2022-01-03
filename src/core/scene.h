@@ -34,7 +34,38 @@ namespace Slick {
 
     namespace Render { class Clump; }
 
+    // _SDRenderState
+    enum RenderState
+    {
+        RenderState_Unknown,
+        RenderState_Default,
+        RenderState_OpaqueModels,
+        RenderState_AlphaModels,
+        RenderState_Bubble,
+        RenderState_Projectile,
+        RenderState_Font,
+        RenderState_HUD,
+        RenderState_Particles,
+        RenderState_Lightning,
+        RenderState_Streak,
+        RenderState_SkyBack,
+        RenderState_Environment,
+        RenderState_Fill,
+        RenderState_NPCVisual,
+        RenderState_OOBFade,
+        RenderState_OOBPlayerZ,
+        RenderState_OOBPlayerAlpha,
+        RenderState_OOBHand,
+        RenderState_Glare,
+        RenderState_Newsfish,
+        RenderState_CruiseHUD,
+        RenderState_DiscoFloorGlow
+    };
+
     namespace Core {
+
+        class SkyDomeManager;
+        class ScrFxManager;
 
         class Scene : public QObject
         {
@@ -66,9 +97,9 @@ namespace Slick {
             SceneFile* file(int index) { return m_files[index]; }
             void addFile(SceneFile* file);
 
-            Asset* asset(quint32 id) const;
-            Asset* asset(const QString& name) const;
-            Asset* asset(HipHop::AssetType type, int index = 0) const;
+            Asset* assetById(quint32 id) const;
+            Asset* assetByName(const QString& name) const;
+            Asset* assetByType(HipHop::AssetType type, int index = 0) const;
             QList<Asset*> assets() const;
             QList<Asset*> assets(HipHop::AssetType type) const;
 
@@ -95,6 +126,11 @@ namespace Slick {
             void render();
 
             void setupClump(Render::Clump* clump);
+
+            void setRenderState(RenderState state);
+
+            SkyDomeManager* skyDomeManager() const { return m_skyDomeManager; }
+            ScrFxManager* scrFxManager() const { return m_scrFxManager; }
 
             Assets::AnimListManager* animListManager() const { return m_animListManager; }
             Assets::BoulderManager* boulderManager() const { return m_boulderManager; }
@@ -123,6 +159,9 @@ namespace Slick {
             HipHop::Platform m_platform;
             HipHop::Language m_language;
             HipHop::Region m_region;
+
+            SkyDomeManager* m_skyDomeManager;
+            ScrFxManager* m_scrFxManager;
 
             QList<AssetManager*> m_assetManagers;
             Assets::AnimListManager* m_animListManager;

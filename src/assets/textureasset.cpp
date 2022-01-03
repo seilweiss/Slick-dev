@@ -21,6 +21,7 @@ namespace Slick {
             if (texDict)
             {
                 m_texture.setData(texDict->GetTextureNative(0));
+                m_texture.setFilterMode(Rws::FILTER_LINEARMIPLINEAR);
             }
         }
 

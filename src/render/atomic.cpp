@@ -1,5 +1,7 @@
 #include "render/atomic.h"
 
+#include "render/context.h"
+
 #include "rws_core.h"
 #include "rws_world.h"
 

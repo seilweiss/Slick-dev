@@ -29,8 +29,15 @@ namespace Slick {
             Core::Vector3 scale() const { return m_scale; }
             void setScale(const Core::Vector3& scale);
 
+            float fov() const { return glm::radians(m_cam.fov); }
+            glm::mat4 viewMatrix() const { return m_viewMatrix; }
+
             void setup();
-            void apply();
+            void update();
+
+        signals:
+            void fovChanged(float fov);
+            void viewMatrixChanged(const glm::mat4& mat);
 
         private:
             HipHop::CamAsset m_cam;
@@ -51,8 +58,6 @@ namespace Slick {
             CameraManager(Core::Scene* scene) :
                 Core::AssetManager(scene),
                 m_previewCam(nullptr),
-                m_isPreviewing(false),
-                m_wasPreviewing(false),
                 m_saveEditorCamMatrix(1.0f),
                 m_saveEditorCamFov(0.0f)
             {
@@ -72,8 +77,6 @@ namespace Slick {
 
         private:
             Assets::CameraAsset* m_previewCam;
-            bool m_isPreviewing;
-            bool m_wasPreviewing;
             glm::mat4 m_saveEditorCamMatrix;
             float m_saveEditorCamFov;
         };

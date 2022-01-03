@@ -541,7 +541,7 @@ namespace Slick {
 
         setCorner(Qt::TopLeftCorner, Qt::TopDockWidgetArea);
         setCorner(Qt::TopRightCorner, Qt::TopDockWidgetArea);
-        setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
+        setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
         setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
         setCentralWidget(Panels::EditorPanel::instance());

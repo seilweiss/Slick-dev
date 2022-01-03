@@ -1,5 +1,7 @@
 #include "render/frame.h"
 
+#include "render/context.h"
+
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Slick {

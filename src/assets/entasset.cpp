@@ -18,9 +18,11 @@ namespace Slick {
             m_entDefault(asset),
             m_ent(&m_entDefault),
             m_model(nullptr),
+            m_clump(Render::Clump(scene()->renderContext())),
             m_env(nullptr),
             m_lightKit(nullptr),
-            m_color(1.0f)
+            m_color(1.0f),
+            m_renderEnabled(true)
         {
             setEditor(&m_entDefault);
         }
@@ -28,8 +30,14 @@ namespace Slick {
         void EntAsset::setup()
         {
             m_color = Core::ColorF(m_ent->redMult, m_ent->greenMult, m_ent->blueMult, m_ent->seeThru);
-            m_model = qobject_cast<Assets::ModelAsset*>(scene()->asset(m_ent->modelInfoID));
-            m_env = qobject_cast<Assets::EnvAsset*>(scene()->asset(HipHop::AssetType::ENV));
+            m_model = qobject_cast<Assets::ModelAsset*>(scene()->assetById(m_ent->modelInfoID));
+
+            if (m_model)
+            {
+                m_model->clump()->clone(m_clump);
+            }
+
+            m_env = qobject_cast<Assets::EnvAsset*>(scene()->assetByType(HipHop::AssetType::ENV));
             m_lightKit = m_env ? m_env->objectLightKit() : nullptr;
         }
 
@@ -117,10 +125,25 @@ namespace Slick {
 
         void EntAsset::update()
         {
+            if (m_model)
+            {
+                glm::mat4 mat(1.0f);
+
+                mat = glm::translate(mat, glm::vec3(m_ent->pos.x, m_ent->pos.y, m_ent->pos.z));
+                mat *= glm::eulerAngleYXZ(m_ent->ang.x, m_ent->ang.y, m_ent->ang.z);
+                mat = glm::scale(mat, glm::vec3(m_ent->scale.x, m_ent->scale.y, m_ent->scale.z));
+
+                m_clump.frame()->setMatrix(mat);
+            }
         }
 
         void EntAsset::render()
         {
+            if (!m_renderEnabled)
+            {
+                return;
+            }
+
             if ((m_ent->flags & HipHop::EntAsset::Visible) && m_model)
             {
                 if (m_lightKit)
@@ -128,15 +151,7 @@ namespace Slick {
                     m_lightKit->bind();
                 }
 
-                glm::mat4 mat(1.0f);
-
-                mat = glm::translate(mat, glm::vec3(m_ent->pos.x, m_ent->pos.y, m_ent->pos.z));
-                mat *= glm::eulerAngleYXZ(m_ent->ang.x, m_ent->ang.y, m_ent->ang.z);
-                mat = glm::scale(mat, glm::vec3(m_ent->scale.x, m_ent->scale.y, m_ent->scale.z));
-
-                m_model->clump()->frame()->setMatrix(mat);
-
-                for (Render::Atomic& atomic : m_model->clump()->atomics())
+                for (Render::Atomic& atomic : m_clump.atomics())
                 {
                     for (int i = 0; i < atomic.geometry()->materialCount(); i++)
                     {
@@ -144,7 +159,7 @@ namespace Slick {
                     }
                 }
 
-                m_model->render();
+                m_clump.render();
 
                 if (m_lightKit)
                 {

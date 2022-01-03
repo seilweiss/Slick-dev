@@ -1,5 +1,7 @@
 #include "render/geometry.h"
 
+#include "render/context.h"
+
 #include "rws_core.h"
 #include "rws_world.h"
 
@@ -11,7 +13,8 @@ namespace Slick {
 
         Geometry::Geometry(Context* context, Rws::Geometry* data) :
             m_context(context),
-            m_data(nullptr)
+            m_data(nullptr),
+            m_hasAlpha(false)
         {
             setData(data);
         }
@@ -89,6 +92,11 @@ namespace Slick {
 
                 for (auto& c : geomStruct->preLitLum)
                 {
+                    if (c.alpha < 255)
+                    {
+                        m_hasAlpha = true;
+                    }
+
                     m_colors.emplace_back(c.red / 255.0f, c.green / 255.0f, c.blue / 255.0f, c.alpha / 255.0f);
                 }
             }
@@ -115,13 +123,14 @@ namespace Slick {
 
         void Geometry::render()
         {
-            if (!m_data)
+            if (!m_data || m_vertices.empty())
             {
                 return;
             }
 
-            m_context->glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+            m_context->glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
+            m_context->glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
             m_context->glDisableClientState(GL_EDGE_FLAG_ARRAY);
             m_context->glDisableClientState(GL_INDEX_ARRAY);
 
@@ -160,6 +169,12 @@ namespace Slick {
 
             for (int i = 0; i < m_meshes.size(); i++)
             {
+                if (m_hasAlpha)
+                {
+                    m_context->glEnable(GL_BLEND);
+                    m_context->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                }
+
                 m_materials[i].bind();
 
                 m_context->glDrawElements(GL_TRIANGLES, m_meshes[i].indices.size(), GL_UNSIGNED_SHORT, &m_meshes[i].indices[0]);
@@ -168,6 +183,9 @@ namespace Slick {
             }
 
             m_context->glPopClientAttrib();
+            m_context->glPopAttrib();
+
+            m_context->stats()->triangleCount += (int)m_data->GetStruct()->triangles.size();
         }
 
     }

@@ -24,6 +24,7 @@ namespace Slick {
             Context* context() const { return m_context; }
 
             virtual void update() = 0;
+            virtual void setViewMatrix(const glm::mat4& mat);
             virtual void mousePressEvent(QMouseEvent* event) { Q_UNUSED(event); }
             virtual void mouseReleaseEvent(QMouseEvent* event) { Q_UNUSED(event); }
             virtual void mouseMoveEvent(QMouseEvent* event, const QPoint& delta) { Q_UNUSED(event); Q_UNUSED(delta); }

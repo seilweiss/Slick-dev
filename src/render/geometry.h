@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+#include <QList>
+
 namespace Rws { class Geometry; }
 
 namespace Slick {
@@ -37,6 +39,7 @@ namespace Slick {
             QList<glm::vec4> m_colors;
             QList<glm::vec2> m_uvs;
             QList<Mesh> m_meshes;
+            bool m_hasAlpha;
         };
 
     }

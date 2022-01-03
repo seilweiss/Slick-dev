@@ -47,6 +47,8 @@ SOURCES += \
     src/core/editorwidget.cpp \
     src/core/scene.cpp \
     src/core/scenefile.cpp \
+    src/core/scrfxmanager.cpp \
+    src/core/skydomemanager.cpp \
     src/dialogs/editorlist.cpp \
     src/dialogs/openscene.cpp \
     src/editors/hiphopeditor.cpp \
@@ -58,6 +60,7 @@ SOURCES += \
     src/editors/texteditorwidget.cpp \
     src/inspector/group.cpp \
     src/inspector/groupitem.cpp \
+    src/inspector/properties/buttonproperty.cpp \
     src/inspector/property.cpp \
     src/inspector/root.cpp \
     src/inspector/properties/assetinputproperty.cpp \
@@ -121,6 +124,8 @@ HEADERS += \
     src/core/editorwidget.h \
     src/core/scene.h \
     src/core/scenefile.h \
+    src/core/scrfxmanager.h \
+    src/core/skydomemanager.h \
     src/core/vector.h \
     src/dialogs/editorlist.h \
     src/dialogs/openscene.h \
@@ -137,6 +142,7 @@ HEADERS += \
     src/inspector/listsource.h \
     src/inspector/object.h \
     src/inspector/properties/assetinputproperty.h \
+    src/inspector/properties/buttonproperty.h \
     src/inspector/properties/checkboxproperty.h \
     src/inspector/properties/colorinputproperty.h \
     src/inspector/properties/combobox.h \

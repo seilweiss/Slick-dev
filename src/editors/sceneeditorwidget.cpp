@@ -3,11 +3,13 @@
 #include "editors/sceneeditorviewport.h"
 
 #include "assets/cameraasset.h"
+#include "core/scrfxmanager.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QCheckBox>
 #include <QComboBox>
 
 namespace Slick {
@@ -19,20 +21,28 @@ namespace Slick {
             m_scene(nullptr),
             m_viewport(new SceneEditorViewport),
             m_statsLabel(new QLabel),
+            m_letterBoxCheckBox(new QCheckBox),
+            m_aspectRatioComboBox(new QComboBox),
             m_previewCamComboBox(new QComboBox),
             m_previewCamChangedByMe(false)
         {
+            m_letterBoxCheckBox->setChecked(false);
+
+            m_aspectRatioComboBox->addItem(tr("Auto"), 0.0f);
+            m_aspectRatioComboBox->addItem(tr("3:2"), 3.0f / 2.0f);
+            m_aspectRatioComboBox->addItem(tr("4:3"), 4.0f / 3.0f);
+            m_aspectRatioComboBox->addItem(tr("16:9"), 16.0f / 9.0f);
+
             QVBoxLayout* mainLayout = new QVBoxLayout;
 
             QHBoxLayout* toolbar = new QHBoxLayout;
 
-            toolbar->addWidget(new QLabel("Placeholder toolbar"));
-            toolbar->addWidget(new QPushButton("Test"));
-            toolbar->addWidget(new QPushButton("1"));
-            toolbar->addWidget(new QPushButton("2"));
-            toolbar->addWidget(new QPushButton("3"));
             toolbar->addStretch(1);
-            toolbar->addWidget(new QLabel("Preview Camera:"));
+            toolbar->addWidget(new QLabel(tr("Aspect Ratio:")));
+            toolbar->addWidget(m_aspectRatioComboBox);
+            toolbar->addWidget(new QLabel(tr("Letterbox:")));
+            toolbar->addWidget(m_letterBoxCheckBox);
+            toolbar->addWidget(new QLabel(tr("Preview Camera:")));
             toolbar->addWidget(m_previewCamComboBox);
             toolbar->addWidget(m_statsLabel);
 
@@ -43,6 +53,16 @@ namespace Slick {
             setLayout(mainLayout);
 
             connect(m_viewport, &SceneEditorViewport::doneRendering, this, &SceneEditorWidget::updateStats);
+
+            connect(m_letterBoxCheckBox, &QCheckBox::toggled, this, [=](bool checked)
+            {
+                m_scene->scrFxManager()->setLetterBoxEnabled(checked);
+            });
+
+            connect(m_aspectRatioComboBox, &QComboBox::currentIndexChanged, this, [=](int index)
+            {
+                m_viewport->setAspectOverride(m_aspectRatioComboBox->itemData(index).toFloat());
+            });
 
             connect(m_previewCamComboBox, &QComboBox::currentIndexChanged, this, [=](int index)
             {
@@ -56,7 +76,7 @@ namespace Slick {
                 }
                 else
                 {
-                    m_scene->cameraManager()->setPreviewCamera((Assets::CameraAsset*)m_scene->asset(id));
+                    m_scene->cameraManager()->setPreviewCamera((Assets::CameraAsset*)m_scene->assetById(id));
                 }
             });
         }
@@ -97,7 +117,10 @@ namespace Slick {
         {
             Render::Stats* stats = m_viewport->context()->stats();
 
-            m_statsLabel->setText(tr("Atomics: %1 FPS: %2").arg(stats->atomicCount).arg(stats->fps));
+            m_statsLabel->setText(tr("Atomics: %1 Triangles: %2 FPS: %3")
+                                  .arg(stats->atomicCount)
+                                  .arg(stats->triangleCount)
+                                  .arg(stats->fps));
         }
 
         void SceneEditorWidget::refreshPreviewCam()

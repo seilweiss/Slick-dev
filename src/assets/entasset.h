@@ -1,6 +1,7 @@
 #pragma once
 
 #include "assets/baseasset.h"
+#include "render/clump.h"
 
 #include "hiphop/core/ent_asset.h"
 
@@ -22,6 +23,14 @@ namespace Slick {
             HipHop::EntAsset* editor() const { return m_ent; }
             void setEditor(HipHop::EntAsset* editor) { BaseAsset::setEditor(editor); m_ent = editor; }
 
+            Assets::ModelAsset* model() const { return m_model; }
+
+            Render::Clump* clump() { return &m_clump; }
+            const Render::Clump* clump() const { return &m_clump; }
+
+            bool renderEnabled() const { return m_renderEnabled; }
+            void setRenderEnabled(bool enabled) { m_renderEnabled = enabled; }
+
             virtual void setup();
             virtual void update();
             virtual void render();
@@ -37,9 +46,11 @@ namespace Slick {
             HipHop::EntAsset m_entDefault;
             HipHop::EntAsset* m_ent;
             Assets::ModelAsset* m_model;
+            Render::Clump m_clump;
             Assets::EnvAsset* m_env;
             Assets::LightKitAsset* m_lightKit;
             Core::ColorF m_color;
+            bool m_renderEnabled;
         };
 
     }
