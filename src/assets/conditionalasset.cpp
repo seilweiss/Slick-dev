@@ -280,6 +280,8 @@ namespace Slick {
                         varHashes[i].append(HipHop::Util::Hash(name.toStdString()));
                     }
                 }
+
+                varsInited = true;
             }
 
             class CondVariableProxy : public Inspector::Proxy<int, uint32_t>
