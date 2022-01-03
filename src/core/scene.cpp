@@ -296,15 +296,10 @@ namespace Slick {
 
             setRenderState(RenderState_OpaqueModels);
 
-            m_simpManager->render();
-
-            /*
             m_boulderManager->render();
             m_buttonManager->render();
             m_simpManager->render();
-
             m_playerManager->render();
-            */
 
             m_scrFxManager->render();
 
