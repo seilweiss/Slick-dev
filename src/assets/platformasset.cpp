@@ -332,7 +332,7 @@ namespace Slick {
                 auto updateStartOrient = [=]
                 {
                     startOrientProp->setMinimum(0);
-                    startOrientProp->setMaximum(m_platform.paddle.countOrient);
+                    startOrientProp->setMaximum(m_platform.paddle.countOrient - 1);
                     startOrientProp->requestRefresh();
                 };
 

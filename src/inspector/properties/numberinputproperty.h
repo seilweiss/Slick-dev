@@ -36,6 +36,7 @@ namespace Slick {
             void setConvertRadiansToDegrees(bool convert) { m_convertRadToDeg = convert; }
 
             virtual QWidget* createWidget(const QList<Property*>& props) override;
+            virtual void updateWidget(QWidget* widget, const QList<Property*>& props) override;
 
         private:
             bool m_minSet;
