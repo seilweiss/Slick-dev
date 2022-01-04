@@ -15,7 +15,8 @@ namespace Slick {
             template <class T, class W> QWidget* createSpinBox(const QList<Property*>& props, bool isUInt32 = false)
             {
                 W* spinBox = new W;
-                T value = props[0]->dataSource().data<T>();
+                NumberInputProperty* mainProp = (NumberInputProperty*)props[0];
+                T value = mainProp->dataSource().data<T>();
                 bool match = true;
 
                 for (int i = 1; i < props.size(); i++)
@@ -29,9 +30,12 @@ namespace Slick {
                     }
                 }
 
+                T minimum = mainProp->isMinimumSet() ? (T)mainProp->minimum() : std::numeric_limits<T>::lowest();
+                T maximum = mainProp->isMaximumSet() ? (T)mainProp->maximum() : (isUInt32 ? std::numeric_limits<int>::max() : std::numeric_limits<T>::max());
+
                 spinBox->setEmpty(!match);
-                spinBox->setRange(std::numeric_limits<T>::lowest(), isUInt32 ? std::numeric_limits<int>::max() : std::numeric_limits<T>::max());
-                spinBox->setValue(((NumberInputProperty*)props[0])->convertRadiansToDegrees() ? glm::degrees((float)value) : value);
+                spinBox->setRange(minimum, maximum);
+                spinBox->setValue(mainProp->convertRadiansToDegrees() ? glm::degrees((float)value) : value);
 
                 QObject::connect(spinBox, &W::valueChanged, [=](T value)
                 {

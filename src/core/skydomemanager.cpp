@@ -71,6 +71,8 @@ namespace Slick {
                                     {
                                         m_info.insert(index, info);
                                     }
+
+                                    qDebug().noquote() << "Added skydome " << ent->name();
                                 }
                             }
                         }

@@ -24,8 +24,8 @@ namespace Slick {
             Type type() const { return m_type; }
             bool isProperty() const { return m_type == Property; }
             bool isGroup() const { return m_type == Group; }
-            Inspector::Property* property() const { return isProperty() ? m_property : nullptr; }
-            Inspector::Group* group() const { return isGroup() ? m_group : nullptr; }
+            Inspector::Property* property() const;
+            Inspector::Group* group() const;
 
             QString name() const;
             void setName(const QString& name);

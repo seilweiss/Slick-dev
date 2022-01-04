@@ -17,6 +17,7 @@
 #include "assets/jspasset.h"
 #include "assets/markerasset.h"
 #include "assets/modelasset.h"
+#include "assets/platformasset.h"
 #include "assets/playerasset.h"
 #include "assets/simpleobjectasset.h"
 #include "assets/textasset.h"
@@ -60,6 +61,7 @@ namespace Slick {
             m_lightKitManager(new Assets::LightKitManager(this)),
             m_markerManager(new Assets::MarkerManager(this)),
             m_modelManager(new Assets::ModelManager(this)),
+            m_platformManager(new Assets::PlatformManager(this)),
             m_playerManager(new Assets::PlayerManager(this)),
             m_simpManager(new Assets::SimpleObjectManager(this)),
             m_textManager(new Assets::TextManager(this)),
@@ -80,6 +82,7 @@ namespace Slick {
             m_assetManagers.append(m_lightKitManager);
             m_assetManagers.append(m_markerManager);
             m_assetManagers.append(m_modelManager);
+            m_assetManagers.append(m_platformManager);
             m_assetManagers.append(m_playerManager);
             m_assetManagers.append(m_simpManager);
             m_assetManagers.append(m_textManager);
@@ -264,6 +267,7 @@ namespace Slick {
 
             m_boulderManager->setup();
             m_buttonManager->setup();
+            m_platformManager->setup();
             m_simpManager->setup();
 
             m_playerManager->setup();
@@ -275,6 +279,7 @@ namespace Slick {
         {
             m_boulderManager->update();
             m_buttonManager->update();
+            m_platformManager->update();
             m_simpManager->update();
 
             m_playerManager->update();
@@ -298,6 +303,7 @@ namespace Slick {
 
             m_boulderManager->render();
             m_buttonManager->render();
+            m_platformManager->render();
             m_simpManager->render();
             m_playerManager->render();
 

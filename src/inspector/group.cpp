@@ -71,16 +71,46 @@ namespace Slick {
             m_items.clear();
         }
 
-        GroupItem* Group::item(const QString& name) const
+        GroupItem* Group::item(const QString& id) const
         {
-            for (GroupItem* item : m_items)
+            if (id.isEmpty())
             {
-                if (item->name() == name)
+                qDebug().noquote() << "WARNING: could not find no-name item in group " << this->id();
+                return nullptr;
+            }
+
+            QStringList names = id.split(".");
+
+            if (names.empty())
+            {
+                qDebug().noquote() << "WARNING: could not find item " << id << " in group " << this->id();
+                return nullptr;
+            }
+
+            QString firstName = names.takeFirst();
+
+            if (names.empty())
+            {
+                for (GroupItem* item : m_items)
                 {
-                    return item;
+                    if (item->name() == firstName)
+                    {
+                        return item;
+                    }
+                }
+            }
+            else
+            {
+                for (GroupItem* item : m_items)
+                {
+                    if (item->isGroup() && item->name() == firstName)
+                    {
+                        return item->group()->item(names.join("."));
+                    }
                 }
             }
 
+            qDebug().noquote() << "WARNING: could not find item " << id << " in group " << this->id();
             return nullptr;
         }
 
@@ -117,14 +147,18 @@ namespace Slick {
             return nullptr;
         }
 
-        Property* Group::property(const QString& name) const
+        Property* Group::property(const QString& id) const
         {
-            for (GroupItem* item : m_items)
+            GroupItem* item = this->item(id);
+
+            if (item)
             {
-                if (item->isProperty() && item->name() == name)
+                if (item->isProperty())
                 {
                     return item->property();
                 }
+
+                qDebug().noquote() << "WARNING: found item " << id << " in group " << this->id() << " was not a property";
             }
 
             return nullptr;
@@ -178,24 +212,21 @@ namespace Slick {
             return nullptr;
         }
 
-        Group* Group::group(const QString& name) const
+        Group* Group::group(const QString& id) const
         {
-            for (GroupItem* item : m_items)
+            GroupItem* item = this->item(id);
+
+            if (item)
             {
-                if (item->isGroup() && item->name() == name)
+                if (item->isGroup())
                 {
                     return item->group();
                 }
+
+                qDebug().noquote() << "WARNING: found item " << id << " in group " << this->id() << " was not a group";
             }
 
             return nullptr;
-        }
-
-        Group* Group::group(const QString& name)
-        {
-            Group* g = ((const Group*)this)->group(name);
-
-            return g ? g : addGroup(name, QString());
         }
 
         QList<Group*> Group::groups() const
@@ -264,6 +295,12 @@ namespace Slick {
             Q_ASSERT(item);
             Q_ASSERT(m_items.contains(item));
 
+            if (!item)
+            {
+                qDebug().noquote() << "WARNING: Tried to remove NULL item from group " << id();
+                return;
+            }
+
             switch (item->type())
             {
             case GroupItem::Property:
@@ -284,9 +321,9 @@ namespace Slick {
             removeItem(item(index));
         }
 
-        void Group::removeItem(const QString& name)
+        void Group::removeItem(const QString& id)
         {
-            removeItem(item(name));
+            removeItem(item(id));
         }
 
         void Group::removeProperty(Property* prop)
@@ -314,9 +351,9 @@ namespace Slick {
             removeProperty(property(index));
         }
 
-        void Group::removeProperty(const QString& name)
+        void Group::removeProperty(const QString& id)
         {
-            removeProperty(property(name));
+            removeProperty(property(id));
         }
 
         void Group::removeGroup(Group* group)
@@ -344,9 +381,9 @@ namespace Slick {
             removeGroup(group(index));
         }
 
-        void Group::removeGroup(const QString& name)
+        void Group::removeGroup(const QString& id)
         {
-            removeGroup(group(name));
+            removeGroup(group(id));
         }
 
         void Group::addListItem()

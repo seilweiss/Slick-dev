@@ -3,9 +3,41 @@
 #include "inspector/property.h"
 #include "inspector/group.h"
 
+#include <QDebug>
+
 namespace Slick {
 
     namespace Inspector {
+
+        Property* GroupItem::property() const
+        {
+            Q_ASSERT(isProperty());
+
+            if (isProperty())
+            {
+                return m_property;
+            }
+            else
+            {
+                qDebug().noquote() << "WARNING: tried to get non-property from item " << id();
+                return nullptr;
+            }
+        }
+
+        Group* GroupItem::group() const
+        {
+            Q_ASSERT(isGroup());
+
+            if (isGroup())
+            {
+                return m_group;
+            }
+            else
+            {
+                qDebug().noquote() << "WARNING: tried to get non-group from item " << id();
+                return nullptr;
+            }
+        }
 
         QString GroupItem::name() const
         {

@@ -24,6 +24,7 @@ namespace Slick {
         class LightKitManager;
         class MarkerManager;
         class ModelManager;
+        class PlatformManager;
         class PlayerManager;
         class SimpleObjectManager;
         class TextManager;
@@ -146,6 +147,7 @@ namespace Slick {
             Assets::LightKitManager* lightKitManager() const { return m_lightKitManager; }
             Assets::MarkerManager* markerManager() const { return m_markerManager; }
             Assets::ModelManager* modelManager() const { return m_modelManager; }
+            Assets::PlatformManager* platformManager() const { return m_platformManager; }
             Assets::PlayerManager* playerManager() const { return m_playerManager; }
             Assets::SimpleObjectManager* simpleObjectManager() const { return m_simpManager; }
             Assets::TextManager* textManager() const { return m_textManager; }
@@ -178,6 +180,7 @@ namespace Slick {
             Assets::LightKitManager* m_lightKitManager;
             Assets::MarkerManager* m_markerManager;
             Assets::ModelManager* m_modelManager;
+            Assets::PlatformManager* m_platformManager;
             Assets::PlayerManager* m_playerManager;
             Assets::SimpleObjectManager* m_simpManager;
             Assets::TextManager* m_textManager;

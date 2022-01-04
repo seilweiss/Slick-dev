@@ -76,22 +76,21 @@ namespace Slick {
 
             int itemCount() const { return m_items.size(); }
             GroupItem* item(int index) const { return m_items[index]; }
-            GroupItem* item(const QString& name) const;
+            GroupItem* item(const QString& id) const;
             QList<GroupItem*> items() const { return m_items; }
-            bool hasItem(const QString& name) const { return item(name) != nullptr; }
+            bool hasItem(const QString& id) const { return item(id) != nullptr; }
 
             int propertyCount() const;
             Property* property(int index) const;
-            Property* property(const QString& name) const;
+            Property* property(const QString& id) const;
             QList<Property*> properties() const;
-            bool hasProperty(const QString& name) const { return property(name) != nullptr; }
+            bool hasProperty(const QString& id) const { return property(id) != nullptr; }
 
             int groupCount() const;
             Group* group(int index) const;
-            Group* group(const QString& name) const;
-            Group* group(const QString& name); // creates group if none exists
+            Group* group(const QString& id) const;
             QList<Group*> groups() const;
-            bool hasGroup(const QString& name) const { return group(name) != nullptr; }
+            bool hasGroup(const QString& id) const { return group(id) != nullptr; }
 
             GroupItem* addItem(GroupItem* item);
             Property* addProperty(Property* prop);
@@ -101,13 +100,13 @@ namespace Slick {
 
             void removeItem(GroupItem* item);
             void removeItem(int index);
-            void removeItem(const QString& name);
+            void removeItem(const QString& id);
             void removeProperty(Property* prop);
             void removeProperty(int index);
-            void removeProperty(const QString& name);
+            void removeProperty(const QString& id);
             void removeGroup(Group* group);
             void removeGroup(int index);
-            void removeGroup(const QString& name);
+            void removeGroup(const QString& id);
 
             AssetInputProperty* addAssetInput(const QString& name, const QString& displayName, const DataSource& dataSource, Core::Scene* scene);
             AssetInputProperty* addAssetInput(const DataSource& dataSource, Core::Scene* scene);

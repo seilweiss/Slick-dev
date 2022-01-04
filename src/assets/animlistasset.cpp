@@ -74,6 +74,9 @@ namespace Slick {
             auto animsGroup = animListGroup->addGroup("animations", tr("Animations"));
 
             animsGroup->setListSource(new AnimListSource(this, m_animList.ids));
+
+            connect(animsGroup, &Inspector::Group::listItemAdded, this, &AnimListAsset::makeDirty);
+            connect(animsGroup, &Inspector::Group::listItemRemoved, this, &AnimListAsset::makeDirty);
         }
 
     }

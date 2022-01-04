@@ -36,6 +36,7 @@ SOURCES += \
     src/assets/markerasset.cpp \
     src/assets/modelasset.cpp \
     src/assets/motionasset.cpp \
+    src/assets/platformasset.cpp \
     src/assets/playerasset.cpp \
     src/assets/simpleobjectasset.cpp \
     src/assets/textasset.cpp \
@@ -112,6 +113,7 @@ HEADERS += \
     src/assets/markerasset.h \
     src/assets/modelasset.h \
     src/assets/motionasset.h \
+    src/assets/platformasset.h \
     src/assets/playerasset.h \
     src/assets/simpleobjectasset.h \
     src/assets/textasset.h \
