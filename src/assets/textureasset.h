@@ -24,10 +24,12 @@ namespace Slick {
             void unbind();
 
             virtual void inspect(Inspector::Root* root) override;
+            virtual QWidget* createPreview() override;
 
         private:
             HipHop::TextureAsset m_textureAsset;
             Render::Texture m_texture;
+            QString m_info;
         };
 
         class TextureManager : public Core::AssetManager

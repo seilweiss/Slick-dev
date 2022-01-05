@@ -2,7 +2,6 @@
 
 #include "render/context.h"
 #include "render/camera.h"
-#include "render/controllers/firstpersoncameracontroller.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -59,18 +58,13 @@ namespace Slick {
             Q_ASSERT(m_context);
 
             m_context->initialize();
-
-            if (!m_camController)
-            {
-                setCameraController(new FirstPersonCameraController(m_context, this));
-            }
         }
 
         void Viewport::paintGL()
         {
-            m_context->beginFrame();
-
+            preUpdate();
             update();
+            postUpdate();
 
             preRender();
             render();
@@ -89,12 +83,16 @@ namespace Slick {
             Q_UNUSED(h);
         }
 
-        void Viewport::update()
+        void Viewport::preUpdate()
         {
             if (m_camController)
             {
                 m_camController->update();
             }
+        }
+
+        void Viewport::postUpdate()
+        {
         }
 
         void Viewport::preRender()
@@ -134,10 +132,6 @@ namespace Slick {
             m_context->glPushAttrib(GL_SCISSOR_BIT);
             m_context->glEnable(GL_SCISSOR_TEST);
             m_context->glScissor(vx, vy, vw, vh);
-        }
-
-        void Viewport::render()
-        {
         }
 
         void Viewport::postRender()
@@ -186,34 +180,38 @@ namespace Slick {
                 m_camController->mouseMoveEvent(event, delta);
             }
 
-            bool relocate = false;
             QPoint newPos = event->pos();
 
-            if (newPos.x() >= width())
+            if (m_mouseCaptured)
             {
-                relocate = true;
-                newPos.setX(newPos.x() - width());
-            }
-            else if (newPos.x() < 0)
-            {
-                relocate = true;
-                newPos.setX(newPos.x() + width());
-            }
+                bool relocate = false;
 
-            if (newPos.y() >= height())
-            {
-                relocate = true;
-                newPos.setY(newPos.y() - height());
-            }
-            else if (newPos.y() < 0)
-            {
-                relocate = true;
-                newPos.setY(newPos.y() + height());
-            }
+                if (newPos.x() >= width())
+                {
+                    relocate = true;
+                    newPos.setX(newPos.x() - width());
+                }
+                else if (newPos.x() < 0)
+                {
+                    relocate = true;
+                    newPos.setX(newPos.x() + width());
+                }
 
-            if (relocate)
-            {
-                QCursor::setPos(mapToGlobal(newPos));
+                if (newPos.y() >= height())
+                {
+                    relocate = true;
+                    newPos.setY(newPos.y() - height());
+                }
+                else if (newPos.y() < 0)
+                {
+                    relocate = true;
+                    newPos.setY(newPos.y() + height());
+                }
+
+                if (relocate)
+                {
+                    QCursor::setPos(mapToGlobal(newPos));
+                }
             }
 
             m_lastMousePos = newPos;

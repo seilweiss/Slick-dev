@@ -287,7 +287,9 @@ namespace Slick {
 
         void Scene::render()
         {
+            m_context->beginFrame();
             m_context->camera()->begin();
+            m_context->setTextureFilterHackEnabled(true);
 
             m_fogManager->apply();
 
@@ -309,6 +311,7 @@ namespace Slick {
 
             m_scrFxManager->render();
 
+            m_context->setTextureFilterHackEnabled(false);
             m_context->camera()->end();
         }
 

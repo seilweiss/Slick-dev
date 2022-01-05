@@ -41,6 +41,9 @@ namespace Slick {
             float im2DHeight() const { return m_im2DHeight; }
             void setIm2DHeight(float height) { m_im2DHeight = height; }
 
+            bool textureFilterHackEnabled() const { return m_textureFilterHack; }
+            void setTextureFilterHackEnabled(bool enabled) { m_textureFilterHack = enabled; }
+
             void beginFrame();
 
             void beginIm2D();
@@ -55,6 +58,7 @@ namespace Slick {
             Viewport* m_viewport;
             Camera m_camera;
             Stats m_stats;
+            bool m_textureFilterHack;
             float m_im2DWidth;
             float m_im2DHeight;
             int m_curFrameCount;

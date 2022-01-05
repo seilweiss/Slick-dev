@@ -119,8 +119,8 @@ namespace Slick {
                 m_context->glEnable(GL_TEXTURE_2D);
 
                 m_context->glBindTexture(GL_TEXTURE_2D, m_id);
-                m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_filterMin);
-                m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_filterMag);
+                m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_context->textureFilterHackEnabled() ? GL_LINEAR_MIPMAP_LINEAR : m_filterMin);
+                m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_context->textureFilterHackEnabled() ? GL_LINEAR_MIPMAP_LINEAR : m_filterMag);
                 m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS);
                 m_context->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT);
             }

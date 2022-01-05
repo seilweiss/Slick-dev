@@ -10,6 +10,7 @@
 #include "inspector/properties/colorinputproperty.h"
 #include "inspector/properties/comboboxproperty.h"
 #include "inspector/properties/eventinputproperty.h"
+#include "inspector/properties/labelproperty.h"
 #include "inspector/properties/numberinputproperty.h"
 #include "inspector/properties/textinputproperty.h"
 #include "inspector/properties/vectorinputproperty.h"
@@ -120,6 +121,8 @@ namespace Slick {
             ComboBoxProperty* addComboBox(const DataSource& dataSource, const QStringList& items = QStringList());
             EventInputProperty* addEventInput(const QString& name, const QString& displayName, const DataSource& dataSource, Core::Scene* scene);
             EventInputProperty* addEventInput(const DataSource& dataSource, Core::Scene* scene);
+            LabelProperty* addLabel(const QString& name, const QString& displayName, const DataSource& dataSource);
+            LabelProperty* addLabel(const DataSource& dataSource);
             NumberInputProperty* addNumberInput(const QString& name, const QString& displayName, const DataSource& dataSource);
             NumberInputProperty* addNumberInput(const DataSource& dataSource);
             TextInputProperty* addTextInput(const QString& name, const QString& displayName, const DataSource& dataSource);

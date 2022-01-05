@@ -41,6 +41,7 @@ SOURCES += \
     src/assets/simpleobjectasset.cpp \
     src/assets/textasset.cpp \
     src/assets/textureasset.cpp \
+    src/assets/texturepreview.cpp \
     src/assets/timerasset.cpp \
     src/core/asset.cpp \
     src/core/assetmanager.cpp \
@@ -62,6 +63,7 @@ SOURCES += \
     src/inspector/group.cpp \
     src/inspector/groupitem.cpp \
     src/inspector/properties/buttonproperty.cpp \
+    src/inspector/properties/labelproperty.cpp \
     src/inspector/property.cpp \
     src/inspector/root.cpp \
     src/inspector/properties/assetinputproperty.cpp \
@@ -118,6 +120,7 @@ HEADERS += \
     src/assets/simpleobjectasset.h \
     src/assets/textasset.h \
     src/assets/textureasset.h \
+    src/assets/texturepreview.h \
     src/assets/timerasset.h \
     src/core/asset.h \
     src/core/assetmanager.h \
@@ -152,6 +155,7 @@ HEADERS += \
     src/inspector/properties/doublespinbox.h \
     src/inspector/properties/eventinputproperty.h \
     src/inspector/properties/intspinbox.h \
+    src/inspector/properties/labelproperty.h \
     src/inspector/properties/numberinputproperty.h \
     src/inspector/properties/textinputproperty.h \
     src/inspector/properties/vectorinputproperty.h \

@@ -1,6 +1,7 @@
 #include "panels/inspectorpanel.h"
 
 #include "panels/inspectorpanelprivate.h"
+#include "util/expandwidget.h"
 
 #include <QVBoxLayout>
 #include <QScrollArea>
@@ -16,7 +17,8 @@ namespace Slick {
             QWidget(parent),
             m_mainLayout(new QVBoxLayout),
             m_scrollArea(new QScrollArea),
-            m_rootGroupWidget(nullptr)
+            m_rootGroupWidget(nullptr),
+            m_previewContainer(new Util::ExpandWidget(tr("Preview")))
         {
             m_scrollArea->setFrameShape(QFrame::NoFrame);
             m_scrollArea->setStyleSheet("QScrollArea { border: 0; }");
@@ -26,6 +28,7 @@ namespace Slick {
             m_scrollArea->setWidget(new QWidget);
 
             m_mainLayout->addWidget(m_scrollArea, 1);
+            m_mainLayout->addWidget(m_previewContainer);
 
             setLayout(m_mainLayout);
             refresh();
@@ -43,6 +46,14 @@ namespace Slick {
                 delete m_rootGroupWidget;
                 m_rootGroupWidget = nullptr;
             }
+
+            if (m_previewContainer->widget())
+            {
+                delete m_previewContainer->widget();
+                m_previewContainer->setWidget(nullptr);
+            }
+
+            m_previewContainer->hide();
 
             for (Inspector::Root* root : m_roots)
             {
@@ -72,6 +83,14 @@ namespace Slick {
                 if (m_objects.size() == 1)
                 {
                     updateGroupFromState(groups[0], m_objects[0]->objectState());
+
+                    QWidget* preview = m_objects[0]->createPreview();
+
+                    if (preview)
+                    {
+                        m_previewContainer->setWidget(preview);
+                        m_previewContainer->show();
+                    }
                 }
 
                 m_scrollArea->setWidget(m_rootGroupWidget);

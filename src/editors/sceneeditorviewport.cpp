@@ -1,5 +1,7 @@
 #include "editors/sceneeditorviewport.h"
 
+#include "render/controllers/firstpersoncameracontroller.h"
+
 namespace Slick {
 
     namespace Editors {
@@ -10,10 +12,15 @@ namespace Slick {
         {
         }
 
+        void SceneEditorViewport::initializeGL()
+        {
+            Viewport::initializeGL();
+
+            setCameraController(new Render::FirstPersonCameraController(context(), this));
+        }
+
         void SceneEditorViewport::update()
         {
-            Viewport::update();
-
             if (m_scene)
             {
                 m_scene->update();
@@ -22,8 +29,6 @@ namespace Slick {
 
         void SceneEditorViewport::render()
         {
-            Viewport::render();
-
             if (m_scene)
             {
                 m_scene->render();

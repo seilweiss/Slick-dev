@@ -42,6 +42,7 @@ namespace Slick {
                     connect(prop, &Inspector::Property::widgetStretchChanged, this, &PropertyWidget::refresh);
                     connect(prop, &Inspector::Property::helpTextChanged, this, &PropertyWidget::refresh);
                     connect(prop, &Inspector::Property::enabledChanged, this, &PropertyWidget::refresh);
+                    connect(prop, &Inspector::Property::exclusiveChanged, this, &PropertyWidget::refresh);
                 }
             }
 
@@ -204,7 +205,7 @@ namespace Slick {
 
                         for (int i = 1; i < m_groups.size(); i++)
                         {
-                            if (m_groups[i]->hasProperty(firstProp->name()))
+                            if (m_groups[i]->hasProperty(firstProp->name()) && !m_groups[i]->property(firstProp->name())->exclusive())
                             {
                                 similarProps.append(m_groups[i]->property(firstProp->name()));
                             }

@@ -34,10 +34,13 @@ namespace Slick {
             void freeMouse();
 
         protected:
-            virtual void update();
+            virtual void update() {}
+            virtual void render() {}
+
+            virtual void preUpdate();
+            virtual void postUpdate();
 
             virtual void preRender();
-            virtual void render();
             virtual void postRender();
 
             virtual void initializeGL() override;

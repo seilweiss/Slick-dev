@@ -18,6 +18,8 @@ namespace Slick {
             Rws::TextureNative* data() const { return m_data; }
             void setData(Rws::TextureNative* data);
 
+            uint32_t id() const { return m_id; }
+
             Rws::TextureFilterMode filterMode() const { return m_filterMode; }
             void setFilterMode(Rws::TextureFilterMode mode);
 

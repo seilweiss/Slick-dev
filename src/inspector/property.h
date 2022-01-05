@@ -27,6 +27,7 @@ namespace Slick {
             Q_PROPERTY(int widgetStretch READ widgetStretch WRITE setWidgetStretch NOTIFY widgetStretchChanged)
             Q_PROPERTY(QString helpText READ helpText WRITE setHelpText NOTIFY helpTextChanged)
             Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
+            Q_PROPERTY(bool exclusive READ exclusive WRITE setExclusive NOTIFY exclusiveChanged)
 
         public:
             Property(const QString& name, const QString& displayName, const DataSource& dataSource, QObject* parent = nullptr);
@@ -67,6 +68,9 @@ namespace Slick {
             bool enabled() const { return m_enabled; }
             void setEnabled(bool enabled) { m_enabled = enabled; emit enabledChanged(enabled); }
 
+            bool exclusive() const { return m_exclusive; }
+            void setExclusive(bool exclusive) { m_exclusive = exclusive; }
+
             void notifyDataChanged() { emit dataChanged(); }
 
             void requestRefresh() { emit refreshRequested(); }
@@ -88,6 +92,7 @@ namespace Slick {
             void widgetStretchChanged(int widgetStretch);
             void helpTextChanged(const QString& helpText);
             void enabledChanged(bool enabled);
+            void exclusiveChanged(bool exclusive);
 
         private:
             Group* m_parentGroup;
@@ -101,6 +106,7 @@ namespace Slick {
             int m_widgetStretch;
             QString m_helpText;
             bool m_enabled;
+            bool m_exclusive;
         };
 
     }

@@ -21,6 +21,7 @@ namespace Slick {
             void doneRendering();
 
         protected:
+            virtual void initializeGL() override;
             virtual void update() override;
             virtual void render() override;
 

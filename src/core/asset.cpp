@@ -26,6 +26,7 @@ namespace Slick {
 
         Asset::Asset(HipHop::Asset asset, SceneFile* sceneFile) :
             QObject(sceneFile),
+            Inspector::Object(),
             m_file(sceneFile),
             m_scene(sceneFile->scene()),
             m_asset(asset),

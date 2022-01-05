@@ -9,6 +9,8 @@ class QScrollArea;
 
 namespace Slick {
 
+    namespace Util { class ExpandWidget; }
+
     namespace Panels {
 
         namespace InspectorPanelPrivate { class GroupWidget; }
@@ -41,6 +43,7 @@ namespace Slick {
             QVBoxLayout* m_mainLayout;
             QScrollArea* m_scrollArea;
             InspectorPanelPrivate::GroupWidget* m_rootGroupWidget;
+            Util::ExpandWidget* m_previewContainer;
 
             void updateGroupFromState(Inspector::Group* group, Inspector::ObjectState& state);
         };

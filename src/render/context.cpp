@@ -14,6 +14,7 @@ namespace Slick {
             m_viewport(nullptr),
             m_camera(Camera(this)),
             m_stats(),
+            m_textureFilterHack(false),
             m_im2DWidth(640.0f),
             m_im2DHeight(480.0f),
             m_curFrameCount(0),
@@ -24,6 +25,11 @@ namespace Slick {
 
         void Context::initialize()
         {
+            if (m_init)
+            {
+                return;
+            }
+
             initializeOpenGLFunctions();
 
             glEnable(GL_BLEND);

@@ -469,6 +469,16 @@ namespace Slick {
             return (EventInputProperty*)addProperty(new EventInputProperty(QString(), QString(), dataSource, scene));
         }
 
+        LabelProperty* Group::addLabel(const QString& name, const QString& displayName, const DataSource& dataSource)
+        {
+            return (LabelProperty*)addProperty(new LabelProperty(name, displayName, dataSource));
+        }
+
+        LabelProperty* Group::addLabel(const DataSource& dataSource)
+        {
+            return (LabelProperty*)addProperty(new LabelProperty(QString(), QString(), dataSource));
+        }
+
         NumberInputProperty* Group::addNumberInput(const QString& name, const QString& displayName, const DataSource& dataSource)
         {
             return (NumberInputProperty*)addProperty(new NumberInputProperty(name, displayName, dataSource));

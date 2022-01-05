@@ -64,7 +64,10 @@ namespace Slick {
 
             m_widget = widget;
 
-            m_widgetFrameLayout->addWidget(widget);
+            if (widget)
+            {
+                m_widgetFrameLayout->addWidget(widget);
+            }
         }
 
         QString ExpandWidget::title() const
