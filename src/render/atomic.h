@@ -28,7 +28,7 @@ namespace Slick {
 
             void render();
 
-            bool cull();
+            bool cull() const;
 
         private:
             Context* m_context;

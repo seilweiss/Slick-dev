@@ -60,14 +60,18 @@ namespace Slick {
             glm::mat4 viewMatrix() const { return m_viewMatrix; }
             void setViewMatrix(const glm::mat4& mat);
 
+            bool testSphere(const glm::vec3& center, float radius) const;
+
         private:
             Context* m_context;
             Projection m_proj;
             glm::mat4 m_projMatrix;
             glm::mat4 m_viewMatrix;
+            glm::vec4 m_frustumPlanes[6];
             bool m_begun;
 
             void calcProjMatrix();
+            void updateFrustumPlanes();
         };
 
     }

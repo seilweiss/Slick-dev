@@ -120,7 +120,10 @@ namespace Slick {
                             }
                         }
 
-                        atomic.render();
+                        if (!atomic.cull())
+                        {
+                            atomic.render();
+                        }
 
                         nodeIndex++;
                     }

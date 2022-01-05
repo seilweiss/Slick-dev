@@ -19,6 +19,9 @@ namespace Slick {
             glm::mat4 matrix() const { return m_mat; }
             void setMatrix(const glm::mat4& mat) { m_mat = mat; }
 
+            // TODO: cache this
+            glm::mat4 worldMatrix() const { return m_parent ? m_parent->worldMatrix() * m_mat : m_mat; }
+
             void bind();
             void unbind();
 

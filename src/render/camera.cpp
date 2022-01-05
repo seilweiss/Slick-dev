@@ -25,6 +25,7 @@ namespace Slick {
             m_proj.fov = glm::radians(60.0f);
 
             calcProjMatrix();
+            updateFrustumPlanes();
         }
 
         void Camera::begin()
@@ -69,11 +70,14 @@ namespace Slick {
             m_proj = proj;
 
             calcProjMatrix();
+            updateFrustumPlanes();
         }
 
         void Camera::setViewMatrix(const glm::mat4& mat)
         {
             m_viewMatrix = mat;
+
+            updateFrustumPlanes();
         }
 
         void Camera::calcProjMatrix()
@@ -86,6 +90,60 @@ namespace Slick {
             {
                 m_projMatrix = glm::ortho(m_proj.left, m_proj.right, m_proj.bottom, m_proj.top);
             }
+        }
+
+        void Camera::updateFrustumPlanes()
+        {
+            glm::mat4 comboMatrix = m_projMatrix * m_viewMatrix;
+
+            // Left
+            m_frustumPlanes[0][0] = comboMatrix[3][0] + comboMatrix[0][0];
+            m_frustumPlanes[0][1] = comboMatrix[3][1] + comboMatrix[0][1];
+            m_frustumPlanes[0][2] = comboMatrix[3][2] + comboMatrix[0][2];
+            m_frustumPlanes[0][3] = comboMatrix[3][3] + comboMatrix[0][3];
+            // Right
+            m_frustumPlanes[1][0] = comboMatrix[3][0] - comboMatrix[0][0];
+            m_frustumPlanes[1][1] = comboMatrix[3][1] - comboMatrix[0][1];
+            m_frustumPlanes[1][2] = comboMatrix[3][2] - comboMatrix[0][2];
+            m_frustumPlanes[1][3] = comboMatrix[3][3] - comboMatrix[0][3];
+            // Bottom
+            m_frustumPlanes[2][0] = comboMatrix[3][0] + comboMatrix[1][0];
+            m_frustumPlanes[2][1] = comboMatrix[3][1] + comboMatrix[1][1];
+            m_frustumPlanes[2][2] = comboMatrix[3][2] + comboMatrix[1][2];
+            m_frustumPlanes[2][3] = comboMatrix[3][3] + comboMatrix[1][3];
+            // Top
+            m_frustumPlanes[3][0] = comboMatrix[3][0] - comboMatrix[1][0];
+            m_frustumPlanes[3][1] = comboMatrix[3][1] - comboMatrix[1][1];
+            m_frustumPlanes[3][2] = comboMatrix[3][2] - comboMatrix[1][2];
+            m_frustumPlanes[3][3] = comboMatrix[3][3] - comboMatrix[1][3];
+            // Near
+            m_frustumPlanes[4][0] = comboMatrix[3][0] + comboMatrix[2][0];
+            m_frustumPlanes[4][1] = comboMatrix[3][1] + comboMatrix[2][1];
+            m_frustumPlanes[4][2] = comboMatrix[3][2] + comboMatrix[2][2];
+            m_frustumPlanes[4][3] = comboMatrix[3][3] + comboMatrix[2][3];
+            // Far
+            m_frustumPlanes[5][0] = comboMatrix[3][0] - comboMatrix[2][0];
+            m_frustumPlanes[5][1] = comboMatrix[3][1] - comboMatrix[2][1];
+            m_frustumPlanes[5][2] = comboMatrix[3][2] - comboMatrix[2][2];
+            m_frustumPlanes[5][3] = comboMatrix[3][3] - comboMatrix[2][3];
+        }
+
+        bool Camera::testSphere(const glm::vec3& center, float radius) const
+        {
+            // TODO
+            /*
+            for (int i = 0; i < 1; i++)
+            {
+                if (m_frustumPlanes[i][0] * center[0] +
+                    m_frustumPlanes[i][1] * center[1] +
+                    m_frustumPlanes[i][2] * center[2] + m_frustumPlanes[i][3] + radius < 0.0f)
+                {
+                    return false;
+                }
+            }
+            */
+
+            return true;
         }
 
     }

@@ -64,10 +64,28 @@ namespace Slick {
             m_context->stats()->atomicCount++;
         }
 
-        bool Atomic::cull()
+        bool Atomic::cull() const
         {
-            // TODO
-            return false;
+            if (!m_geometry)
+            {
+                return true;
+            }
+
+            if (!m_context->camera())
+            {
+                return true;
+            }
+
+            const Rws::Sphere& sph = m_geometry->data()->GetStruct()->morphTargets[0].boundingSphere;
+            glm::vec3 center = glm::vec3(sph.center.x, sph.center.y, sph.center.z);
+            float radius = sph.radius;
+
+            if (m_frame)
+            {
+                center += glm::vec3(m_frame->worldMatrix()[3]);
+            }
+
+            return !m_context->camera()->testSphere(center, radius);
         }
 
     }
