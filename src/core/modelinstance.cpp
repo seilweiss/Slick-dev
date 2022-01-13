@@ -98,6 +98,7 @@ namespace Slick {
 
                 bool lighting = true;
                 bool oldFogEnabled = m_scene->fogManager()->enabled();
+                bool fogChanged = m_pipeInfo->DisableFog == oldFogEnabled;
 
                 switch (m_pipeInfo->Lighting)
                 {
@@ -148,8 +149,11 @@ namespace Slick {
                     context->glAlphaFunc(GL_GREATER, 0.0f);
                 }
 
-                m_scene->fogManager()->setEnabled(!m_pipeInfo->DisableFog);
-                m_scene->fogManager()->apply();
+                if (fogChanged)
+                {
+                    m_scene->fogManager()->setEnabled(!m_pipeInfo->DisableFog);
+                    m_scene->fogManager()->apply();
+                }
 
                 if (m_pipeInfo->Cull == HipHop::PipeInfo::CullFrontThenBack)
                 {
@@ -171,7 +175,11 @@ namespace Slick {
                     m_data->render();
                 }
 
-                m_scene->fogManager()->setEnabled(oldFogEnabled);
+                if (fogChanged)
+                {
+                    m_scene->fogManager()->setEnabled(oldFogEnabled);
+                    m_scene->fogManager()->apply();
+                }
 
                 context->glPopAttrib();
             }

@@ -111,8 +111,7 @@ namespace Slick {
                 context->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
                 Render::Projection proj = context->camera()->projection();
-                proj.farClip = 1000.0f;
-                //proj.farClip = 400.0f; // sCameraFarClip
+                proj.farClip = 400.0f; // sCameraFarClip
                 context->camera()->setProjection(proj);
             }
         }
