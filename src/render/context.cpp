@@ -37,6 +37,7 @@ namespace Slick {
 
             glEnable(GL_DEPTH_TEST);
             glDepthMask(GL_TRUE);
+            glDepthFunc(GL_LEQUAL);
 
             glEnable(GL_ALPHA_TEST);
             glAlphaFunc(GL_GREATER, 0.0f);

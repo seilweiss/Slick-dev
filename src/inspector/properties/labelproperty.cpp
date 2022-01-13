@@ -10,9 +10,16 @@ namespace Slick {
 
         namespace {
 
-            template <class T> QWidget* createLabel(const QList<Property*>& props)
+            QWidget* createLabel()
             {
                 QLabel* label = new QLabel;
+
+                return label;
+            }
+
+            template <class T> void updateLabel(QWidget* widget, const QList<Property*>& props)
+            {
+                QLabel* label = (QLabel*)widget;
                 T text = props[0]->dataSource().data<T>();
                 bool match = true;
 
@@ -28,18 +35,21 @@ namespace Slick {
                 }
 
                 label->setText(match ? Util::convertString<QString>(text) : QString());
-
-                return label;
             }
 
         }
 
-        QWidget* LabelProperty::createWidget(const QList<Property*>& props)
+        QWidget* LabelProperty::createWidget(const QList<Property*>&)
+        {
+            return createLabel();
+        }
+
+        void LabelProperty::updateWidget(QWidget* widget, const QList<Property*>& props)
         {
             switch (props[0]->dataSource().type())
             {
-            case DataSource::StdString: return createLabel<std::string>(props);
-            default: return createLabel<QString>(props);
+            case DataSource::StdString: updateLabel<std::string>(widget, props); break;
+            default: updateLabel<QString>(widget, props); break;
             }
         }
 

@@ -36,6 +36,7 @@ SOURCES += \
     src/assets/markerasset.cpp \
     src/assets/modelasset.cpp \
     src/assets/motionasset.cpp \
+    src/assets/pipeinfotableasset.cpp \
     src/assets/platformasset.cpp \
     src/assets/playerasset.cpp \
     src/assets/simpleobjectasset.cpp \
@@ -47,6 +48,8 @@ SOURCES += \
     src/core/assetmanager.cpp \
     src/core/editor.cpp \
     src/core/editorwidget.cpp \
+    src/core/modelbucketmanager.cpp \
+    src/core/modelinstance.cpp \
     src/core/scene.cpp \
     src/core/scenefile.cpp \
     src/core/scrfxmanager.cpp \
@@ -115,6 +118,7 @@ HEADERS += \
     src/assets/markerasset.h \
     src/assets/modelasset.h \
     src/assets/motionasset.h \
+    src/assets/pipeinfotableasset.h \
     src/assets/platformasset.h \
     src/assets/playerasset.h \
     src/assets/simpleobjectasset.h \
@@ -127,6 +131,8 @@ HEADERS += \
     src/core/color.h \
     src/core/editor.h \
     src/core/editorwidget.h \
+    src/core/modelbucketmanager.h \
+    src/core/modelinstance.h \
     src/core/scene.h \
     src/core/scenefile.h \
     src/core/scrfxmanager.h \

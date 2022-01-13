@@ -219,15 +219,14 @@ namespace Slick {
             float defaultSpecular[4] = { 0, 0, 0, 0 };
             float directionalPos[4] = { 0, 0, 1, 0 };
 
-            context->glPushAttrib(GL_LIGHTING_BIT);
             context->glEnable(GL_LIGHTING);
             context->glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightModelAmbient);
 
-            for (int i = 0; i < m_lightKit.lightList.size(); i++)
+            for (int i = 0; i < 8; i++)
             {
                 GLenum index = GL_LIGHT0 + i;
 
-                if (m_lightPreviews[i])
+                if (i < m_lightKit.lightList.size() && m_lightPreviews[i])
                 {
                     context->glEnable(index);
 
@@ -269,11 +268,6 @@ namespace Slick {
                     context->glDisable(index);
                 }
             }
-        }
-
-        void LightKitAsset::unbind()
-        {
-            scene()->renderContext()->glPopAttrib();
         }
 
         void LightKitAsset::inspect(Inspector::Root* root)
@@ -342,6 +336,42 @@ namespace Slick {
             {
                 ((LightKitAsset*)asset)->setup();
             }
+        }
+
+        void LightKitManager::bind(LightKitAsset* lightKit)
+        {
+            if (lightKit == m_currentLightKit)
+            {
+                return;
+            }
+
+            if (lightKit)
+            {
+                lightKit->bind();
+            }
+            else
+            {
+                Render::Context* context = scene()->renderContext();
+
+                float ambient[4] = { 1, 1, 1, 1 };
+                float diffuse[4] = { 0, 0, 0, 0 };
+                float specular[4] = { 0, 0, 0, 0 };
+
+                context->glEnable(GL_LIGHT0);
+                context->glDisable(GL_LIGHT1);
+                context->glDisable(GL_LIGHT2);
+                context->glDisable(GL_LIGHT3);
+                context->glDisable(GL_LIGHT4);
+                context->glDisable(GL_LIGHT5);
+                context->glDisable(GL_LIGHT6);
+                context->glDisable(GL_LIGHT7);
+
+                context->glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+                context->glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+                context->glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+            }
+
+            m_currentLightKit = lightKit;
         }
 
     }

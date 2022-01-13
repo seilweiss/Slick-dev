@@ -30,7 +30,6 @@ namespace Slick {
 
             void setup();
             void bind();
-            void unbind();
 
             virtual void inspect(Inspector::Root* root) override;
 
@@ -49,12 +48,16 @@ namespace Slick {
             Q_OBJECT
 
         public:
-            LightKitManager(Core::Scene* scene) : Core::AssetManager(scene) {}
+            LightKitManager(Core::Scene* scene) : Core::AssetManager(scene), m_currentLightKit(nullptr) {}
 
             void setup();
+            void bind(LightKitAsset* lightKit);
 
             virtual bool supports(HipHop::Asset asset) const override { return asset.GetType() == HipHop::AssetType::LKIT; }
             virtual Core::Asset* createAsset(HipHop::Asset asset, Core::SceneFile* sceneFile) { return new LightKitAsset(asset, sceneFile); }
+
+        private:
+            LightKitAsset* m_currentLightKit;
         };
 
     }

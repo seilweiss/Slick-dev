@@ -1,5 +1,6 @@
 #include "core/scene.h"
 
+#include "core/modelbucketmanager.h"
 #include "core/skydomemanager.h"
 #include "core/scrfxmanager.h"
 
@@ -17,6 +18,7 @@
 #include "assets/jspasset.h"
 #include "assets/markerasset.h"
 #include "assets/modelasset.h"
+#include "assets/pipeinfotableasset.h"
 #include "assets/platformasset.h"
 #include "assets/playerasset.h"
 #include "assets/simpleobjectasset.h"
@@ -45,6 +47,7 @@ namespace Slick {
             m_platform(HipHop::Platform::Unknown),
             m_language(HipHop::Language::Unknown),
             m_region(HipHop::Region::Unknown),
+            m_modelBucketManager(new ModelBucketManager(this)),
             m_skyDomeManager(new SkyDomeManager(this)),
             m_scrFxManager(new ScrFxManager(this)),
             m_animListManager(new Assets::AnimListManager(this)),
@@ -61,6 +64,7 @@ namespace Slick {
             m_lightKitManager(new Assets::LightKitManager(this)),
             m_markerManager(new Assets::MarkerManager(this)),
             m_modelManager(new Assets::ModelManager(this)),
+            m_pipeInfoTableManager(new Assets::PipeInfoTableManager(this)),
             m_platformManager(new Assets::PlatformManager(this)),
             m_playerManager(new Assets::PlayerManager(this)),
             m_simpManager(new Assets::SimpleObjectManager(this)),
@@ -82,6 +86,7 @@ namespace Slick {
             m_assetManagers.append(m_lightKitManager);
             m_assetManagers.append(m_markerManager);
             m_assetManagers.append(m_modelManager);
+            m_assetManagers.append(m_pipeInfoTableManager);
             m_assetManagers.append(m_platformManager);
             m_assetManagers.append(m_playerManager);
             m_assetManagers.append(m_simpManager);
@@ -295,6 +300,8 @@ namespace Slick {
 
             m_context->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+            m_lightKitManager->bind(nullptr);
+
             setRenderState(RenderState_SkyBack);
             m_skyDomeManager->render();
 
@@ -303,11 +310,25 @@ namespace Slick {
 
             setRenderState(RenderState_OpaqueModels);
 
+            m_modelBucketManager->begin();
+
+            m_lightKitManager->bind((Assets::LightKitAsset*)assetByType(HipHop::AssetType::LKIT));
+
             m_boulderManager->render();
             m_buttonManager->render();
             m_platformManager->render();
             m_simpManager->render();
             m_playerManager->render();
+
+            m_modelBucketManager->renderOpaque();
+
+            m_lightKitManager->bind(nullptr);
+
+            setRenderState(RenderState_AlphaModels);
+
+            m_modelBucketManager->renderAlpha();
+
+            m_lightKitManager->bind(nullptr);
 
             m_scrFxManager->render();
 

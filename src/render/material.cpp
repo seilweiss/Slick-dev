@@ -18,7 +18,8 @@ namespace Slick {
             m_color(1.0f),
             m_ambient(1.0f),
             m_diffuse(1.0f),
-            m_specular(1.0f)
+            m_specular(1.0f),
+            m_useColorMaterial(false)
         {
             setData(data);
         }
@@ -40,12 +41,26 @@ namespace Slick {
 
         void Material::bind()
         {
-            float ambient[4] = { m_ambient, m_ambient, m_ambient, m_ambient };
-            float diffuse[4] = { m_diffuse * m_color[0], m_diffuse * m_color[1], m_diffuse * m_color[2], m_diffuse * m_color[3] };
+            m_context->glPushAttrib(GL_LIGHTING_BIT);
+
+            if (m_useColorMaterial)
+            {
+                m_context->glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+                m_context->glEnable(GL_COLOR_MATERIAL);
+            }
+            else
+            {
+                m_context->glDisable(GL_COLOR_MATERIAL);
+
+                float ambient[4] = { m_ambient * m_color[0], m_ambient * m_color[1], m_ambient * m_color[2], m_ambient * m_color[3] };
+                float diffuse[4] = { m_diffuse * m_color[0], m_diffuse * m_color[1], m_diffuse * m_color[2], m_diffuse * m_color[3] };
+
+                m_context->glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+                m_context->glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+            }
+
             float specular[4] = { 0, 0, 0, 0 }; // RW doesn't actually support specular
 
-            m_context->glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-            m_context->glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
             m_context->glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
 
             if (m_texture)
@@ -60,6 +75,8 @@ namespace Slick {
             {
                 m_texture->unbind();
             }
+
+            m_context->glPopAttrib();
         }
 
     }

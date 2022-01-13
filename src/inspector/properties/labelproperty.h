@@ -15,6 +15,7 @@ namespace Slick {
                 Property(name, displayName, dataSource, parent) {}
 
             virtual QWidget* createWidget(const QList<Property*>& props) override;
+            virtual void updateWidget(QWidget* widget, const QList<Property*>& props) override;
         };
 
     }

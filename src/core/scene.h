@@ -24,6 +24,7 @@ namespace Slick {
         class LightKitManager;
         class MarkerManager;
         class ModelManager;
+        class PipeInfoTableManager;
         class PlatformManager;
         class PlayerManager;
         class SimpleObjectManager;
@@ -65,6 +66,7 @@ namespace Slick {
 
     namespace Core {
 
+        class ModelBucketManager;
         class SkyDomeManager;
         class ScrFxManager;
 
@@ -130,6 +132,7 @@ namespace Slick {
 
             void setRenderState(RenderState state);
 
+            ModelBucketManager* modelBucketManager() const { return m_modelBucketManager; }
             SkyDomeManager* skyDomeManager() const { return m_skyDomeManager; }
             ScrFxManager* scrFxManager() const { return m_scrFxManager; }
 
@@ -147,6 +150,7 @@ namespace Slick {
             Assets::LightKitManager* lightKitManager() const { return m_lightKitManager; }
             Assets::MarkerManager* markerManager() const { return m_markerManager; }
             Assets::ModelManager* modelManager() const { return m_modelManager; }
+            Assets::PipeInfoTableManager* pipeInfoTableManager() const { return m_pipeInfoTableManager; }
             Assets::PlatformManager* platformManager() const { return m_platformManager; }
             Assets::PlayerManager* playerManager() const { return m_playerManager; }
             Assets::SimpleObjectManager* simpleObjectManager() const { return m_simpManager; }
@@ -162,6 +166,7 @@ namespace Slick {
             HipHop::Language m_language;
             HipHop::Region m_region;
 
+            ModelBucketManager* m_modelBucketManager;
             SkyDomeManager* m_skyDomeManager;
             ScrFxManager* m_scrFxManager;
 
@@ -180,6 +185,7 @@ namespace Slick {
             Assets::LightKitManager* m_lightKitManager;
             Assets::MarkerManager* m_markerManager;
             Assets::ModelManager* m_modelManager;
+            Assets::PipeInfoTableManager* m_pipeInfoTableManager;
             Assets::PlatformManager* m_platformManager;
             Assets::PlayerManager* m_playerManager;
             Assets::SimpleObjectManager* m_simpManager;

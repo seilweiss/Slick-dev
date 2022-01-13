@@ -28,17 +28,27 @@ namespace Slick {
 
         void ButtonAsset::render()
         {
-            ButtonManager* manager = scene()->buttonManager();
-            Core::ColorF color = Core::ColorF(m_button.redMult, m_button.greenMult, m_button.blueMult, m_button.seeThru);
-
-            if (m_button.actMethod == HipHop::ButtonAsset::Button)
+            if (model())
             {
-                color.r *= manager->redMultiplier();
-                color.g *= manager->greenMultiplier();
-                color.b *= manager->blueMultiplier();
-            }
+                ButtonManager* manager = scene()->buttonManager();
 
-            setColor(color);
+                glm::vec4 color(m_button.redMult, m_button.greenMult, m_button.blueMult, m_button.seeThru);
+
+                if (m_button.actMethod == HipHop::ButtonAsset::Button)
+                {
+                    color[0] *= manager->redMultiplier();
+                    color[1] *= manager->greenMultiplier();
+                    color[2] *= manager->blueMultiplier();
+                }
+
+                Core::ModelInstance* curModel = model();
+
+                while (curModel)
+                {
+                    curModel->setColor(color);
+                    curModel = curModel->next();
+                }
+            }
 
             EntAsset::render();
         }

@@ -15,7 +15,10 @@ namespace Slick {
             m_context(context),
             m_data(nullptr),
             m_geometry(nullptr),
-            m_frame(nullptr)
+            m_frame(nullptr),
+            m_boundingSphereCenter(0.0f),
+            m_boundingSphereRadius(0.0f),
+            m_visible(true)
         {
             setData(data);
         }
@@ -35,6 +38,58 @@ namespace Slick {
             {
                 m_visible = (atomStruct->flags & Rws::AtomicStruct::RENDER) != 0;
             }
+        }
+
+        void Atomic::setGeometry(Geometry* geometry)
+        {
+            m_geometry = geometry;
+
+            if (geometry)
+            {
+                Rws::GeometryStruct* geomStruct = geometry->data()->GetStruct();
+
+                if (geomStruct)
+                {
+                    Rws::Sphere& sph = geomStruct->morphTargets[0].boundingSphere;
+
+                    m_boundingSphereCenter = glm::vec3(sph.center.x, sph.center.y, sph.center.z);
+                    m_boundingSphereRadius = sph.radius;
+                }
+            }
+        }
+
+        glm::vec3 Atomic::worldBoundingSphereCenter() const
+        {
+            glm::vec3 center = m_boundingSphereCenter;
+
+            if (m_frame)
+            {
+                center = glm::vec3(glm::vec4(center, 0.0f) * m_frame->matrix());
+            }
+
+            return center;
+        }
+
+        // RpAtomicGetWorldBoundingSphere
+        float Atomic::worldBoundingSphereRadius() const
+        {
+            float radius = m_boundingSphereRadius;
+
+            if (m_frame)
+            {
+                glm::mat4 mat = m_frame->matrix();
+                glm::vec3 right = mat[0];
+                glm::vec3 up = mat[1];
+                glm::vec3 at = mat[2];
+                float xscale2 = glm::dot(right, right);
+                float yscale2 = glm::dot(up, up);
+                float zscale2 = glm::dot(at, at);
+                float scale2 = glm::max(glm::max(xscale2, yscale2), zscale2);
+
+                radius *= glm::sqrt(scale2);
+            }
+
+            return radius;
         }
 
         void Atomic::render()

@@ -99,7 +99,7 @@ namespace Slick {
 
         void FogManager::apply()
         {
-            if (m_previewFog)
+            if (m_enabled && m_previewFog)
             {
                 m_previewFog->apply();
             }
@@ -112,6 +112,7 @@ namespace Slick {
 
                 Render::Projection proj = context->camera()->projection();
                 proj.farClip = 1000.0f;
+                //proj.farClip = 400.0f; // sCameraFarClip
                 context->camera()->setProjection(proj);
             }
         }

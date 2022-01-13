@@ -14,7 +14,9 @@ namespace Slick {
         Geometry::Geometry(Context* context, Rws::Geometry* data) :
             m_context(context),
             m_data(nullptr),
-            m_hasAlpha(false)
+            m_hasAlpha(false),
+            m_prelit(true),
+            m_modulateMatColor(false)
         {
             setData(data);
         }
@@ -41,6 +43,8 @@ namespace Slick {
                 qDebug("Geometry is native");
                 return;
             }
+
+            m_modulateMatColor = geomStruct->ModulatesMaterialColor();
 
             Rws::MorphTarget* morph = &geomStruct->morphTargets[0];
 
@@ -119,6 +123,11 @@ namespace Slick {
                     m_meshes[t.matIndex].indices.emplace_back(t.vertIndex[2]);
                 }
             }
+
+            for (int i = 0; i < m_meshes.size(); i++)
+            {
+                updateMeshColors(i);
+            }
         }
 
         void Geometry::render()
@@ -144,16 +153,6 @@ namespace Slick {
                 m_context->glDisableClientState(GL_NORMAL_ARRAY);
             }
 
-            if (!m_colors.empty())
-            {
-                m_context->glEnableClientState(GL_COLOR_ARRAY);
-                m_context->glColorPointer(4, GL_FLOAT, 0, glm::value_ptr(m_colors[0]));
-            }
-            else
-            {
-                m_context->glDisableClientState(GL_COLOR_ARRAY);
-            }
-
             if (!m_uvs.empty())
             {
                 m_context->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -169,11 +168,37 @@ namespace Slick {
 
             for (int i = 0; i < m_meshes.size(); i++)
             {
+                /*
                 if (m_hasAlpha)
                 {
                     m_context->glEnable(GL_BLEND);
                     m_context->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 }
+                */
+
+                if (!m_colors.empty() && m_prelit)
+                {
+                    float* colors = glm::value_ptr(m_colors[0]);
+
+                    if (m_modulateMatColor)
+                    {
+                        if (m_meshes[i].lastMatColor != m_materials[i].color())
+                        {
+                            updateMeshColors(i);
+                        }
+
+                        colors = glm::value_ptr(m_meshes[i].modulatedColors[0]);
+                    }
+
+                    m_context->glEnableClientState(GL_COLOR_ARRAY);
+                    m_context->glColorPointer(4, GL_FLOAT, 0, colors);
+                }
+                else
+                {
+                    m_context->glDisableClientState(GL_COLOR_ARRAY);
+                }
+
+                m_materials[i].setUseColorMaterial(!m_colors.empty() && m_prelit);
 
                 m_materials[i].bind();
 
@@ -186,6 +211,20 @@ namespace Slick {
             m_context->glPopAttrib();
 
             m_context->stats()->triangleCount += (int)m_data->GetStruct()->triangles.size();
+        }
+
+        void Geometry::updateMeshColors(int index)
+        {
+            glm::vec4 matColor = m_materials[index].color();
+
+            m_meshes[index].modulatedColors = m_colors;
+
+            for (glm::vec4& color : m_meshes[index].modulatedColors)
+            {
+                color *= matColor;
+            }
+
+            m_meshes[index].lastMatColor = matColor;
         }
 
     }

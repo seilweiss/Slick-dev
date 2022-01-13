@@ -1,6 +1,7 @@
 #include "core/skydomemanager.h"
 
 #include "core/scene.h"
+#include "render/atomic.h"
 
 #include <glm/glm.hpp>
 
@@ -85,11 +86,12 @@ namespace Slick {
         {
             for (const auto& info : m_info)
             {
-                Render::Clump* clump = info.ent->clump();
+                Core::ModelInstance* model = info.ent->model();
 
-                if (clump)
+                if (model)
                 {
-                    glm::mat mat = clump->frame()->matrix();
+                    Render::Atomic* atomic = model->data();
+                    glm::mat mat = model->matrix();
                     glm::mat cammat = m_scene->renderContext()->camera()->viewMatrix();
 
                     mat[3][0] = cammat[3][0];
@@ -100,8 +102,8 @@ namespace Slick {
                         mat[3][1] = cammat[3][1];
                     }
 
-                    clump->frame()->setMatrix(mat);
-                    clump->render();
+                    atomic->frame()->setMatrix(mat);
+                    atomic->render();
                 }
             }
         }

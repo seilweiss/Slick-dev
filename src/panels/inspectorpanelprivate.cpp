@@ -166,6 +166,7 @@ namespace Slick {
                 setLayout(m_layout);
 
                 refreshGroup();
+                refreshWidget();
             }
 
             void GroupWidget::refreshGroup()
@@ -173,6 +174,8 @@ namespace Slick {
                 if (m_content)
                 {
                     delete m_content;
+                    m_content = nullptr;
+                    m_contentLayout = nullptr;
                 }
 
                 for (Inspector::Group* group : m_groups)
@@ -183,186 +186,192 @@ namespace Slick {
 
                 Inspector::Group* mainGroup = m_groups[0];
 
-                m_content = new QWidget;
-                m_contentLayout = new QVBoxLayout;
-
-                m_contentLayout->setAlignment(Qt::AlignTop);
-                m_content->setLayout(m_contentLayout);
-
-                for (int i = 0; i < mainGroup->itemCount(); i++)
+                if (mainGroup->expanded() || !mainGroup->nameVisible())
                 {
-                    Inspector::GroupItem* item = mainGroup->item(i);
+                    m_content = new QWidget;
+                    m_contentLayout = new QVBoxLayout;
 
-                    switch (item->type())
+                    m_contentLayout->setAlignment(Qt::AlignTop);
+                    m_content->setLayout(m_contentLayout);
+
+                    for (int i = 0; i < mainGroup->itemCount(); i++)
                     {
-                    case Inspector::GroupItem::Property:
-                    {
-                        Inspector::Property* firstProp = item->property();
-                        QList<Inspector::Property*> similarProps;
-                        bool propPresentInAllGroups = true;
+                        Inspector::GroupItem* item = mainGroup->item(i);
 
-                        similarProps.append(firstProp);
-
-                        for (int i = 1; i < m_groups.size(); i++)
+                        switch (item->type())
                         {
-                            if (m_groups[i]->hasProperty(firstProp->name()) && !m_groups[i]->property(firstProp->name())->exclusive())
-                            {
-                                similarProps.append(m_groups[i]->property(firstProp->name()));
-                            }
-                            else
-                            {
-                                propPresentInAllGroups = false;
-                                break;
-                            }
-                        }
-
-                        if (propPresentInAllGroups)
+                        case Inspector::GroupItem::Property:
                         {
-                            QHBoxLayout* propLayout = new QHBoxLayout;
+                            Inspector::Property* firstProp = item->property();
+                            QList<Inspector::Property*> similarProps;
+                            bool propPresentInAllGroups = true;
 
-                            propLayout->setContentsMargins(0, 0, 0, 0);
+                            similarProps.append(firstProp);
 
-                            PropertyWidget* propWidget = new PropertyWidget(similarProps);
-
-                            if (!m_contentLayout->isEmpty())
+                            for (int i = 1; i < m_groups.size(); i++)
                             {
-                                QFrame* separator = new QFrame;
-                                separator->setFrameShape(QFrame::HLine);
-                                separator->setFrameShadow(QFrame::Sunken);
-                                separator->setVisible(propWidget->isVisible());
-
-                                m_contentLayout->addWidget(separator);
-
-                                connect(propWidget, &PropertyWidget::visibilityChanged, separator, &QFrame::setVisible);
-                            }
-
-                            propLayout->addWidget(propWidget, 1);
-
-                            if (mainGroup->isList())
-                            {
-                                QToolButton* removeButton = new QToolButton;
-                                removeButton->setIcon(QIcon(":/icons/list-remove.svg"));
-                                removeButton->setAutoRaise(true);
-
-                                connect(removeButton, &QToolButton::clicked, this, [=]
+                                if (m_groups[i]->hasProperty(firstProp->name()) && !m_groups[i]->property(firstProp->name())->exclusive())
                                 {
-                                    for (Inspector::Group* group : m_groups)
-                                    {
-                                        group->removeListItem(i);
-                                    }
-
-                                    refreshGroup();
-                                }, Qt::QueuedConnection);
-
-                                propLayout->addWidget(removeButton, 0, Qt::AlignTop);
-                            }
-
-                            m_contentLayout->addLayout(propLayout);
-                        }
-
-                        break;
-                    }
-                    case Inspector::GroupItem::Group:
-                    {
-                        Inspector::Group* firstGroup = item->group();
-                        QList<Inspector::Group*> similarGroups;
-                        bool groupPresentInAllGroups = true;
-
-                        similarGroups.append(firstGroup);
-
-                        for (int i = 1; i < m_groups.size(); i++)
-                        {
-                            bool found = false;
-
-                            for (Inspector::Group* group : m_groups[i]->groups())
-                            {
-                                if (group->equals(firstGroup))
+                                    similarProps.append(m_groups[i]->property(firstProp->name()));
+                                }
+                                else
                                 {
-                                    similarGroups.append(group);
-                                    found = true;
+                                    propPresentInAllGroups = false;
                                     break;
                                 }
                             }
 
-                            if (!found)
+                            if (propPresentInAllGroups)
                             {
-                                groupPresentInAllGroups = false;
+                                QHBoxLayout* propLayout = new QHBoxLayout;
+
+                                propLayout->setContentsMargins(0, 0, 0, 0);
+
+                                PropertyWidget* propWidget = new PropertyWidget(similarProps);
+
+                                if (!m_contentLayout->isEmpty())
+                                {
+                                    QFrame* separator = new QFrame;
+                                    separator->setFrameShape(QFrame::HLine);
+                                    separator->setFrameShadow(QFrame::Sunken);
+                                    separator->setVisible(propWidget->isVisible());
+
+                                    m_contentLayout->addWidget(separator);
+
+                                    connect(propWidget, &PropertyWidget::visibilityChanged, separator, &QFrame::setVisible);
+                                }
+
+                                propLayout->addWidget(propWidget, 1);
+
+                                if (mainGroup->isList())
+                                {
+                                    QToolButton* removeButton = new QToolButton;
+                                    removeButton->setIcon(QIcon(":/icons/list-remove.svg"));
+                                    removeButton->setAutoRaise(true);
+
+                                    connect(removeButton, &QToolButton::clicked, this, [=]
+                                    {
+                                        for (Inspector::Group* group : m_groups)
+                                        {
+                                            group->removeListItem(i);
+                                        }
+
+                                        refreshGroup();
+                                        refreshWidget();
+                                    }, Qt::QueuedConnection);
+
+                                    propLayout->addWidget(removeButton, 0, Qt::AlignTop);
+                                }
+
+                                m_contentLayout->addLayout(propLayout);
+                            }
+
+                            break;
+                        }
+                        case Inspector::GroupItem::Group:
+                        {
+                            Inspector::Group* firstGroup = item->group();
+                            QList<Inspector::Group*> similarGroups;
+                            bool groupPresentInAllGroups = true;
+
+                            similarGroups.append(firstGroup);
+
+                            for (int i = 1; i < m_groups.size(); i++)
+                            {
+                                bool found = false;
+
+                                for (Inspector::Group* group : m_groups[i]->groups())
+                                {
+                                    if (group->equals(firstGroup))
+                                    {
+                                        similarGroups.append(group);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!found)
+                                {
+                                    groupPresentInAllGroups = false;
+                                    break;
+                                }
+                            }
+
+                            if (groupPresentInAllGroups)
+                            {
+                                QHBoxLayout* groupLayout = new QHBoxLayout;
+
+                                groupLayout->setContentsMargins(0, 0, 0, 0);
+
+                                GroupWidget* groupWidget = new GroupWidget(similarGroups);
+
+                                groupLayout->addWidget(groupWidget, 1);
+
+                                if (mainGroup->isList())
+                                {
+                                    QToolButton* removeButton = new QToolButton;
+                                    removeButton->setIcon(QIcon(":/icons/list-remove.svg"));
+                                    removeButton->setAutoRaise(true);
+
+                                    connect(removeButton, &QToolButton::clicked, this, [=]
+                                    {
+                                        for (Inspector::Group* group : m_groups)
+                                        {
+                                            group->removeListItem(i);
+                                        }
+
+                                        refreshGroup();
+                                        refreshWidget();
+                                    }, Qt::QueuedConnection);
+
+                                    groupLayout->addWidget(removeButton, 0, Qt::AlignTop);
+                                }
+
+                                m_contentLayout->addLayout(groupLayout);
+                            }
+
+                            break;
+                        }
+                        }
+                    }
+
+                    if (mainGroup->isList())
+                    {
+                        QPushButton* addButton = new QPushButton;
+                        addButton->setIcon(QIcon(":/icons/list-add.svg"));
+
+                        bool enabled = true;
+
+                        for (Inspector::Group* group : m_groups)
+                        {
+                            if (group->listSource()->full())
+                            {
+                                enabled = false;
                                 break;
                             }
                         }
 
-                        if (groupPresentInAllGroups)
+                        addButton->setEnabled(enabled);
+
+                        if (enabled)
                         {
-                            QHBoxLayout* groupLayout = new QHBoxLayout;
-
-                            groupLayout->setContentsMargins(0, 0, 0, 0);
-
-                            GroupWidget* groupWidget = new GroupWidget(similarGroups);
-
-                            groupLayout->addWidget(groupWidget, 1);
-
-                            if (mainGroup->isList())
+                            connect(addButton, &QToolButton::clicked, this, [=]
                             {
-                                QToolButton* removeButton = new QToolButton;
-                                removeButton->setIcon(QIcon(":/icons/list-remove.svg"));
-                                removeButton->setAutoRaise(true);
-
-                                connect(removeButton, &QToolButton::clicked, this, [=]
+                                for (Inspector::Group* group : m_groups)
                                 {
-                                    for (Inspector::Group* group : m_groups)
-                                    {
-                                        group->removeListItem(i);
-                                    }
+                                    group->addListItem();
+                                }
 
-                                    refreshGroup();
-                                }, Qt::QueuedConnection);
-
-                                groupLayout->addWidget(removeButton, 0, Qt::AlignTop);
-                            }
-
-                            m_contentLayout->addLayout(groupLayout);
+                                refreshGroup();
+                                refreshWidget();
+                            }, Qt::QueuedConnection);
                         }
 
-                        break;
+                        m_contentLayout->addWidget(addButton);
                     }
-                    }
+
+                    m_contentLayout->addStretch(1);
                 }
-
-                if (mainGroup->isList())
-                {
-                    QPushButton* addButton = new QPushButton;
-                    addButton->setIcon(QIcon(":/icons/list-add.svg"));
-
-                    bool enabled = true;
-
-                    for (Inspector::Group* group : m_groups)
-                    {
-                        if (group->listSource()->full())
-                        {
-                            enabled = false;
-                            break;
-                        }
-                    }
-
-                    addButton->setEnabled(enabled);
-
-                    if (enabled)
-                    {
-                        connect(addButton, &QToolButton::clicked, this, [=]
-                        {
-                            for (Inspector::Group* group : m_groups)
-                            {
-                                group->addListItem();
-                            }
-
-                            refreshGroup();
-                        }, Qt::QueuedConnection);
-                    }
-
-                    m_contentLayout->addWidget(addButton);
-                }
-
-                m_contentLayout->addStretch(1);
 
                 for (Inspector::Group* group : m_groups)
                 {
@@ -376,8 +385,6 @@ namespace Slick {
 
                     connect(m_expandWidget, &Util::ExpandWidget::toggled, group, &Inspector::Group::setExpanded);
                 }
-
-                refreshWidget();
             }
 
             void GroupWidget::refreshWidget()
@@ -410,11 +417,23 @@ namespace Slick {
                 }
 
                 m_layout->removeWidget(m_expandWidget);
-                m_layout->removeWidget(m_content);
+
+                if (m_content)
+                {
+                    m_layout->removeWidget(m_content);
+                }
+
+                if (!m_content && (mainGroup->expanded() || !mainGroup->nameVisible()))
+                {
+                    refreshGroup();
+                }
 
                 if (mainGroup->nameVisible())
                 {
-                    m_contentLayout->unsetContentsMargins();
+                    if (m_content)
+                    {
+                        m_contentLayout->unsetContentsMargins();
+                    }
 
                     QString displayName = mainGroup->displayName();
 
@@ -437,7 +456,12 @@ namespace Slick {
                     }
 
                     m_expandWidget->setTitle(displayName);
-                    m_expandWidget->setWidget(m_content);
+
+                    if (m_content)
+                    {
+                        m_expandWidget->setWidget(m_content);
+                    }
+
                     m_expandWidget->setExpanded(mainGroup->expanded());
 
                     if (!mainGroup->helpText().isEmpty())
@@ -449,9 +473,12 @@ namespace Slick {
                 }
                 else
                 {
-                    m_contentLayout->setContentsMargins(0, 0, 0, 0);
+                    if (m_content)
+                    {
+                        m_contentLayout->setContentsMargins(0, 0, 0, 0);
 
-                    m_layout->addWidget(m_content);
+                        m_layout->addWidget(m_content);
+                    }
                 }
 
                 adjustSize();

@@ -35,6 +35,9 @@ namespace Slick {
             float specular() const { return m_specular; }
             void setSpecular(float specular) { m_specular = specular; }
 
+            bool usesColorMaterial() const { return m_useColorMaterial; }
+            void setUseColorMaterial(bool use) { m_useColorMaterial = use; }
+
             void bind();
             void unbind();
 
@@ -46,6 +49,7 @@ namespace Slick {
             float m_ambient;
             float m_diffuse;
             float m_specular;
+            bool m_useColorMaterial;
         };
 
     }

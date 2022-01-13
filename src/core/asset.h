@@ -30,6 +30,7 @@ namespace Slick {
 
         public:
             Asset(HipHop::Asset asset, SceneFile* sceneFile);
+            virtual ~Asset() {}
 
             QString name() const { return QString::fromStdString(m_asset.GetName()); }
             void setName(const QString& name) { m_asset.SetName(name.toStdString()); emit nameChanged(name); }

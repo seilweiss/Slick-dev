@@ -28,6 +28,7 @@ namespace Slick {
             context->glDepthMask(GL_FALSE);
             context->glEnable(GL_BLEND);
             context->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            context->glDisable(GL_LIGHTING);
 
             renderLetterBox();
 

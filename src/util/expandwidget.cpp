@@ -67,6 +67,11 @@ namespace Slick {
             if (widget)
             {
                 m_widgetFrameLayout->addWidget(widget);
+
+                connect(widget, &QWidget::destroyed, this, [=]
+                {
+                    m_widget = nullptr;
+                });
             }
         }
 

@@ -17,7 +17,8 @@ namespace Slick {
             m_orientation(Qt::Horizontal),
             m_nameStretch(1),
             m_widgetStretch(1),
-            m_enabled(true)
+            m_enabled(true),
+            m_exclusive(false)
         {
         }
 

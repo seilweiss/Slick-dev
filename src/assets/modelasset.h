@@ -2,6 +2,8 @@
 
 #include "core/asset.h"
 #include "core/assetmanager.h"
+#include "core/modelinstance.h"
+
 #include "render/clump.h"
 
 #include "hiphop/assets/model_asset.h"
@@ -16,17 +18,20 @@ namespace Slick {
 
         public:
             ModelAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
+            ~ModelAsset();
 
             Render::Clump* clump() { return &m_clump; }
 
+            Core::ModelInstance* createInstance();
+
             void setup();
-            void render();
 
             virtual void inspect(Inspector::Root* root) override;
 
         private:
             HipHop::ModelAsset m_model;
             Render::Clump m_clump;
+            QList<Core::ModelInstance*> m_instances;
         };
 
         class ModelManager : public Core::AssetManager

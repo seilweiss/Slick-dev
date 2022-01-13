@@ -96,6 +96,8 @@ namespace Slick {
                 m_frames.append(frame);
             }
 
+            m_frames[0].setMatrix(glm::mat4(1.0f));
+
             for (Rws::Geometry* rwgeom : rwgeoms)
             {
                 Geometry geom(m_context, rwgeom);
