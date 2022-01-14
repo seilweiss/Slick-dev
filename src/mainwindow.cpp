@@ -12,8 +12,6 @@
 
 #include "tools/hashgenerator.h"
 
-#include "version.h"
-
 #include <QApplication>
 #include <QScreen>
 #include <QDockWidget>

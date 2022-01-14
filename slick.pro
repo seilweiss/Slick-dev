@@ -1,3 +1,9 @@
+VERSION = 0.5.0
+QMAKE_TARGET_COMPANY = Seil Weiss
+QMAKE_TARGET_DESCRIPTION = Slick Editor
+QMAKE_TARGET_COPYRIGHT = Copyright 2022 Seil Weiss
+QMAKE_TARGET_PRODUCT = Slick
+
 QT       += core gui opengl openglwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -193,8 +199,7 @@ HEADERS += \
     src/util/hiphoputils.h \
     src/util/mathutils.h \
     src/util/stringutils.h \
-    src/util/widgetutils.h \
-    src/version.h
+    src/util/widgetutils.h
 
 INCLUDEPATH += \
     C:/dev/hiphop/include \
@@ -203,6 +208,7 @@ INCLUDEPATH += \
     src
 
 DEFINES += \
+    SLICK_VERSION=\\\"v$$VERSION\\\" \
     HIPHOP_USE_RWS
 
 RESOURCES += \
