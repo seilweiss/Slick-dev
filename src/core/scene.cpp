@@ -10,6 +10,7 @@
 #include "assets/cameraasset.h"
 #include "assets/conditionalasset.h"
 #include "assets/counterasset.h"
+#include "assets/destructobjasset.h"
 #include "assets/dispatcherasset.h"
 #include "assets/envasset.h"
 #include "assets/fogasset.h"
@@ -56,6 +57,7 @@ namespace Slick {
             m_cameraManager(new Assets::CameraManager(this)),
             m_condManager(new Assets::ConditionalManager(this)),
             m_counterManager(new Assets::CounterManager(this)),
+            m_destructObjManager(new Assets::DestructObjManager(this)),
             m_dpatManager(new Assets::DispatcherManager(this)),
             m_envManager(new Assets::EnvManager(this)),
             m_fogManager(new Assets::FogManager(this)),
@@ -78,6 +80,7 @@ namespace Slick {
             m_assetManagers.append(m_cameraManager);
             m_assetManagers.append(m_condManager);
             m_assetManagers.append(m_counterManager);
+            m_assetManagers.append(m_destructObjManager);
             m_assetManagers.append(m_dpatManager);
             m_assetManagers.append(m_envManager);
             m_assetManagers.append(m_fogManager);
@@ -272,6 +275,7 @@ namespace Slick {
 
             m_boulderManager->setup();
             m_buttonManager->setup();
+            m_destructObjManager->setup();
             m_platformManager->setup();
             m_simpManager->setup();
 
@@ -284,6 +288,7 @@ namespace Slick {
         {
             m_boulderManager->update();
             m_buttonManager->update();
+            m_destructObjManager->update();
             m_platformManager->update();
             m_simpManager->update();
 
@@ -316,6 +321,7 @@ namespace Slick {
 
             m_boulderManager->render();
             m_buttonManager->render();
+            m_destructObjManager->render();
             m_platformManager->render();
             m_simpManager->render();
             m_playerManager->render();

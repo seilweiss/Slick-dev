@@ -16,6 +16,7 @@ namespace Slick {
         class CameraManager;
         class ConditionalManager;
         class CounterManager;
+        class DestructObjManager;
         class DispatcherManager;
         class EnvManager;
         class FogManager;
@@ -142,6 +143,7 @@ namespace Slick {
             Assets::CameraManager* cameraManager() const { return m_cameraManager; }
             Assets::ConditionalManager* conditionalManager() const { return m_condManager; }
             Assets::CounterManager* counterManager() const { return m_counterManager; }
+            Assets::DestructObjManager* destructObjManager() const { return m_destructObjManager; }
             Assets::DispatcherManager* dispatcherManager() const { return m_dpatManager; }
             Assets::EnvManager* envManager() const { return m_envManager; }
             Assets::FogManager* fogManager() const { return m_fogManager; }
@@ -177,6 +179,7 @@ namespace Slick {
             Assets::CameraManager* m_cameraManager;
             Assets::ConditionalManager* m_condManager;
             Assets::CounterManager* m_counterManager;
+            Assets::DestructObjManager* m_destructObjManager;
             Assets::DispatcherManager* m_dpatManager;
             Assets::EnvManager* m_envManager;
             Assets::FogManager* m_fogManager;

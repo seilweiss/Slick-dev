@@ -32,6 +32,7 @@ SOURCES += \
     src/assets/cameraasset.cpp \
     src/assets/conditionalasset.cpp \
     src/assets/counterasset.cpp \
+    src/assets/destructobjasset.cpp \
     src/assets/dispatcherasset.cpp \
     src/assets/entasset.cpp \
     src/assets/envasset.cpp \
@@ -115,6 +116,7 @@ HEADERS += \
     src/assets/cameraasset.h \
     src/assets/conditionalasset.h \
     src/assets/counterasset.h \
+    src/assets/destructobjasset.h \
     src/assets/dispatcherasset.h \
     src/assets/entasset.h \
     src/assets/envasset.h \
