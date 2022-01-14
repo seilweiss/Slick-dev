@@ -206,9 +206,11 @@ DEFINES += \
     HIPHOP_USE_RWS
 
 RESOURCES += \
-    Icons/icons.qrc \
-    Images/images.qrc \
-    Themes/breeze/breeze.qrc
+    icons/icons.qrc \
+    images/images.qrc \
+    themes/breeze/breeze.qrc
+
+RC_ICONS = icons/slick.ico
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
