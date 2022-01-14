@@ -29,13 +29,11 @@ namespace Slick {
         private:
             Core::Scene* m_scene;
             SceneEditorViewport* m_viewport;
-            QLabel* m_statsLabel;
             QCheckBox* m_letterBoxCheckBox;
             QComboBox* m_aspectRatioComboBox;
             QComboBox* m_previewCamComboBox;
             bool m_previewCamChangedByMe;
 
-            void updateStats();
             void refreshPreviewCam();
         };
 

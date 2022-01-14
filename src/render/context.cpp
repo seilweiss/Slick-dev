@@ -77,6 +77,11 @@ namespace Slick {
             }
         }
 
+        void Context::endFrame()
+        {
+            emit frameEnded();
+        }
+
         void Context::beginIm2D()
         {
             glMatrixMode(GL_PROJECTION);

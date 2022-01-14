@@ -45,12 +45,14 @@ namespace Slick {
             void setTextureFilterHackEnabled(bool enabled) { m_textureFilterHack = enabled; }
 
             void beginFrame();
+            void endFrame();
 
             void beginIm2D();
             void endIm2D();
 
         signals:
             void initialized();
+            void frameEnded();
 
         private:
             bool m_init;

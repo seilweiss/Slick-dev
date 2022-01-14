@@ -45,6 +45,7 @@ namespace Slick {
         void toggleSceneVisible();
         void toggleInspectorVisible();
         void toggleToolbarVisible();
+        void toggleDebugVisible();
         void toggleExpandEditor();
         bool playScene();
         bool stopScene();
@@ -80,6 +81,7 @@ namespace Slick {
         QDockWidget* m_sceneDock;
         QDockWidget* m_inspectorDock;
         QDockWidget* m_toolbarDock;
+        QDockWidget* m_debugDock;
         QAction* m_newProjectAction;
         QAction* m_newSceneAction;
         QAction* m_newHipHopFileAction;
@@ -103,6 +105,7 @@ namespace Slick {
         QAction* m_toggleSceneVisibleAction;
         QAction* m_toggleInspectorVisibleAction;
         QAction* m_toggleToolbarVisibleAction;
+        QAction* m_toggleDebugVisibleAction;
         QAction* m_toggleExpandEditorAction;
         QAction* m_playSceneAction;
         QAction* m_stopSceneAction;
@@ -130,6 +133,7 @@ namespace Slick {
         bool m_sceneVisible;
         bool m_inspectorVisible;
         bool m_toolbarVisible;
+        bool m_debugVisible;
         bool m_editorExpanded;
         bool m_updatingPanels;
     };

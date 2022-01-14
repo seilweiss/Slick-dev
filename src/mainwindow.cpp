@@ -5,6 +5,7 @@
 #include "panels/projectpanel.h"
 #include "panels/scenepanel.h"
 #include "panels/inspectorpanel.h"
+#include "panels/debugpanel.h"
 
 #include "editors/texteditor.h"
 #include "editors/hiphopeditor.h"
@@ -27,6 +28,7 @@ namespace Slick {
           m_sceneDock(new QDockWidget(tr("Scene"))),
           m_inspectorDock(new QDockWidget(tr("Inspector"))),
           m_toolbarDock(new QDockWidget(tr("Toolbar"))),
+          m_debugDock(new QDockWidget(tr("Debug"))),
           m_newProjectAction(new QAction(tr("Project..."), this)),
           m_newSceneAction(new QAction(tr("Scene..."), this)),
           m_newHipHopFileAction(new QAction(tr("HIP/HOP File"), this)),
@@ -50,6 +52,7 @@ namespace Slick {
           m_toggleSceneVisibleAction(new QAction(tr("Scene"), this)),
           m_toggleInspectorVisibleAction(new QAction(tr("Inspector"), this)),
           m_toggleToolbarVisibleAction(new QAction(tr("Toolbar"), this)),
+          m_toggleDebugVisibleAction(new QAction(tr("Debug"), this)),
           m_toggleExpandEditorAction(new QAction(tr("Expand Editor"), this)),
           m_playSceneAction(new QAction(tr("Play Scene"), this)),
           m_stopSceneAction(new QAction(tr("Stop Scene"), this)),
@@ -77,6 +80,7 @@ namespace Slick {
           m_sceneVisible(true),
           m_inspectorVisible(true),
           m_toolbarVisible(true),
+          m_debugVisible(false),
           m_editorExpanded(false),
           m_updatingPanels(false)
     {
@@ -260,6 +264,12 @@ namespace Slick {
         updatePanels();
     }
 
+    void MainWindow::toggleDebugVisible()
+    {
+        m_debugVisible = !m_debugVisible;
+        updatePanels();
+    }
+
     void MainWindow::toggleExpandEditor()
     {
         m_editorExpanded = !m_editorExpanded;
@@ -376,6 +386,7 @@ namespace Slick {
         m_toggleSceneVisibleAction->setCheckable(true);
         m_toggleInspectorVisibleAction->setCheckable(true);
         m_toggleToolbarVisibleAction->setCheckable(true);
+        m_toggleDebugVisibleAction->setCheckable(true);
         m_toggleExpandEditorAction->setCheckable(true);
 
         connect(m_newProjectAction, &QAction::triggered, this, &MainWindow::newProject);
@@ -401,6 +412,7 @@ namespace Slick {
         connect(m_toggleSceneVisibleAction, &QAction::triggered, this, &MainWindow::toggleSceneVisible);
         connect(m_toggleInspectorVisibleAction, &QAction::triggered, this, &MainWindow::toggleInspectorVisible);
         connect(m_toggleToolbarVisibleAction, &QAction::triggered, this, &MainWindow::toggleToolbarVisible);
+        connect(m_toggleDebugVisibleAction, &QAction::triggered, this, &MainWindow::toggleDebugVisible);
         connect(m_toggleExpandEditorAction, &QAction::triggered, this, &MainWindow::toggleExpandEditor);
         connect(m_playSceneAction, &QAction::triggered, this, &MainWindow::playScene);
         connect(m_stopSceneAction, &QAction::triggered, this, &MainWindow::stopScene);
@@ -452,6 +464,7 @@ namespace Slick {
         m_viewMenu->addAction(m_toggleSceneVisibleAction);
         m_viewMenu->addAction(m_toggleInspectorVisibleAction);
         m_viewMenu->addAction(m_toggleToolbarVisibleAction);
+        m_viewMenu->addAction(m_toggleDebugVisibleAction);
         m_viewMenu->addSeparator();
         m_viewMenu->addAction(m_toggleExpandEditorAction);
 
@@ -489,6 +502,7 @@ namespace Slick {
         connect(m_sceneDock, &QDockWidget::visibilityChanged, this, &MainWindow::onPanelDockVisibilityChanged);
         connect(m_inspectorDock, &QDockWidget::visibilityChanged, this, &MainWindow::onPanelDockVisibilityChanged);
         connect(m_toolbarDock, &QDockWidget::visibilityChanged, this, &MainWindow::onPanelDockVisibilityChanged);
+        connect(m_debugDock, &QDockWidget::visibilityChanged, this, &MainWindow::onPanelDockVisibilityChanged);
 
         connect(Panels::ScenePanel::instance(), &Panels::ScenePanel::assetsSelected, this, &MainWindow::onAssetsSelected);
     }
@@ -501,6 +515,7 @@ namespace Slick {
             m_sceneVisible = m_sceneDock->isVisible();
             m_inspectorVisible = m_inspectorDock->isVisible();
             m_toolbarVisible = m_toolbarDock->isVisible();
+            m_debugVisible = m_debugDock->isVisible();
 
             updateMenus();
         }
@@ -527,6 +542,10 @@ namespace Slick {
         m_sceneDock->setWidget(Panels::ScenePanel::instance());
         m_sceneDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
         addDockWidget(Qt::LeftDockWidgetArea, m_sceneDock);
+
+        m_debugDock->setWidget(Panels::DebugPanel::instance());
+        m_debugDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+        addDockWidget(Qt::RightDockWidgetArea, m_debugDock);
 
         m_inspectorDock->setWidget(Panels::InspectorPanel::instance());
         m_inspectorDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
@@ -591,6 +610,7 @@ namespace Slick {
         m_toggleSceneVisibleAction->setChecked(m_sceneVisible);
         m_toggleInspectorVisibleAction->setChecked(m_inspectorVisible);
         m_toggleToolbarVisibleAction->setChecked(m_toolbarVisible);
+        m_toggleDebugVisibleAction->setChecked(m_debugVisible);
         m_toggleExpandEditorAction->setChecked(m_editorExpanded);
 
         m_playSceneAction->setEnabled(false);
@@ -622,6 +642,10 @@ namespace Slick {
         m_sceneDock->setVisible(m_sceneVisible && !m_editorExpanded);
         m_inspectorDock->setVisible(m_inspectorVisible && !m_editorExpanded);
         m_toolbarDock->setVisible(m_toolbarVisible);
+        m_debugDock->setVisible(m_debugVisible);
+
+        Editors::SceneEditor* sceneEditor = qobject_cast<Editors::SceneEditor*>(Panels::EditorPanel::instance()->editor());
+        Panels::DebugPanel::instance()->setRenderContext(sceneEditor ? sceneEditor->scene()->renderContext() : nullptr);
 
         updateMenus();
 

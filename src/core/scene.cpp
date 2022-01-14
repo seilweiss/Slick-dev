@@ -334,6 +334,7 @@ namespace Slick {
 
             m_context->setTextureFilterHackEnabled(false);
             m_context->camera()->end();
+            m_context->endFrame();
         }
 
         void Scene::setupClump(Render::Clump* clump)

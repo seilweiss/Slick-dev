@@ -85,6 +85,7 @@ SOURCES += \
     src/inspector/properties/vectorinputproperty.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
+    src/panels/debugpanel.cpp \
     src/panels/editorpanel.cpp \
     src/panels/inspectorpanel.cpp \
     src/panels/inspectorpanelprivate.cpp \
@@ -176,6 +177,7 @@ HEADERS += \
     src/inspector/proxy.h \
     src/inspector/root.h \
     src/mainwindow.h \
+    src/panels/debugpanel.h \
     src/panels/editorpanel.h \
     src/panels/inspectorpanel.h \
     src/panels/inspectorpanelprivate.h \

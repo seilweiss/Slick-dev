@@ -20,7 +20,6 @@ namespace Slick {
             EditorWidget(parent),
             m_scene(nullptr),
             m_viewport(new SceneEditorViewport),
-            m_statsLabel(new QLabel),
             m_letterBoxCheckBox(new QCheckBox),
             m_aspectRatioComboBox(new QComboBox),
             m_previewCamComboBox(new QComboBox),
@@ -44,15 +43,12 @@ namespace Slick {
             toolbar->addWidget(m_letterBoxCheckBox);
             toolbar->addWidget(new QLabel(tr("Preview Camera:")));
             toolbar->addWidget(m_previewCamComboBox);
-            toolbar->addWidget(m_statsLabel);
 
             mainLayout->setContentsMargins(0, 0, 0, 0);
             mainLayout->addLayout(toolbar);
             mainLayout->addWidget(QWidget::createWindowContainer(m_viewport), 1);
 
             setLayout(mainLayout);
-
-            connect(m_viewport, &SceneEditorViewport::doneRendering, this, &SceneEditorWidget::updateStats);
 
             connect(m_letterBoxCheckBox, &QCheckBox::toggled, this, [=](bool checked)
             {
@@ -111,16 +107,6 @@ namespace Slick {
 
             m_viewport->setScene(m_scene);
             m_scene->renderContext()->setViewport(m_viewport);
-        }
-
-        void SceneEditorWidget::updateStats()
-        {
-            Render::Stats* stats = m_viewport->context()->stats();
-
-            m_statsLabel->setText(tr("Atomics: %1 Triangles: %2 FPS: %3")
-                                  .arg(stats->atomicCount)
-                                  .arg(stats->triangleCount)
-                                  .arg(stats->fps));
         }
 
         void SceneEditorWidget::refreshPreviewCam()
