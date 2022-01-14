@@ -51,9 +51,9 @@ namespace Slick {
                 debugText += tr("FPS: %1\n"
                                 "Atomics: %2\n"
                                 "Triangles: %3\n")
+                             .arg(stats->fps)
                              .arg(stats->atomicCount)
-                             .arg(stats->triangleCount)
-                             .arg(stats->fps);
+                             .arg(stats->triangleCount);
             }
 
             m_debugLabel->setText(debugText);
