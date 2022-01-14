@@ -479,7 +479,7 @@ namespace Slick {
             }
 
             m_assetsTableWidget->sortItems(0);
-            m_assetsTableWidget->sortItems(1);
+            //m_assetsTableWidget->sortItems(1);
         }
 
         void SceneFileWidget::updateFilter()
