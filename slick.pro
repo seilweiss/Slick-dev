@@ -34,6 +34,7 @@ SOURCES += \
     src/assets/counterasset.cpp \
     src/assets/destructobjasset.cpp \
     src/assets/dispatcherasset.cpp \
+    src/assets/egenasset.cpp \
     src/assets/entasset.cpp \
     src/assets/envasset.cpp \
     src/assets/fogasset.cpp \
@@ -118,6 +119,7 @@ HEADERS += \
     src/assets/counterasset.h \
     src/assets/destructobjasset.h \
     src/assets/dispatcherasset.h \
+    src/assets/egenasset.h \
     src/assets/entasset.h \
     src/assets/envasset.h \
     src/assets/fogasset.h \

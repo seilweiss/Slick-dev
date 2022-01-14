@@ -18,6 +18,7 @@ namespace Slick {
         class CounterManager;
         class DestructObjManager;
         class DispatcherManager;
+        class EGenManager;
         class EnvManager;
         class FogManager;
         class GroupManager;
@@ -145,6 +146,7 @@ namespace Slick {
             Assets::CounterManager* counterManager() const { return m_counterManager; }
             Assets::DestructObjManager* destructObjManager() const { return m_destructObjManager; }
             Assets::DispatcherManager* dispatcherManager() const { return m_dpatManager; }
+            Assets::EGenManager* egenManager() const { return m_egenManager; }
             Assets::EnvManager* envManager() const { return m_envManager; }
             Assets::FogManager* fogManager() const { return m_fogManager; }
             Assets::GroupManager* groupManager() const { return m_groupManager; }
@@ -181,6 +183,7 @@ namespace Slick {
             Assets::CounterManager* m_counterManager;
             Assets::DestructObjManager* m_destructObjManager;
             Assets::DispatcherManager* m_dpatManager;
+            Assets::EGenManager* m_egenManager;
             Assets::EnvManager* m_envManager;
             Assets::FogManager* m_fogManager;
             Assets::GroupManager* m_groupManager;

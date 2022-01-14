@@ -12,6 +12,7 @@
 #include "assets/counterasset.h"
 #include "assets/destructobjasset.h"
 #include "assets/dispatcherasset.h"
+#include "assets/egenasset.h"
 #include "assets/envasset.h"
 #include "assets/fogasset.h"
 #include "assets/groupasset.h"
@@ -59,6 +60,7 @@ namespace Slick {
             m_counterManager(new Assets::CounterManager(this)),
             m_destructObjManager(new Assets::DestructObjManager(this)),
             m_dpatManager(new Assets::DispatcherManager(this)),
+            m_egenManager(new Assets::EGenManager(this)),
             m_envManager(new Assets::EnvManager(this)),
             m_fogManager(new Assets::FogManager(this)),
             m_groupManager(new Assets::GroupManager(this)),
@@ -82,6 +84,7 @@ namespace Slick {
             m_assetManagers.append(m_counterManager);
             m_assetManagers.append(m_destructObjManager);
             m_assetManagers.append(m_dpatManager);
+            m_assetManagers.append(m_egenManager);
             m_assetManagers.append(m_envManager);
             m_assetManagers.append(m_fogManager);
             m_assetManagers.append(m_groupManager);
@@ -276,6 +279,7 @@ namespace Slick {
             m_boulderManager->setup();
             m_buttonManager->setup();
             m_destructObjManager->setup();
+            m_egenManager->setup();
             m_platformManager->setup();
             m_simpManager->setup();
 
@@ -289,6 +293,7 @@ namespace Slick {
             m_boulderManager->update();
             m_buttonManager->update();
             m_destructObjManager->update();
+            m_egenManager->update();
             m_platformManager->update();
             m_simpManager->update();
 
@@ -322,6 +327,7 @@ namespace Slick {
             m_boulderManager->render();
             m_buttonManager->render();
             m_destructObjManager->render();
+            m_egenManager->render();
             m_platformManager->render();
             m_simpManager->render();
             m_playerManager->render();
