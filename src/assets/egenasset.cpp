@@ -1,9 +1,5 @@
 #include "assets/egenasset.h"
 
-#include "core/scene.h"
-
-#include <glm/glm.hpp>
-
 namespace Slick {
 
     namespace Assets {

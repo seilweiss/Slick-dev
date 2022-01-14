@@ -27,6 +27,7 @@
 #include "assets/textasset.h"
 #include "assets/textureasset.h"
 #include "assets/timerasset.h"
+#include "assets/triggerasset.h"
 
 #include "render/context.h"
 #include "render/camera.h"
@@ -74,7 +75,8 @@ namespace Slick {
             m_simpManager(new Assets::SimpleObjectManager(this)),
             m_textManager(new Assets::TextManager(this)),
             m_textureManager(new Assets::TextureManager(this)),
-            m_timerManager(new Assets::TimerManager(this))
+            m_timerManager(new Assets::TimerManager(this)),
+            m_triggerManager(new Assets::TriggerManager(this))
         {
             m_assetManagers.append(m_animListManager);
             m_assetManagers.append(m_boulderManager);
@@ -99,6 +101,7 @@ namespace Slick {
             m_assetManagers.append(m_textManager);
             m_assetManagers.append(m_textureManager);
             m_assetManagers.append(m_timerManager);
+            m_assetManagers.append(m_triggerManager);
         }
 
         void Scene::addFile(SceneFile* file)
@@ -281,9 +284,9 @@ namespace Slick {
             m_destructObjManager->setup();
             m_egenManager->setup();
             m_platformManager->setup();
-            m_simpManager->setup();
-
             m_playerManager->setup();
+            m_simpManager->setup();
+            m_triggerManager->setup();
 
             m_skyDomeManager->setup();
         }
@@ -295,9 +298,9 @@ namespace Slick {
             m_destructObjManager->update();
             m_egenManager->update();
             m_platformManager->update();
-            m_simpManager->update();
-
             m_playerManager->update();
+            m_simpManager->update();
+            m_triggerManager->update();
         }
 
         void Scene::render()
@@ -329,8 +332,9 @@ namespace Slick {
             m_destructObjManager->render();
             m_egenManager->render();
             m_platformManager->render();
-            m_simpManager->render();
             m_playerManager->render();
+            m_simpManager->render();
+            m_triggerManager->render();
 
             m_modelBucketManager->renderOpaque();
 

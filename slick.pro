@@ -52,6 +52,7 @@ SOURCES += \
     src/assets/textureasset.cpp \
     src/assets/texturepreview.cpp \
     src/assets/timerasset.cpp \
+    src/assets/triggerasset.cpp \
     src/core/asset.cpp \
     src/core/assetmanager.cpp \
     src/core/editor.cpp \
@@ -75,6 +76,7 @@ SOURCES += \
     src/inspector/groupitem.cpp \
     src/inspector/properties/buttonproperty.cpp \
     src/inspector/properties/labelproperty.cpp \
+    src/inspector/properties/vectorspinboxgroup.cpp \
     src/inspector/property.cpp \
     src/inspector/root.cpp \
     src/inspector/properties/assetinputproperty.cpp \
@@ -137,6 +139,7 @@ HEADERS += \
     src/assets/textureasset.h \
     src/assets/texturepreview.h \
     src/assets/timerasset.h \
+    src/assets/triggerasset.h \
     src/core/asset.h \
     src/core/assetmanager.h \
     src/core/color.h \
@@ -176,6 +179,7 @@ HEADERS += \
     src/inspector/properties/numberinputproperty.h \
     src/inspector/properties/textinputproperty.h \
     src/inspector/properties/vectorinputproperty.h \
+    src/inspector/properties/vectorspinboxgroup.h \
     src/inspector/properties/wheelignorer.h \
     src/inspector/property.h \
     src/inspector/proxy.h \

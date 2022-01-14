@@ -33,6 +33,7 @@ namespace Slick {
         class TextManager;
         class TextureManager;
         class TimerManager;
+        class TriggerManager;
 
     }
 
@@ -161,6 +162,7 @@ namespace Slick {
             Assets::TextManager* textManager() const { return m_textManager; }
             Assets::TextureManager* textureManager() const { return m_textureManager; }
             Assets::TimerManager* timerManager() const { return m_timerManager; }
+            Assets::TriggerManager* triggerManager() const { return m_triggerManager; }
 
         private:
             Render::Context* m_context;
@@ -198,6 +200,7 @@ namespace Slick {
             Assets::TextManager* m_textManager;
             Assets::TextureManager* m_textureManager;
             Assets::TimerManager* m_timerManager;
+            Assets::TriggerManager* m_triggerManager;
         };
 
     }
