@@ -16,6 +16,8 @@ namespace Slick {
         public:
             DispatcherAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::DispatcherAsset* serializer() { return &m_dispatcher; }
+
             virtual void inspect(Inspector::Root* root) override;
 
         private:

@@ -16,6 +16,8 @@ namespace Slick {
         public:
             SimpleObjectAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::SimpleObjAsset* serializer() { return &m_simpleObj; }
+
             virtual void setup() override;
             virtual void update() override;
             virtual void render() override;

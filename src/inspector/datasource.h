@@ -36,37 +36,37 @@ namespace Slick {
 
             DataSource()                                : m_type(Null),      m_isProxy(false), m_sourceVoid(nullptr)     {}
             DataSource(int8_t* source)                  : m_type(Int8),      m_isProxy(false), m_sourceInt8(source)      { Q_ASSERT(source); }
-            DataSource(ProxyBase<int8_t>* proxy)        : m_type(Int8),      m_isProxy(true),  m_proxyInt8(proxy)        { Q_ASSERT(proxy); }
+            DataSource(Proxy<int8_t>* proxy)        : m_type(Int8),      m_isProxy(true),  m_proxyInt8(proxy)        { Q_ASSERT(proxy); }
             DataSource(int16_t* source)                 : m_type(Int16),     m_isProxy(false), m_sourceInt16(source)     { Q_ASSERT(source); }
-            DataSource(ProxyBase<int16_t>* proxy)       : m_type(Int16),     m_isProxy(true),  m_proxyInt16(proxy)       { Q_ASSERT(proxy); }
+            DataSource(Proxy<int16_t>* proxy)       : m_type(Int16),     m_isProxy(true),  m_proxyInt16(proxy)       { Q_ASSERT(proxy); }
             DataSource(int32_t* source)                 : m_type(Int32),     m_isProxy(false), m_sourceInt32(source)     { Q_ASSERT(source); }
-            DataSource(ProxyBase<int32_t>* proxy)       : m_type(Int32),     m_isProxy(true),  m_proxyInt32(proxy)       { Q_ASSERT(proxy); }
+            DataSource(Proxy<int32_t>* proxy)       : m_type(Int32),     m_isProxy(true),  m_proxyInt32(proxy)       { Q_ASSERT(proxy); }
             DataSource(uint8_t* source)                 : m_type(UInt8),     m_isProxy(false), m_sourceUInt8(source)     { Q_ASSERT(source); }
-            DataSource(ProxyBase<uint8_t>* proxy)       : m_type(UInt8),     m_isProxy(true),  m_proxyUInt8(proxy)       { Q_ASSERT(proxy); }
+            DataSource(Proxy<uint8_t>* proxy)       : m_type(UInt8),     m_isProxy(true),  m_proxyUInt8(proxy)       { Q_ASSERT(proxy); }
             DataSource(uint16_t* source)                : m_type(UInt16),    m_isProxy(false), m_sourceUInt16(source)    { Q_ASSERT(source); }
-            DataSource(ProxyBase<uint16_t>* proxy)      : m_type(UInt16),    m_isProxy(true),  m_proxyUInt16(proxy)      { Q_ASSERT(proxy); }
+            DataSource(Proxy<uint16_t>* proxy)      : m_type(UInt16),    m_isProxy(true),  m_proxyUInt16(proxy)      { Q_ASSERT(proxy); }
             DataSource(uint32_t* source)                : m_type(UInt32),    m_isProxy(false), m_sourceUInt32(source)    { Q_ASSERT(source); }
-            DataSource(ProxyBase<uint32_t>* proxy)      : m_type(UInt32),    m_isProxy(true),  m_proxyUInt32(proxy)      { Q_ASSERT(proxy); }
+            DataSource(Proxy<uint32_t>* proxy)      : m_type(UInt32),    m_isProxy(true),  m_proxyUInt32(proxy)      { Q_ASSERT(proxy); }
             DataSource(float* source)                   : m_type(Float),     m_isProxy(false), m_sourceFloat(source)     { Q_ASSERT(source); }
-            DataSource(ProxyBase<float>* proxy)         : m_type(Float),     m_isProxy(true),  m_proxyFloat(proxy)       { Q_ASSERT(proxy); }
+            DataSource(Proxy<float>* proxy)         : m_type(Float),     m_isProxy(true),  m_proxyFloat(proxy)       { Q_ASSERT(proxy); }
             DataSource(double* source)                  : m_type(Double),    m_isProxy(false), m_sourceDouble(source)    { Q_ASSERT(source); }
-            DataSource(ProxyBase<double>* proxy)        : m_type(Double),    m_isProxy(true),  m_proxyDouble(proxy)      { Q_ASSERT(proxy); }
+            DataSource(Proxy<double>* proxy)        : m_type(Double),    m_isProxy(true),  m_proxyDouble(proxy)      { Q_ASSERT(proxy); }
             DataSource(bool* source)                    : m_type(Bool),      m_isProxy(false), m_sourceBool(source)      { Q_ASSERT(source); }
-            DataSource(ProxyBase<bool>* proxy)          : m_type(Bool),      m_isProxy(true),  m_proxyBool(proxy)        { Q_ASSERT(proxy); }
+            DataSource(Proxy<bool>* proxy)          : m_type(Bool),      m_isProxy(true),  m_proxyBool(proxy)        { Q_ASSERT(proxy); }
             DataSource(QString* source)                 : m_type(String),    m_isProxy(false), m_sourceQString(source)   { Q_ASSERT(source); }
-            DataSource(ProxyBase<QString>* proxy)       : m_type(String),    m_isProxy(true),  m_proxyQString(proxy)     { Q_ASSERT(proxy); }
+            DataSource(Proxy<QString>* proxy)       : m_type(String),    m_isProxy(true),  m_proxyQString(proxy)     { Q_ASSERT(proxy); }
             DataSource(std::string* source)             : m_type(StdString), m_isProxy(false), m_sourceStdString(source) { Q_ASSERT(source); }
-            DataSource(ProxyBase<std::string>* proxy)   : m_type(StdString), m_isProxy(true),  m_proxyStdString(proxy)   { Q_ASSERT(proxy); }
+            DataSource(Proxy<std::string>* proxy)   : m_type(StdString), m_isProxy(true),  m_proxyStdString(proxy)   { Q_ASSERT(proxy); }
             DataSource(Core::Color* source)             : m_type(Color),     m_isProxy(false), m_sourceColor(source)     { Q_ASSERT(source); }
-            DataSource(ProxyBase<Core::Color>* proxy)   : m_type(Color),     m_isProxy(true),  m_proxyColor(proxy)       { Q_ASSERT(proxy); }
+            DataSource(Proxy<Core::Color>* proxy)   : m_type(Color),     m_isProxy(true),  m_proxyColor(proxy)       { Q_ASSERT(proxy); }
             DataSource(Core::ColorF* source)            : m_type(ColorF),    m_isProxy(false), m_sourceColorF(source)    { Q_ASSERT(source); }
-            DataSource(ProxyBase<Core::ColorF>* proxy)  : m_type(ColorF),    m_isProxy(true),  m_proxyColorF(proxy)      { Q_ASSERT(proxy); }
+            DataSource(Proxy<Core::ColorF>* proxy)  : m_type(ColorF),    m_isProxy(true),  m_proxyColorF(proxy)      { Q_ASSERT(proxy); }
             DataSource(Core::Vector2* source)           : m_type(Vector2),   m_isProxy(false), m_sourceVector2(source)   { Q_ASSERT(source); }
-            DataSource(ProxyBase<Core::Vector2>* proxy) : m_type(Vector2),   m_isProxy(true),  m_proxyVector2(proxy)     { Q_ASSERT(proxy); }
+            DataSource(Proxy<Core::Vector2>* proxy) : m_type(Vector2),   m_isProxy(true),  m_proxyVector2(proxy)     { Q_ASSERT(proxy); }
             DataSource(Core::Vector3* source)           : m_type(Vector3),   m_isProxy(false), m_sourceVector3(source)   { Q_ASSERT(source); }
-            DataSource(ProxyBase<Core::Vector3>* proxy) : m_type(Vector3),   m_isProxy(true),  m_proxyVector3(proxy)     { Q_ASSERT(proxy); }
+            DataSource(Proxy<Core::Vector3>* proxy) : m_type(Vector3),   m_isProxy(true),  m_proxyVector3(proxy)     { Q_ASSERT(proxy); }
             DataSource(Core::Vector4* source)           : m_type(Vector4),   m_isProxy(false), m_sourceVector4(source)   { Q_ASSERT(source); }
-            DataSource(ProxyBase<Core::Vector4>* proxy) : m_type(Vector4),   m_isProxy(true),  m_proxyVector4(proxy)     { Q_ASSERT(proxy); }
+            DataSource(Proxy<Core::Vector4>* proxy) : m_type(Vector4),   m_isProxy(true),  m_proxyVector4(proxy)     { Q_ASSERT(proxy); }
 
             Type type() const { return m_type; }
             bool isProxy() const { return m_isProxy; }
@@ -172,36 +172,7 @@ namespace Slick {
             }
 
             template <class T = void> T* source() const;
-
-            template <> void* source() const
-            {
-                if (m_isProxy)
-                {
-                    switch (m_type)
-                    {
-                    case Int8: return m_proxyInt8->source();
-                    case Int16: return m_proxyInt16->source();
-                    case Int32: return m_proxyInt32->source();
-                    case UInt8: return m_proxyUInt8->source();
-                    case UInt16: return m_proxyUInt16->source();
-                    case UInt32: return m_proxyUInt32->source();
-                    case Float: return m_proxyFloat->source();
-                    case Double: return m_proxyDouble->source();
-                    case Bool: return m_proxyBool->source();
-                    case String: return m_proxyQString->source();
-                    case StdString: return m_proxyStdString->source();
-                    case Color: return m_proxyColor->source();
-                    case ColorF: return m_proxyColorF->source();
-                    case Vector2: return m_proxyVector2->source();
-                    case Vector3: return m_proxyVector3->source();
-                    case Vector4: return m_proxyVector4->source();
-                    default: return nullptr;
-                    }
-                }
-
-                return m_sourceVoid;
-            }
-
+            template <> void* source() const { return (!m_isProxy) ? m_sourceVoid : nullptr; }
             template <> int8_t* source() const { return (m_type == Int8 && !m_isProxy) ? m_sourceInt8 : nullptr; }
             template <> int16_t* source() const { return (m_type == Int16 && !m_isProxy) ? m_sourceInt16 : nullptr; }
             template <> int32_t* source() const { return (m_type == Int32 && !m_isProxy) ? m_sourceInt32 : nullptr; }
@@ -219,23 +190,23 @@ namespace Slick {
             template <> Core::Vector3* source() const { return (m_type == Vector3 && !m_isProxy) ? m_sourceVector3 : nullptr; }
             template <> Core::Vector4* source() const { return (m_type == Vector4 && !m_isProxy) ? m_sourceVector4 : nullptr; }
 
-            template <class T> ProxyBase<T>* proxy() const;
-            template <> ProxyBase<int8_t>* proxy() const { return m_type == Int8 ? m_proxyInt8 : nullptr; }
-            template <> ProxyBase<int16_t>* proxy() const { return m_type == Int16 ? m_proxyInt16 : nullptr; }
-            template <> ProxyBase<int32_t>* proxy() const { return m_type == Int32 ? m_proxyInt32 : nullptr; }
-            template <> ProxyBase<uint8_t>* proxy() const { return m_type == UInt8 ? m_proxyUInt8 : nullptr; }
-            template <> ProxyBase<uint16_t>* proxy() const { return m_type == UInt16 ? m_proxyUInt16 : nullptr; }
-            template <> ProxyBase<uint32_t>* proxy() const { return m_type == UInt32 ? m_proxyUInt32 : nullptr; }
-            template <> ProxyBase<float>* proxy() const { return m_type == Float ? m_proxyFloat : nullptr; }
-            template <> ProxyBase<double>* proxy() const { return m_type == Double ? m_proxyDouble : nullptr; }
-            template <> ProxyBase<bool>* proxy() const { return m_type == Bool ? m_proxyBool : nullptr; }
-            template <> ProxyBase<QString>* proxy() const { return m_type == String ? m_proxyQString : nullptr; }
-            template <> ProxyBase<std::string>* proxy() const { return m_type == StdString ? m_proxyStdString : nullptr; }
-            template <> ProxyBase<Core::Color>* proxy() const { return m_type == Color ? m_proxyColor : nullptr; }
-            template <> ProxyBase<Core::ColorF>* proxy() const { return m_type == ColorF ? m_proxyColorF : nullptr; }
-            template <> ProxyBase<Core::Vector2>* proxy() const { return m_type == Vector2 ? m_proxyVector2 : nullptr; }
-            template <> ProxyBase<Core::Vector3>* proxy() const { return m_type == Vector3 ? m_proxyVector3 : nullptr; }
-            template <> ProxyBase<Core::Vector4>* proxy() const { return m_type == Vector4 ? m_proxyVector4 : nullptr; }
+            template <class T> Proxy<T>* proxy() const;
+            template <> Proxy<int8_t>* proxy() const { return m_type == Int8 ? m_proxyInt8 : nullptr; }
+            template <> Proxy<int16_t>* proxy() const { return m_type == Int16 ? m_proxyInt16 : nullptr; }
+            template <> Proxy<int32_t>* proxy() const { return m_type == Int32 ? m_proxyInt32 : nullptr; }
+            template <> Proxy<uint8_t>* proxy() const { return m_type == UInt8 ? m_proxyUInt8 : nullptr; }
+            template <> Proxy<uint16_t>* proxy() const { return m_type == UInt16 ? m_proxyUInt16 : nullptr; }
+            template <> Proxy<uint32_t>* proxy() const { return m_type == UInt32 ? m_proxyUInt32 : nullptr; }
+            template <> Proxy<float>* proxy() const { return m_type == Float ? m_proxyFloat : nullptr; }
+            template <> Proxy<double>* proxy() const { return m_type == Double ? m_proxyDouble : nullptr; }
+            template <> Proxy<bool>* proxy() const { return m_type == Bool ? m_proxyBool : nullptr; }
+            template <> Proxy<QString>* proxy() const { return m_type == String ? m_proxyQString : nullptr; }
+            template <> Proxy<std::string>* proxy() const { return m_type == StdString ? m_proxyStdString : nullptr; }
+            template <> Proxy<Core::Color>* proxy() const { return m_type == Color ? m_proxyColor : nullptr; }
+            template <> Proxy<Core::ColorF>* proxy() const { return m_type == ColorF ? m_proxyColorF : nullptr; }
+            template <> Proxy<Core::Vector2>* proxy() const { return m_type == Vector2 ? m_proxyVector2 : nullptr; }
+            template <> Proxy<Core::Vector3>* proxy() const { return m_type == Vector3 ? m_proxyVector3 : nullptr; }
+            template <> Proxy<Core::Vector4>* proxy() const { return m_type == Vector4 ? m_proxyVector4 : nullptr; }
 
             void freeProxy()
             {
@@ -274,37 +245,37 @@ namespace Slick {
             {
                 void* m_sourceVoid;
                 int8_t* m_sourceInt8;
-                ProxyBase<int8_t>* m_proxyInt8;
+                Proxy<int8_t>* m_proxyInt8;
                 int16_t* m_sourceInt16;
-                ProxyBase<int16_t>* m_proxyInt16;
+                Proxy<int16_t>* m_proxyInt16;
                 int32_t* m_sourceInt32;
-                ProxyBase<int32_t>* m_proxyInt32;
+                Proxy<int32_t>* m_proxyInt32;
                 uint8_t* m_sourceUInt8;
-                ProxyBase<uint8_t>* m_proxyUInt8;
+                Proxy<uint8_t>* m_proxyUInt8;
                 uint16_t* m_sourceUInt16;
-                ProxyBase<uint16_t>* m_proxyUInt16;
+                Proxy<uint16_t>* m_proxyUInt16;
                 uint32_t* m_sourceUInt32;
-                ProxyBase<uint32_t>* m_proxyUInt32;
+                Proxy<uint32_t>* m_proxyUInt32;
                 float* m_sourceFloat;
-                ProxyBase<float>* m_proxyFloat;
+                Proxy<float>* m_proxyFloat;
                 double* m_sourceDouble;
-                ProxyBase<double>* m_proxyDouble;
+                Proxy<double>* m_proxyDouble;
                 bool* m_sourceBool;
-                ProxyBase<bool>* m_proxyBool;
+                Proxy<bool>* m_proxyBool;
                 QString* m_sourceQString;
-                ProxyBase<QString>* m_proxyQString;
+                Proxy<QString>* m_proxyQString;
                 std::string* m_sourceStdString;
-                ProxyBase<std::string>* m_proxyStdString;
+                Proxy<std::string>* m_proxyStdString;
                 Core::Color* m_sourceColor;
-                ProxyBase<Core::Color>* m_proxyColor;
+                Proxy<Core::Color>* m_proxyColor;
                 Core::ColorF* m_sourceColorF;
-                ProxyBase<Core::ColorF>* m_proxyColorF;
+                Proxy<Core::ColorF>* m_proxyColorF;
                 Core::Vector2* m_sourceVector2;
-                ProxyBase<Core::Vector2>* m_proxyVector2;
+                Proxy<Core::Vector2>* m_proxyVector2;
                 Core::Vector3* m_sourceVector3;
-                ProxyBase<Core::Vector3>* m_proxyVector3;
+                Proxy<Core::Vector3>* m_proxyVector3;
                 Core::Vector4* m_sourceVector4;
-                ProxyBase<Core::Vector4>* m_proxyVector4;
+                Proxy<Core::Vector4>* m_proxyVector4;
             };
 
             template <class A, class B> A convert(const B& b) const;

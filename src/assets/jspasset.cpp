@@ -12,7 +12,7 @@ namespace Slick {
             m_clump(scene()->renderContext()),
             m_jspAssets()
         {
-            setEditor(&m_jsp);
+            setSerializer(&m_jsp);
         }
 
         void JSPAsset::setup()

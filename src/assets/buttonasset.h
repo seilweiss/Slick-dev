@@ -17,6 +17,8 @@ namespace Slick {
         public:
             ButtonAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::ButtonAsset* serializer() { return &m_button; }
+
             virtual void setup() override;
             virtual void update() override;
             virtual void render() override;

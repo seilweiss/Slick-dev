@@ -20,6 +20,8 @@ namespace Slick {
             ModelAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
             ~ModelAsset();
 
+            HipHop::ModelAsset* serializer() { return &m_model; }
+
             Render::Clump* clump() { return &m_clump; }
 
             Core::ModelInstance* createInstance();

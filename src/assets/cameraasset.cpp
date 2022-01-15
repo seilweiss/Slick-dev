@@ -14,7 +14,7 @@ namespace Slick {
             class CamPositionProxy : public Inspector::Proxy<Core::Vector3>
             {
             public:
-                CamPositionProxy(CameraAsset* asset) : Inspector::Proxy<Core::Vector3>(nullptr), m_asset(asset) {}
+                CamPositionProxy(CameraAsset* asset) : m_asset(asset) {}
 
                 virtual Core::Vector3 data() const override
                 {
@@ -33,7 +33,7 @@ namespace Slick {
             class CamRotationProxy : public Inspector::Proxy<Core::Vector3>
             {
             public:
-                CamRotationProxy(CameraAsset* asset) : Inspector::Proxy<Core::Vector3>(nullptr), m_asset(asset) {}
+                CamRotationProxy(CameraAsset* asset) : m_asset(asset) {}
 
                 virtual Core::Vector3 data() const override
                 {
@@ -52,7 +52,7 @@ namespace Slick {
             class CamScaleProxy : public Inspector::Proxy<Core::Vector3>
             {
             public:
-                CamScaleProxy(CameraAsset* asset) : Inspector::Proxy<Core::Vector3>(nullptr), m_asset(asset) {}
+                CamScaleProxy(CameraAsset* asset) : m_asset(asset) {}
 
                 virtual Core::Vector3 data() const override
                 {
@@ -71,7 +71,7 @@ namespace Slick {
             class CamPreviewProxy : public Inspector::Proxy<bool>
             {
             public:
-                CamPreviewProxy(CameraAsset* asset) : Inspector::Proxy<bool>(), m_asset(asset) {}
+                CamPreviewProxy(CameraAsset* asset) : m_asset(asset) {}
 
                 virtual bool data() const override
                 {
@@ -101,7 +101,7 @@ namespace Slick {
             m_cam(asset),
             m_viewMatrix(1.0f)
         {
-            setEditor(&m_cam);
+            setSerializer(&m_cam);
         }
 
         void CameraAsset::setup()

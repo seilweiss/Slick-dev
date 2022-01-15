@@ -2,6 +2,7 @@
 
 #include "core/scene.h"
 #include "util/mathutils.h"
+#include "inspector/stllistsource.h"
 
 #include <QDebug>
 #include <QCoreApplication>
@@ -15,7 +16,7 @@ namespace Slick {
             class LightPreviewProxy : public Inspector::Proxy<bool>
             {
             public:
-                LightPreviewProxy(LightKitAsset* asset, int index) : Inspector::Proxy<bool>(nullptr), m_asset(asset), m_index(index) {}
+                LightPreviewProxy(LightKitAsset* asset, int index) : m_asset(asset), m_index(index) {}
 
                 virtual bool data() const override
                 {
@@ -32,14 +33,14 @@ namespace Slick {
                 int m_index;
             };
 
-            class LightTypeProxy : public Inspector::Proxy<int, uint32_t>
+            class LightTypeProxy : public Inspector::Proxy<int>
             {
             public:
-                LightTypeProxy(uint32_t* source) : Inspector::Proxy<int, uint32_t>(source) {}
+                LightTypeProxy(LightKitAsset* asset, int index) : m_light(&asset->serializer()->lightList[index]) {}
 
                 virtual int data() const override
                 {
-                    switch (*source())
+                    switch (m_light->type)
                     {
                     case HipHop::LightKitLight::Ambient: return 0;
                     case HipHop::LightKitLight::Directional: return 1;
@@ -53,18 +54,21 @@ namespace Slick {
                 {
                     switch (type)
                     {
-                    case 0: *source() = HipHop::LightKitLight::Ambient; break;
-                    case 1: *source() = HipHop::LightKitLight::Directional; break;
-                    case 2: *source() = HipHop::LightKitLight::Point; break;
-                    case 3: *source() = HipHop::LightKitLight::Spot; break;
+                    case 0: m_light->type = HipHop::LightKitLight::Ambient; break;
+                    case 1: m_light->type = HipHop::LightKitLight::Directional; break;
+                    case 2: m_light->type = HipHop::LightKitLight::Point; break;
+                    case 3: m_light->type = HipHop::LightKitLight::Spot; break;
                     }
                 }
+
+            private:
+                HipHop::LightKitLight* m_light;
             };
 
             class LightPositionProxy : public Inspector::Proxy<Core::Vector3>
             {
             public:
-                LightPositionProxy(LightKitAsset* asset, int index) : Inspector::Proxy<Core::Vector3>(nullptr), m_asset(asset), m_index(index) {}
+                LightPositionProxy(LightKitAsset* asset, int index) : m_asset(asset), m_index(index) {}
 
                 virtual Core::Vector3 data() const override
                 {
@@ -84,7 +88,7 @@ namespace Slick {
             class LightRotationProxy : public Inspector::Proxy<Core::Vector3>
             {
             public:
-                LightRotationProxy(LightKitAsset* asset, int index) : Inspector::Proxy<Core::Vector3>(nullptr), m_asset(asset), m_index(index) {}
+                LightRotationProxy(LightKitAsset* asset, int index) : m_asset(asset), m_index(index) {}
 
                 virtual Core::Vector3 data() const override
                 {
@@ -104,7 +108,7 @@ namespace Slick {
             class LightScaleProxy : public Inspector::Proxy<Core::Vector3>
             {
             public:
-                LightScaleProxy(LightKitAsset* asset, int index) : Inspector::Proxy<Core::Vector3>(nullptr), m_asset(asset), m_index(index) {}
+                LightScaleProxy(LightKitAsset* asset, int index) : m_asset(asset), m_index(index) {}
 
                 virtual Core::Vector3 data() const override
                 {
@@ -121,19 +125,19 @@ namespace Slick {
                 int m_index;
             };
 
-            class LightListSource : public Inspector::ListSource<std::vector<HipHop::LightKitLight>>
+            class LightListSource : public Inspector::STLListSource<std::vector<HipHop::LightKitLight>>
             {
                 Q_DECLARE_TR_FUNCTIONS(LightListSource)
 
             public:
-                LightListSource(LightKitAsset* asset, std::vector<HipHop::LightKitLight>& list) : Inspector::ListSource<std::vector<HipHop::LightKitLight>>(list), m_asset(asset) {}
+                LightListSource(LightKitAsset* asset) : Inspector::STLListSource<std::vector<HipHop::LightKitLight>>(asset->serializer()->lightList), m_asset(asset) {}
 
                 virtual void createGroupItem(Inspector::Group* group, int index) override
                 {
                     auto* light = &list()[index];
                     auto lightGroup = group->addGroup();
                     auto previewProp = lightGroup->addCheckBox("preview", tr("Preview"), new LightPreviewProxy(m_asset, index));
-                    auto typeProp = lightGroup->addComboBox("type", tr("Type"), new LightTypeProxy(&light->type), { tr("Ambient"), tr("Directional"), tr("Point"), tr("Spot") });
+                    auto typeProp = lightGroup->addComboBox("type", tr("Type"), new LightTypeProxy(m_asset, index), { tr("Ambient"), tr("Directional"), tr("Point"), tr("Spot") });
                     auto colorProp = lightGroup->addColorInput("color", tr("Color"), (Core::ColorF*)&light->color);
                     auto posProp = lightGroup->addVectorInput("position", tr("Position"), new LightPositionProxy(m_asset, index));
                     auto rotProp = lightGroup->addVectorInput("rotation", tr("Rotation"), new LightRotationProxy(m_asset, index));
@@ -183,7 +187,7 @@ namespace Slick {
             Core::Asset(asset, sceneFile),
             m_lightKit(asset)
         {
-            setEditor(&m_lightKit);
+            setSerializer(&m_lightKit);
         }
 
         void LightKitAsset::setup()
@@ -279,7 +283,7 @@ namespace Slick {
 
             auto lightsGroup = lightKitGroup->addGroup("lights", tr("Lights"));
 
-            lightsGroup->setListSource(new LightListSource(this, m_lightKit.lightList));
+            lightsGroup->setListSource(new LightListSource(this));
 
             connect(groupProp, &Inspector::Property::dataChanged, this, &LightKitAsset::makeDirty);
 

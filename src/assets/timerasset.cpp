@@ -8,7 +8,7 @@ namespace Slick {
             BaseAsset(asset, sceneFile),
             m_timer(asset)
         {
-            setEditor(&m_timer);
+            setSerializer(&m_timer);
         }
 
         void TimerAsset::inspect(Inspector::Root* root)

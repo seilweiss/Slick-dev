@@ -16,6 +16,8 @@ namespace Slick {
         public:
             DestructObjAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::DestructObjAsset* serializer() { return &m_destructObj; }
+
             virtual void setup() override;
             virtual void update() override;
             virtual void render() override;

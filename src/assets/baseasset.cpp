@@ -4,6 +4,7 @@
 #include "core/scene.h"
 #include "util/stringutils.h"
 #include "util/hiphoputils.h"
+#include "inspector/stllistsource.h"
 
 #include <QCoreApplication>
 
@@ -13,12 +14,12 @@ namespace Slick {
 
         namespace {
 
-            class LinkListSource : public Inspector::ListSource<std::vector<HipHop::LinkAsset>>
+            class LinkListSource : public Inspector::STLListSource<std::vector<HipHop::LinkAsset>>
             {
                 Q_DECLARE_TR_FUNCTIONS(LinkListSource)
 
             public:
-                LinkListSource(BaseAsset* asset, std::vector<HipHop::LinkAsset>& list) : Inspector::ListSource<std::vector<HipHop::LinkAsset>>(list), m_asset(asset) {}
+                LinkListSource(BaseAsset* asset) : Inspector::STLListSource<std::vector<HipHop::LinkAsset>>(asset->serializer()->links), m_asset(asset) {}
 
                 void createGroupItem(Inspector::Group* group, int index)
                 {
@@ -74,7 +75,7 @@ namespace Slick {
             Core::Asset(asset, sceneFile),
             m_baseDefault(asset)
         {
-            setEditor(&m_baseDefault);
+            setSerializer(&m_baseDefault);
         }
 
         void BaseAsset::inspect(Inspector::Root* root)
@@ -100,7 +101,7 @@ namespace Slick {
         void BaseAsset::inspectLinks(Inspector::Root* root)
         {
             auto linksGroup = root->addGroup("links", tr("Links"));
-            linksGroup->setListSource(new LinkListSource(this, m_base->links));
+            linksGroup->setListSource(new LinkListSource(this));
         }
 
     }

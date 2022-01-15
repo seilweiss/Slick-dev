@@ -16,6 +16,8 @@ namespace Slick {
         public:
             TriggerAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::TriggerAsset* serializer() { return &m_trigger; }
+
             virtual void setup() override;
             virtual void update() override;
             virtual void render() override;

@@ -11,7 +11,7 @@ namespace Slick {
             EntAsset(asset, sceneFile),
             m_player(asset)
         {
-            setEditor(&m_player);
+            setSerializer(&m_player);
         }
 
         void PlayerAsset::setup()

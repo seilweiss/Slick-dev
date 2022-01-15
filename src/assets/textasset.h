@@ -16,6 +16,8 @@ namespace Slick {
         public:
             TextAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::TextAsset* serializer() { return &m_text; }
+
             virtual void inspect(Inspector::Root* root) override;
 
         private:

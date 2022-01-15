@@ -8,7 +8,7 @@ namespace Slick {
             BaseAsset(asset, sceneFile),
             m_dispatcher(asset)
         {
-            setEditor(&m_dispatcher);
+            setSerializer(&m_dispatcher);
         }
 
         void DispatcherAsset::inspect(Inspector::Root* root)

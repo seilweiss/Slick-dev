@@ -8,7 +8,7 @@ namespace Slick {
             Asset(asset, sceneFile),
             m_text(asset)
         {
-            setEditor(&m_text);
+            setSerializer(&m_text);
         }
 
         void TextAsset::inspect(Inspector::Root* root)

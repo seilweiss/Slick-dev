@@ -34,7 +34,7 @@ namespace Slick {
             return m_parentGroup ? (m_parentGroup->id() + "." + m_name) : m_name;
         }
 
-        void Group::setListSource(AbstractListSource* listSource)
+        void Group::setListSource(ListSource* listSource)
         {
             m_listSource = listSource;
             refreshListItems();

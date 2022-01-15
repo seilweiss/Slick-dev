@@ -11,7 +11,7 @@ namespace Slick {
             m_button(asset),
             m_motion(new MotionAsset(m_button.motion, this))
         {
-            setEditor(&m_button);
+            setSerializer(&m_button);
         }
 
         void ButtonAsset::setup()

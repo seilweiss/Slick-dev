@@ -21,7 +21,7 @@ namespace Slick {
             m_lightKit(nullptr),
             m_renderEnabled(true)
         {
-            setEditor(&m_entDefault);
+            setSerializer(&m_entDefault);
         }
 
         void EntAsset::setup()

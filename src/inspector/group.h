@@ -32,7 +32,7 @@ namespace Slick {
             Q_PROPERTY(bool nameVisible READ nameVisible WRITE setNameVisible NOTIFY nameVisibilityChanged)
             Q_PROPERTY(bool expanded READ expanded WRITE setExpanded NOTIFY expansionChanged)
             Q_PROPERTY(QString helpText READ helpText WRITE setHelpText NOTIFY helpTextChanged)
-            Q_PROPERTY(AbstractListSource* listSource READ listSource WRITE setListSource)
+            Q_PROPERTY(ListSource* listSource READ listSource WRITE setListSource)
             Q_PROPERTY(bool isList READ isList)
             Q_PROPERTY(int itemCount READ itemCount)
             Q_PROPERTY(QList<GroupItem*> items READ items)
@@ -68,8 +68,8 @@ namespace Slick {
             QString helpText() const { return m_helpText; }
             void setHelpText(const QString& helpText) { m_helpText = helpText; emit helpTextChanged(helpText); }
 
-            AbstractListSource* listSource() const { return m_listSource; }
-            void setListSource(AbstractListSource* listSource);
+            ListSource* listSource() const { return m_listSource; }
+            void setListSource(ListSource* listSource);
 
             bool isList() const { return m_listSource != nullptr; }
 
@@ -149,7 +149,7 @@ namespace Slick {
             void nameVisibilityChanged(bool visible);
             void expansionChanged(bool expanded);
             void helpTextChanged(const QString& helpText);
-            void listSourceChanged(Slick::Inspector::AbstractListSource* listSource);
+            void listSourceChanged(Slick::Inspector::ListSource* listSource);
             void listItemAdded();
             void listItemRemoved(int index);
 
@@ -161,7 +161,7 @@ namespace Slick {
             bool m_nameVisible;
             bool m_expanded;
             QString m_helpText;
-            AbstractListSource* m_listSource;
+            ListSource* m_listSource;
             QList<GroupItem*> m_items;
 
             void refreshListItems();

@@ -16,6 +16,8 @@ namespace Slick {
         public:
             BoulderAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::BoulderAsset* serializer() { return &m_boulder; }
+
             virtual void setup() override;
             virtual void update() override;
             virtual void render() override;

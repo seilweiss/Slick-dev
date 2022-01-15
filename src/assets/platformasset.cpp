@@ -9,7 +9,7 @@ namespace Slick {
             class TypeProxy : public Inspector::Proxy<int>
             {
             public:
-                TypeProxy(HipHop::PlatformAsset* platform) : Inspector::Proxy<int>(), m_platform(platform) {}
+                TypeProxy(PlatformAsset* asset) : m_platform(asset->serializer()) {}
 
                 virtual int data() const override
                 {
@@ -44,12 +44,12 @@ namespace Slick {
                 HipHop::PlatformAsset* m_platform;
             };
 
-            class OrientListSource : public Inspector::AbstractListSource
+            class OrientListSource : public Inspector::ListSource
             {
             public:
-                OrientListSource(PlatformAsset* asset, HipHop::PlatformPaddleData* paddle) :
+                OrientListSource(PlatformAsset* asset) :
                     m_asset(asset),
-                    m_paddle(paddle)
+                    m_paddle(&asset->serializer()->paddle)
                 {
                 }
 
@@ -98,7 +98,7 @@ namespace Slick {
             m_platform(asset),
             m_motion(new MotionAsset(m_platform.motion, this))
         {
-            setEditor(&m_platform);
+            setSerializer(&m_platform);
         }
 
         void PlatformAsset::setup()
@@ -122,7 +122,7 @@ namespace Slick {
 
             auto platformGroup = root->addGroup("platform", tr("Platform"));
 
-            auto typeProp = platformGroup->addComboBox("type", tr("Type"), new TypeProxy(&m_platform), {
+            auto typeProp = platformGroup->addComboBox("type", tr("Type"), new TypeProxy(this), {
                                                            tr("Extend/Retract"),
                                                            tr("Orbit"),
                                                            tr("Spline"),
@@ -327,7 +327,7 @@ namespace Slick {
                 auto decelTimeProp = paddleGroup->addNumberInput("decelTime", tr("Decel Time"), &m_platform.paddle.decelTime);
                 auto hubRadiusProp = paddleGroup->addNumberInput("hubRadius", tr("Hub Radius"), &m_platform.paddle.hubRadius);
 
-                orientsGroup->setListSource(new OrientListSource(this, &m_platform.paddle));
+                orientsGroup->setListSource(new OrientListSource(this));
 
                 auto updateStartOrient = [=]
                 {

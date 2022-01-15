@@ -14,7 +14,7 @@ namespace Slick {
             BaseAsset(asset, sceneFile),
             m_fog(asset)
         {
-            setEditor(&m_fog);
+            setSerializer(&m_fog);
         }
 
         void FogAsset::inspect(Inspector::Root* root)

@@ -8,7 +8,7 @@ namespace Slick {
             Asset(asset, sceneFile),
             m_marker(asset)
         {
-            setEditor(&m_marker);
+            setSerializer(&m_marker);
         }
 
         void MarkerAsset::inspect(Inspector::Root* root)

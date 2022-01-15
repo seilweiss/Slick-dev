@@ -2,6 +2,7 @@
 
 #include "core/scene.h"
 #include "assets/modelasset.h"
+#include "inspector/stllistsource.h"
 
 #include <QCoreApplication>
 
@@ -14,7 +15,7 @@ namespace Slick {
             class Unk0Proxy : public Inspector::Proxy<uint8_t>
             {
             public:
-                Unk0Proxy(HipHop::PipeInfo* info) : Inspector::Proxy<uint8_t>(nullptr), m_info(info) {}
+                Unk0Proxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual uint8_t data() const override { return m_info->Unk0; }
                 virtual void setData(const uint8_t& data) const override { m_info->Unk0 = data; }
@@ -26,7 +27,7 @@ namespace Slick {
             class ZWriteProxy : public Inspector::Proxy<uint8_t>
             {
             public:
-                ZWriteProxy(HipHop::PipeInfo* info) : Inspector::Proxy<uint8_t>(nullptr), m_info(info) {}
+                ZWriteProxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual uint8_t data() const override { return (uint8_t)m_info->ZWrite; }
                 virtual void setData(const uint8_t& data) const override { m_info->ZWrite = (HipHop::PipeInfo::ZWriteMode)data; }
@@ -38,7 +39,7 @@ namespace Slick {
             class CullProxy : public Inspector::Proxy<uint8_t>
             {
             public:
-                CullProxy(HipHop::PipeInfo* info) : Inspector::Proxy<uint8_t>(nullptr), m_info(info) {}
+                CullProxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual uint8_t data() const override { return (uint8_t)m_info->Cull; }
                 virtual void setData(const uint8_t& data) const override { m_info->Cull = (HipHop::PipeInfo::CullMode)data; }
@@ -50,7 +51,7 @@ namespace Slick {
             class LightingProxy : public Inspector::Proxy<uint8_t>
             {
             public:
-                LightingProxy(HipHop::PipeInfo* info) : Inspector::Proxy<uint8_t>(nullptr), m_info(info) {}
+                LightingProxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual uint8_t data() const override { return (uint8_t)m_info->Lighting; }
                 virtual void setData(const uint8_t& data) const override { m_info->Lighting = (HipHop::PipeInfo::LightingMode)data; }
@@ -62,7 +63,7 @@ namespace Slick {
             class BlendSrcProxy : public Inspector::Proxy<uint8_t>
             {
             public:
-                BlendSrcProxy(HipHop::PipeInfo* info) : Inspector::Proxy<uint8_t>(nullptr), m_info(info) {}
+                BlendSrcProxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual uint8_t data() const override { return (uint8_t)m_info->BlendSrc; }
                 virtual void setData(const uint8_t& data) const override { m_info->BlendSrc = (HipHop::PipeInfo::BlendFunction)data; }
@@ -74,7 +75,7 @@ namespace Slick {
             class BlendDstProxy : public Inspector::Proxy<uint8_t>
             {
             public:
-                BlendDstProxy(HipHop::PipeInfo* info) : Inspector::Proxy<uint8_t>(nullptr), m_info(info) {}
+                BlendDstProxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual uint8_t data() const override { return (uint8_t)m_info->BlendDst; }
                 virtual void setData(const uint8_t& data) const override { m_info->BlendDst = (HipHop::PipeInfo::BlendFunction)data; }
@@ -86,7 +87,7 @@ namespace Slick {
             class EnableFogProxy : public Inspector::Proxy<bool>
             {
             public:
-                EnableFogProxy(HipHop::PipeInfo* info) : Inspector::Proxy<bool>(nullptr), m_info(info) {}
+                EnableFogProxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual bool data() const override { return !m_info->DisableFog; }
                 virtual void setData(const bool& data) const override { m_info->DisableFog = !data; }
@@ -98,7 +99,7 @@ namespace Slick {
             class Unk1Proxy : public Inspector::Proxy<uint8_t>
             {
             public:
-                Unk1Proxy(HipHop::PipeInfo* info) : Inspector::Proxy<uint8_t>(nullptr), m_info(info) {}
+                Unk1Proxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual uint8_t data() const override { return m_info->Unk1; }
                 virtual void setData(const uint8_t& data) const override { m_info->Unk1 = data; }
@@ -110,7 +111,7 @@ namespace Slick {
             class AlphaLayerProxy : public Inspector::Proxy<uint8_t>
             {
             public:
-                AlphaLayerProxy(HipHop::PipeInfo* info) : Inspector::Proxy<uint8_t>(nullptr), m_info(info) {}
+                AlphaLayerProxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual uint8_t data() const override { return m_info->AlphaLayer; }
                 virtual void setData(const uint8_t& data) const override { m_info->AlphaLayer = data; }
@@ -122,7 +123,7 @@ namespace Slick {
             class AlphaCompareProxy : public Inspector::Proxy<uint8_t>
             {
             public:
-                AlphaCompareProxy(HipHop::PipeInfo* info) : Inspector::Proxy<uint8_t>(nullptr), m_info(info) {}
+                AlphaCompareProxy(HipHop::PipeInfo* info) : m_info(info) {}
 
                 virtual uint8_t data() const override { return m_info->AlphaCompare; }
                 virtual void setData(const uint8_t& data) const override { m_info->AlphaCompare = data; }
@@ -131,12 +132,12 @@ namespace Slick {
                 HipHop::PipeInfo* m_info;
             };
 
-            class PipeInfoListSource : public Inspector::ListSource<std::vector<HipHop::PipeInfo>>
+            class PipeInfoListSource : public Inspector::STLListSource<std::vector<HipHop::PipeInfo>>
             {
                 Q_DECLARE_TR_FUNCTIONS(LightListSource)
 
             public:
-                PipeInfoListSource(PipeInfoTableAsset* asset, std::vector<HipHop::PipeInfo>& list) : Inspector::ListSource<std::vector<HipHop::PipeInfo>>(list), m_asset(asset) {}
+                PipeInfoListSource(PipeInfoTableAsset* asset) : Inspector::STLListSource<std::vector<HipHop::PipeInfo>>(asset->serializer()->pipeInfo), m_asset(asset) {}
 
                 virtual void createGroupItem(Inspector::Group* group, int index) override
                 {
@@ -245,14 +246,14 @@ namespace Slick {
             Asset(asset, sceneFile),
             m_pipt(asset)
         {
-            setEditor(&m_pipt);
+            setSerializer(&m_pipt);
         }
 
         void PipeInfoTableAsset::inspect(Inspector::Root* root)
         {
             auto piptGroup = root->addGroup("pipeInfoTable", tr("Pipe Info Table"));
 
-            piptGroup->setListSource(new PipeInfoListSource(this, m_pipt.pipeInfo));
+            piptGroup->setListSource(new PipeInfoListSource(this));
 
             connect(piptGroup, &Inspector::Group::listItemAdded, this, &PipeInfoTableAsset::makeDirty);
             connect(piptGroup, &Inspector::Group::listItemRemoved, this, &PipeInfoTableAsset::makeDirty);

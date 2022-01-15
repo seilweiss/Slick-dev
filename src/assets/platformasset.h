@@ -17,6 +17,8 @@ namespace Slick {
         public:
             PlatformAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::PlatformAsset* serializer() { return &m_platform; }
+
             virtual void setup() override;
             virtual void update() override;
             virtual void render() override;

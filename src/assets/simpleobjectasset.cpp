@@ -6,14 +6,14 @@ namespace Slick {
 
         namespace {
 
-            class CollTypeProxy : public Inspector::Proxy<int, uint8_t>
+            class CollTypeProxy : public Inspector::Proxy<int>
             {
             public:
-                CollTypeProxy(uint8_t* source) : Inspector::Proxy<int, uint8_t>(source) {}
+                CollTypeProxy(SimpleObjectAsset* asset) : m_simp(asset->serializer()) {}
 
                 virtual int data() const override
                 {
-                    switch (*source())
+                    switch (m_simp->collType)
                     {
                     case HipHop::SimpleObjAsset::None: return 0;
                     case HipHop::SimpleObjAsset::Trigger: return 1;
@@ -29,15 +29,18 @@ namespace Slick {
                 {
                     switch (data)
                     {
-                    case 0: *source() = HipHop::SimpleObjAsset::None; break;
-                    case 1: *source() = HipHop::SimpleObjAsset::Trigger; break;
-                    case 2: *source() = HipHop::SimpleObjAsset::Static; break;
-                    case 3: *source() = HipHop::SimpleObjAsset::Dynamic; break;
-                    case 4: *source() = HipHop::SimpleObjAsset::NPC; break;
-                    case 5: *source() = HipHop::SimpleObjAsset::Player; break;
+                    case 0: m_simp->collType = HipHop::SimpleObjAsset::None; break;
+                    case 1: m_simp->collType = HipHop::SimpleObjAsset::Trigger; break;
+                    case 2: m_simp->collType = HipHop::SimpleObjAsset::Static; break;
+                    case 3: m_simp->collType = HipHop::SimpleObjAsset::Dynamic; break;
+                    case 4: m_simp->collType = HipHop::SimpleObjAsset::NPC; break;
+                    case 5: m_simp->collType = HipHop::SimpleObjAsset::Player; break;
                     default: break;
                     }
                 }
+
+            private:
+                HipHop::SimpleObjAsset* m_simp;
             };
 
         }
@@ -46,7 +49,7 @@ namespace Slick {
             EntAsset(asset, sceneFile),
             m_simpleObj(asset)
         {
-            setEditor(&m_simpleObj);
+            setSerializer(&m_simpleObj);
         }
 
         void SimpleObjectAsset::setup()
@@ -72,7 +75,7 @@ namespace Slick {
 
             auto animSpeedProp = simpleObjGroup->addNumberInput("animSpeed", tr("Anim Speed"), &m_simpleObj.animSpeed);
             auto initAnimStateProp = simpleObjGroup->addNumberInput("initialAnimState", tr("Initial Anim State"), &m_simpleObj.initAnimState);
-            auto collTypeProp = simpleObjGroup->addComboBox("collisionType", tr("Collision Type"), new CollTypeProxy(&m_simpleObj.collType), { tr("None"), tr("Trigger"), tr("Static"), tr("Dynamic"), tr("NPC"), tr("Player") });
+            auto collTypeProp = simpleObjGroup->addComboBox("collisionType", tr("Collision Type"), new CollTypeProxy(this), { tr("None"), tr("Trigger"), tr("Static"), tr("Dynamic"), tr("NPC"), tr("Player") });
             auto flagsProp = simpleObjGroup->addNumberInput("flags", tr("Flags"), &m_simpleObj.flags);
 
             connect(animSpeedProp, &Inspector::Property::dataChanged, this, &SimpleObjectAsset::makeDirty);

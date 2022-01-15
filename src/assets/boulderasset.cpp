@@ -12,7 +12,7 @@ namespace Slick {
             EntAsset(asset, sceneFile),
             m_boulder(asset)
         {
-            setEditor(&m_boulder);
+            setSerializer(&m_boulder);
         }
 
         void BoulderAsset::setup()

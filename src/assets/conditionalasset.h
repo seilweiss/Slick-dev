@@ -16,6 +16,8 @@ namespace Slick {
         public:
             ConditionalAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::CondAsset* serializer() { return &m_cond; }
+
             virtual void inspect(Inspector::Root* root) override;
 
         private:

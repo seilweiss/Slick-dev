@@ -16,6 +16,8 @@ namespace Slick {
         public:
             AnimListAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::AnimListAsset* serializer() { return &m_animList; }
+
             virtual void inspect(Inspector::Root* root) override;
 
         private:

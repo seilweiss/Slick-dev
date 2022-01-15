@@ -25,7 +25,7 @@ namespace Slick {
 
                 if (base)
                 {
-                    for (const HipHop::LinkAsset& link : base->editor()->links)
+                    for (const HipHop::LinkAsset& link : base->serializer()->links)
                     {
                         if (link.dstEvent == HipHop::Event::SetSkyDome)
                         {

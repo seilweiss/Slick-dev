@@ -17,6 +17,8 @@ namespace Slick {
         public:
             JSPAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::JSPAsset* serializer() { return &m_jsp; }
+
             void setup();
             void render();
 

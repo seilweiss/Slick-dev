@@ -18,6 +18,8 @@ namespace Slick {
         public:
             CameraAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::CamAsset* serializer() { return &m_cam; }
+
             virtual void inspect(Inspector::Root* root) override;
 
             Core::Vector3 position() const { return m_pos; }

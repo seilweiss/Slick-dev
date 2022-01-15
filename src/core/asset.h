@@ -26,7 +26,7 @@ namespace Slick {
             Q_PROPERTY(Scene* scene READ scene)
             Q_PROPERTY(HipHop::Asset hipHopAsset READ hipHopAsset)
             Q_PROPERTY(bool isDirty READ isDirty)
-            Q_PROPERTY(HipHop::AssetEditor* editor READ editor WRITE setEditor)
+            Q_PROPERTY(HipHop::AssetSerializer* serializer READ serializer WRITE setSerializer)
 
         public:
             Asset(HipHop::Asset asset, SceneFile* sceneFile);
@@ -44,8 +44,8 @@ namespace Slick {
             bool isDirty() const { return m_dirty; }
             void makeDirty();
 
-            HipHop::AssetEditor* editor() const { return m_editor; }
-            void setEditor(HipHop::AssetEditor* editor) { m_editor = editor; }
+            HipHop::AssetSerializer* serializer() const { return m_serializer; }
+            void setSerializer(HipHop::AssetSerializer* serializer) { m_serializer = serializer; }
 
             void load();
             void save();
@@ -61,7 +61,7 @@ namespace Slick {
             SceneFile* m_file;
             Scene* m_scene;
             HipHop::Asset m_asset;
-            HipHop::AssetEditor* m_editor;
+            HipHop::AssetSerializer* m_serializer;
             bool m_dirty;
         };
 

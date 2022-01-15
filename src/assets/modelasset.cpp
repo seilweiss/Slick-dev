@@ -16,7 +16,7 @@ namespace Slick {
             m_clump(Render::Clump(scene()->renderContext())),
             m_instances()
         {
-            setEditor(&m_model);
+            setSerializer(&m_model);
         }
 
         ModelAsset::~ModelAsset()
@@ -52,7 +52,7 @@ namespace Slick {
 
                 for (auto pipt : pipts)
                 {
-                    for (HipHop::PipeInfo& info : pipt->data()->pipeInfo)
+                    for (HipHop::PipeInfo& info : pipt->serializer()->pipeInfo)
                     {
                         if (info.ModelHashID == id())
                         {

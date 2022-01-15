@@ -16,7 +16,7 @@ namespace Slick {
         public:
             PipeInfoTableAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
-            HipHop::PipeInfoTableAsset* data() { return &m_pipt; }
+            HipHop::PipeInfoTableAsset* serializer() { return &m_pipt; }
 
             virtual void inspect(Inspector::Root* root) override;
 

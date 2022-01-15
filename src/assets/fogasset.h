@@ -16,6 +16,8 @@ namespace Slick {
         public:
             FogAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::FogAsset* serializer() { return &m_fog; }
+
             void apply();
 
             virtual void inspect(Inspector::Root* root) override;

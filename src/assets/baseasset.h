@@ -15,8 +15,8 @@ namespace Slick {
         public:
             BaseAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
-            HipHop::BaseAsset* editor() const { return m_base; }
-            void setEditor(HipHop::BaseAsset* editor) { Core::Asset::setEditor(editor); m_base = editor; }
+            HipHop::BaseAsset* serializer() const { return m_base; }
+            void setSerializer(HipHop::BaseAsset* serializer) { Core::Asset::setSerializer(serializer); m_base = serializer; }
 
             virtual void inspect(Inspector::Root* root) override;
 

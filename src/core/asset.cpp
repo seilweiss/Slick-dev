@@ -13,7 +13,7 @@ namespace Slick {
             class AssetNameProxy : public Inspector::Proxy<QString>
             {
             public:
-                AssetNameProxy(HipHop::Asset& asset) : Inspector::Proxy<QString>(nullptr), m_asset(asset) {}
+                AssetNameProxy(HipHop::Asset& asset) : m_asset(asset) {}
 
                 virtual QString data() const override { return QString::fromStdString(m_asset.GetName()); }
                 virtual void setData(const QString& data) const override { m_asset.SetName(data.toStdString()); }
@@ -30,7 +30,7 @@ namespace Slick {
             m_file(sceneFile),
             m_scene(sceneFile->scene()),
             m_asset(asset),
-            m_editor(nullptr),
+            m_serializer(nullptr),
             m_dirty(false)
         {
         }
@@ -44,9 +44,9 @@ namespace Slick {
 
         void Asset::load()
         {
-            if (m_editor)
+            if (m_serializer)
             {
-                m_editor->Load();
+                m_serializer->Load();
             }
 
             m_dirty = false;
@@ -54,9 +54,9 @@ namespace Slick {
 
         void Asset::save()
         {
-            if (m_editor)
+            if (m_serializer)
             {
-                m_editor->Save();
+                m_serializer->Save();
             }
 
             m_dirty = false;

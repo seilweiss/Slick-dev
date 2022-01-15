@@ -16,6 +16,8 @@ namespace Slick {
         public:
             GroupAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::GroupAsset* serializer() { return &m_group; }
+
             virtual void inspect(Inspector::Root* root) override;
 
         private:

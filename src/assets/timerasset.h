@@ -16,6 +16,8 @@ namespace Slick {
         public:
             TimerAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::TimerAsset* serializer() { return &m_timer; }
+
             virtual void inspect(Inspector::Root* root) override;
 
         private:

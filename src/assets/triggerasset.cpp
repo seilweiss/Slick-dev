@@ -23,7 +23,7 @@ namespace Slick {
             class CenterOffsetProxy : public Inspector::Proxy<Core::Vector3>
             {
             public:
-                CenterOffsetProxy(HipHop::TriggerAsset* trigger) : Inspector::Proxy<Core::Vector3>(nullptr), m_trigger(trigger) {}
+                CenterOffsetProxy(TriggerAsset* asset) : m_trigger(asset->serializer()) {}
 
                 virtual Core::Vector3 data() const override
                 {
@@ -74,7 +74,7 @@ namespace Slick {
             class BoxSizeProxy : public Inspector::Proxy<Core::Vector3>
             {
             public:
-                BoxSizeProxy(HipHop::TriggerAsset* trigger) : Inspector::Proxy<Core::Vector3>(nullptr), m_trigger(trigger) {}
+                BoxSizeProxy(TriggerAsset* asset) : m_trigger(asset->serializer()) {}
 
                 virtual Core::Vector3 data() const override
                 {
@@ -104,7 +104,7 @@ namespace Slick {
             EntAsset(asset, sceneFile),
             m_trigger(asset)
         {
-            setEditor(&m_trigger);
+            setSerializer(&m_trigger);
         }
 
         void TriggerAsset::setup()
@@ -129,8 +129,8 @@ namespace Slick {
             auto triggerGroup = root->addGroup("trigger", tr("Trigger"));
             auto typeProp = triggerGroup->addComboBox("type", tr("Type"), &m_trigger.subtype, { tr("Box"), tr("Sphere"), tr("Cylinder"), tr("Circle") });
 
-            auto centerOffsetProp = triggerGroup->addVectorInput("centerOffset", tr("Center Offset"), new CenterOffsetProxy(&m_trigger));
-            auto sizeProp = triggerGroup->addVectorInput("size", tr("Size"), new BoxSizeProxy(&m_trigger));
+            auto centerOffsetProp = triggerGroup->addVectorInput("centerOffset", tr("Center Offset"), new CenterOffsetProxy(this));
+            auto sizeProp = triggerGroup->addVectorInput("size", tr("Size"), new BoxSizeProxy(this));
             auto radiusProp = triggerGroup->addNumberInput("radius", tr("Radius"), &m_trigger.p[1].x);
             auto heightProp = triggerGroup->addNumberInput("height", tr("Height"), &m_trigger.p[1].y);
 

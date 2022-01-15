@@ -17,6 +17,8 @@ namespace Slick {
         public:
             TextureAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::TextureAsset* serializer() { return &m_textureAsset; }
+
             Render::Texture* texture() { return &m_texture; }
 
             void setup();

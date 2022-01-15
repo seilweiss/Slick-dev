@@ -16,6 +16,8 @@ namespace Slick {
         public:
             CounterAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::CounterAsset* serializer() { return &m_counter; }
+
             virtual void inspect(Inspector::Root* root) override;
 
         private:

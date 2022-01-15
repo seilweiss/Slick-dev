@@ -13,7 +13,7 @@ namespace Slick {
             m_texture(Render::Texture(scene()->renderContext())),
             m_info()
         {
-            setEditor(&m_textureAsset);
+            setSerializer(&m_textureAsset);
         }
 
         void TextureAsset::setup()

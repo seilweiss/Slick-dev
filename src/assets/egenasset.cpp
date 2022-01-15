@@ -8,7 +8,7 @@ namespace Slick {
             EntAsset(asset, sceneFile),
             m_egen(asset)
         {
-            setEditor(&m_egen);
+            setSerializer(&m_egen);
         }
 
         void EGenAsset::setup()

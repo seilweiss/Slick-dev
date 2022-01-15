@@ -16,6 +16,8 @@ namespace Slick {
         public:
             EGenAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::EGenAsset* serializer() { return &m_egen; }
+
             virtual void setup() override;
             virtual void update() override;
             virtual void render() override;

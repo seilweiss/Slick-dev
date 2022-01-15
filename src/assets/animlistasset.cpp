@@ -6,12 +6,12 @@ namespace Slick {
 
         namespace {
 
-            class AnimListSource : public Inspector::AbstractListSource
+            class AnimListSource : public Inspector::ListSource
             {
             public:
-                AnimListSource(AnimListAsset* asset, uint32_t* list) :
+                AnimListSource(AnimListAsset* asset) :
                     m_asset(asset),
-                    m_list(list),
+                    m_list(asset->serializer()->ids),
                     m_count(0)
                 {
                     while (m_count < 10 && m_list[m_count] != 0)
@@ -65,7 +65,7 @@ namespace Slick {
             Asset(asset, sceneFile),
             m_animList(asset)
         {
-            setEditor(&m_animList);
+            setSerializer(&m_animList);
         }
 
         void AnimListAsset::inspect(Inspector::Root* root)
@@ -73,7 +73,7 @@ namespace Slick {
             auto animListGroup = root->addGroup("animList", tr("Anim List"));
             auto animsGroup = animListGroup->addGroup("animations", tr("Animations"));
 
-            animsGroup->setListSource(new AnimListSource(this, m_animList.ids));
+            animsGroup->setListSource(new AnimListSource(this));
 
             connect(animsGroup, &Inspector::Group::listItemAdded, this, &AnimListAsset::makeDirty);
             connect(animsGroup, &Inspector::Group::listItemRemoved, this, &AnimListAsset::makeDirty);

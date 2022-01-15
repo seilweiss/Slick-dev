@@ -10,7 +10,7 @@ namespace Slick {
             EntAsset(asset, sceneFile),
             m_destructObj(asset)
         {
-            setEditor(&m_destructObj);
+            setSerializer(&m_destructObj);
         }
 
         void DestructObjAsset::setup()

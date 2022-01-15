@@ -1,15 +1,17 @@
 #include "assets/groupasset.h"
 
+#include "inspector/stllistsource.h"
+
 namespace Slick {
 
     namespace Assets {
 
         namespace {
 
-            class ItemListSource : public Inspector::ListSource<std::vector<uint32_t>>
+            class ItemListSource : public Inspector::STLListSource<std::vector<uint32_t>>
             {
             public:
-                ItemListSource(GroupAsset* asset, std::vector<uint32_t>& list) : Inspector::ListSource<std::vector<uint32_t>>(list), m_asset(asset) {}
+                ItemListSource(GroupAsset* asset) : Inspector::STLListSource<std::vector<uint32_t>>(asset->serializer()->items), m_asset(asset) {}
 
                 virtual void createGroupItem(Inspector::Group* group, int index) override
                 {
@@ -28,7 +30,7 @@ namespace Slick {
             BaseAsset(asset, sceneFile),
             m_group(asset)
         {
-            setEditor(&m_group);
+            setSerializer(&m_group);
         }
 
         void GroupAsset::inspect(Inspector::Root* root)
@@ -46,7 +48,7 @@ namespace Slick {
 
             auto itemsGroup = groupGroup->addGroup("items", tr("Items"));
 
-            itemsGroup->setListSource(new ItemListSource(this, m_group.items));
+            itemsGroup->setListSource(new ItemListSource(this));
 
             connect(eventBehaviorProp, &Inspector::Property::dataChanged, this, &GroupAsset::makeDirty);
             connect(itemsGroup, &Inspector::Group::listItemAdded, this, &GroupAsset::makeDirty);

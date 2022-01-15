@@ -16,6 +16,8 @@ namespace Slick {
         public:
             LightKitAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::LightKitAsset* serializer() { return &m_lightKit; }
+
             bool lightPreviewEnabled(int index) const { return m_lightPreviews[index]; }
             void setLightPreviewEnabled(int index, bool enabled) { m_lightPreviews[index] = enabled; }
 

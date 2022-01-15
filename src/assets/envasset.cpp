@@ -14,7 +14,7 @@ namespace Slick {
             m_jspInfo(nullptr),
             m_objLightKit(nullptr)
         {
-            setEditor(&m_env);
+            setSerializer(&m_env);
         }
 
         void EnvAsset::setup()

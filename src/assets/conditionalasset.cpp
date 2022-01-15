@@ -284,25 +284,26 @@ namespace Slick {
                 varsInited = true;
             }
 
-            class CondVariableProxy : public Inspector::Proxy<int, uint32_t>
+            class CondVariableProxy : public Inspector::Proxy<int>
             {
             public:
-                CondVariableProxy(uint32_t* source, HipHop::Game game) : Inspector::Proxy<int, uint32_t>(source), m_game(game) {}
+                CondVariableProxy(ConditionalAsset* asset) : m_cond(asset->serializer()), m_game(asset->scene()->game()) {}
 
                 virtual int data() const override
                 {
-                    return varHashes[(int)m_game].indexOf(*source());
+                    return varHashes[(int)m_game].indexOf(m_cond->value_asset);
                 }
 
                 virtual void setData(const int& data) const override
                 {
                     if (data >= 0 && data < varHashes[(int)m_game].size())
                     {
-                        *source() = varHashes[(int)m_game][data];
+                        m_cond->value_asset = varHashes[(int)m_game][data];
                     }
                 }
 
             private:
+                HipHop::CondAsset* m_cond;
                 HipHop::Game m_game;
             };
 
@@ -317,7 +318,7 @@ namespace Slick {
                 initVars();
             }
 
-            setEditor(&m_cond);
+            setSerializer(&m_cond);
         }
 
         void ConditionalAsset::inspect(Inspector::Root* root)
@@ -325,7 +326,7 @@ namespace Slick {
             BaseAsset::inspect(root);
 
             auto conditionalGroup = root->addGroup("conditional", tr("Conditional"));
-            auto variableProp = conditionalGroup->addComboBox("variable", tr("Variable"), new CondVariableProxy(&m_cond.expr1, scene()->game()), varNames[(int)scene()->game()]);
+            auto variableProp = conditionalGroup->addComboBox("variable", tr("Variable"), new CondVariableProxy(this), varNames[(int)scene()->game()]);
             auto operatorProp = conditionalGroup->addComboBox("operator", tr("Operator"), &m_cond.op, { "==", ">", "<", ">=", "<=", "!=" });
             auto valueProp = conditionalGroup->addNumberInput("value", tr("Value"), &m_cond.constNum);
             auto valueAssetProp = conditionalGroup->addAssetInput("valueAsset", tr("Value Asset"), &m_cond.value_asset, scene());

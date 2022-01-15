@@ -16,6 +16,8 @@ namespace Slick {
         public:
             MarkerAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::MarkerAsset* serializer() { return &m_marker; }
+
             virtual void inspect(Inspector::Root* root) override;
 
         private:

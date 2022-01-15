@@ -18,8 +18,8 @@ namespace Slick {
         public:
             EntAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
-            HipHop::EntAsset* editor() const { return m_ent; }
-            void setEditor(HipHop::EntAsset* editor) { BaseAsset::setEditor(editor); m_ent = editor; }
+            HipHop::EntAsset* serializer() const { return m_ent; }
+            void setSerializer(HipHop::EntAsset* serializer) { BaseAsset::setSerializer(serializer); m_ent = serializer; }
 
             Core::ModelInstance* model() const { return m_model; }
 

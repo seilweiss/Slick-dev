@@ -184,6 +184,7 @@ HEADERS += \
     src/inspector/property.h \
     src/inspector/proxy.h \
     src/inspector/root.h \
+    src/inspector/stllistsource.h \
     src/mainwindow.h \
     src/panels/debugpanel.h \
     src/panels/editorpanel.h \

@@ -19,6 +19,8 @@ namespace Slick {
         public:
             EnvAsset(HipHop::Asset asset, Core::SceneFile* sceneFile);
 
+            HipHop::EnvAsset* serializer() { return &m_env; }
+
             JSPAsset* jspInfo() const { return m_jspInfo; }
             LightKitAsset* objectLightKit() const { return m_objLightKit; }
 

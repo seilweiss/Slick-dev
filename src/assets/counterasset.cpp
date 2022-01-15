@@ -8,7 +8,7 @@ namespace Slick {
             BaseAsset(asset, sceneFile),
             m_counter(asset)
         {
-            setEditor(&m_counter);
+            setSerializer(&m_counter);
         }
 
         void CounterAsset::inspect(Inspector::Root* root)

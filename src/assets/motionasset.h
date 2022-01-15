@@ -15,6 +15,8 @@ namespace Slick {
         public:
             MotionAsset(HipHop::MotionAsset& asset, Core::Asset* parent);
 
+            HipHop::MotionAsset* serializer() { return &m_motion; }
+
             virtual void inspect(Inspector::Root* root) override;
 
         private:
